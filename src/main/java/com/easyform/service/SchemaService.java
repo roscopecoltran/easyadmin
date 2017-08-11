@@ -15,7 +15,6 @@ import java.util.List;
  */
 @Controller
 public class SchemaService {
-    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/schemas")
     @ResponseBody
     public List<Field> schemas() {
@@ -38,18 +37,18 @@ public class SchemaService {
                 .labelPosition(LabelPosition.right)
                 .build());
         fields.add(DatePickerField.builder()
-                .name("date")
-                .hintText("出发日期")
+                .name("when")
+                .hintText("when")
                 .build());
         fields.add(TimePickerField.builder()
-                .name("time")
-                .hintText("出发时间")
+                .name("at")
+                .hintText("at")
                 .build());
         fields.add(TextAreaField.builder()
-                .name("backup")
+                .name("mark")
                 .defaultValue("11")
-                .floatingLabelText("备注")
-                .rows(6)
+                .floatingLabelText("mark")
+                .rows(1)
                 .build());
         fields.add(SliderField.builder()
                 .name("age")
@@ -61,20 +60,20 @@ public class SchemaService {
         fields.add(RadioButtonGroupField.builder()
                 .name("gender")
                 .items(new Item[]{
-                        Item.builder().name("男").value("male").build(),
-                        Item.builder().name("女").value("female").build()
+                        Item.builder().name("male").value("male").build(),
+                        Item.builder().name("female").value("female").build()
                 }).build());
         fields.add(CheckboxField.builder()
                 .name("married")
-                .label("是否已婚")
+                .label("married")
                 .build());
         fields.add(AutoCompleteField.builder()
                 .name("city")
                 .dataSource(new DataSourceItem[]{
-                        DataSourceItem.builder().id(1).name("武汉").build(),
-                        DataSourceItem.builder().id(2).name("成都").build()
+                        DataSourceItem.builder().id(1).name("wuhan").build(),
+                        DataSourceItem.builder().id(2).name("chengdu").build()
                 })
-                .floatingLabelText("城市")
+                .floatingLabelText("city")
                 .build());
         return fields;
     }
