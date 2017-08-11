@@ -12,12 +12,13 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class SelectField extends Field{
+public class SelectField extends Field {
     private String floatingLabelText;
     private Item[] items;
+
     @Builder(toBuilder = true)
-    private SelectField(String name, Component component, String floatingLabelText, Item[] items) {
-        super(name, component);
+    private SelectField(String name, String floatingLabelText, Item[] items) {
+        super(name, Component.SelectField);
         this.floatingLabelText = floatingLabelText;
         this.items = items;
     }

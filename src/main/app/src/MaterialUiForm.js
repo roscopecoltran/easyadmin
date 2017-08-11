@@ -16,12 +16,12 @@ import {
     Toggle,
 } from 'redux-form-material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
+import FlatButton from 'material-ui/FlatButton';
 injectTapEventPlugin();
 
 var url = "/schemas";
 if (process.env.NODE_ENV === 'development') {
-    url = "http://localhost:8080/schemas";
+    url = "http://localhost:8080/" + url;
 }
 // validation functions
 const required = value => (value == null ? 'Required' : undefined);
@@ -84,106 +84,120 @@ const email = value =>
 //     max: 20,
 //     step: 1
 // }];
+const renderSliderField = (field) => {
+    return <Field
+        name={field.name}
+        component={Slider}
+        defaultValue={field.defaultValue}
+        format={null}
+        min={field.min}
+        max={field.max}
+        step={field.step}
+    />
+};
+const renderTextField = (field) => {
+    return <Field
+        name={field.name}
+        component={ TextField }
+        floatingLabelText={field.floatingLabelText}
+        validate={[required, email]}
+        defaultValue={field.defaultValue}
+    />
+};
+
+const renderTextAreaField = (field) => {
+    return <Field
+        name={field.name}
+        component={TextField}
+        hintText={field.hintText}
+        floatingLabelText={field.floatingLabelText}
+        defaultValue={field.defaultValue}
+        multiLine
+        rows={field.rows}
+    />
+};
+const renderSelectField = (field) => {
+    return <Field
+        name={field.name}
+        component={ SelectField }
+        floatingLabelText={field.floatingLabelText}>
+        {field.items.map((item, index) => (
+            <MenuItem key={index} value={item.value} primaryText={item.name}/>
+        ))}
+    </Field>
+}
+
+const renderDatePickerField = (field) => {
+    return <Field
+        name={field.name}
+        component={DatePicker}
+        format={null}
+        hintText={field.hintText}
+        validate={required}
+    />
+}
+const renderTimePickerField = (field) => {
+    return <Field
+        name={field.name}
+        component={TimePicker}
+        format={null}
+        // and redux-form defaults to ''
+        hintText={field.hintText}
+        validate={required}
+    />
+}
+
+const renderCheckboxField = (field) => {
+    return <Field name={field.name} component={Checkbox} label={field.label}/>
+}
+
+const renderRadioButtonGroupField = (field) => {
+    return <Field name={field.name} component={RadioButtonGroup}>
+        {field.items.map((item, index) => (
+            <RadioButton key={index} value={item.value} label={item.name}/>
+        ))}
+    </Field>
+}
+
+const renderAutoCompleteField = (field) => {
+    return <Field
+        name={field.name}
+        component={AutoComplete}
+        hintText={field.hintText}
+        floatingLabelText={field.floatingLabelText}
+        openOnFocus
+        filter={MUIAutoComplete.fuzzyFilter}
+        dataSourceConfig={{text: 'name', value: 'id'}}
+        dataSource={field.dataSource}
+    />
+}
+const renderToggleField = (field) => {
+    return <Field
+        name={field.name}
+        component={Toggle}
+        label={field.label}
+        labelPosition={field.labelPosition}
+    />
+}
 const renderMuiField = (member, index, fields) => (
-    member.component === 'Slider' ? <div>
-        <Field
-            name={member.name}
-            component={Slider}
-            defaultValue={member.defaultValue}
-            format={null}
-            min={member.min}
-            max={member.max}
-            step={member.step}
-        />
-    </div> :
-        member.component === 'TextField' ? <div>
-            <Field
-                name={member.name}
-                component={ TextField }
-                floatingLabelText={member.floatingLabelText}
-            />
-        </div> :
-            member.component === 'TextArea' ? <div>
-                <Field
-                    name={member.name}
-                    component={TextField}
-                    hintText={member.hintText}
-                    floatingLabelText={member.floatingLabelText}
-                    multiLine
-                    rows={member.rows}
-                />
-            </div> :
-                member.component === 'SelectField' ? <div>
-                    <Field
-                        name={member.name}
-                        component={ SelectField }
-                        floatingLabelText={member.floatingLabelText}>
-                        {member.items.map((item) => (
-                            <MenuItem value={item.value} primaryText={item.name}/>
-                        ))}
-                    </Field>
-                </div> :
-                    member.component === 'DatePicker' ? <div>
-                        <Field
-                            name={member.name}
-                            component={DatePicker}
-                            format={null}
-                            hintText={member.hintText}
-                            validate={required}
-                        />
-                    </div> :
-                        member.component === 'TimePicker' ? <div>
-                            <Field
-                                name={member.name}
-                                component={TimePicker}
-                                format={null}
-                                defaultValue={null} // TimePicker requires an object,
-                                // and redux-form defaults to ''
-                                hintText={member.hintText}
-                                validate={required}
-                            />
-                        </div> :
-                            member.component === 'Checkbox' ? <div>
-                                <Field name={member.name} component={Checkbox} label={member.label}/>
-                            </div> :
-                                member.component === 'RadioButtonGroup' ? <div>
-                                    <Field name={member.name} component={RadioButtonGroup}>
-                                        {member.items.map((item) => (
-                                            <RadioButton value={item.value} label={item.name}/>
-                                        ))}
-                                    </Field>
-                                </div> :
-                                    member.component === 'AutoComplete' ? <div>
-                                        <Field
-                                            name={member.name}
-                                            component={AutoComplete}
-                                            floatingLabelText={member.floatingLabelText}
-                                            openOnFocus
-                                            filter={MUIAutoComplete.fuzzyFilter}
-                                            dataSourceConfig={{text: 'name', value: 'id'}}
-                                            dataSource={member.dataSource}
-                                        />
-                                    </div> :
-                                        member.component === 'Toggle' ? <div>
-                                            <Field
-                                                name={member.name}
-                                                component={Toggle}
-                                                label={member.label}
-                                                labelPosition={member.labelPosition}
-                                            />
-                                        </div> :
-                                            <div>
-                                                <Field
-                                                    name={member.name}
-                                                    component={ TextField }
-                                                    floatingLabelText={member.floatingLabelText}
-                                                />
-                                            </div>
+    <div key={index}>
+        {member.component === 'Slider' ? renderSliderField(member) :
+            member.component === 'TextField' ? renderTextField(member) :
+                member.component === 'TextArea' ? renderTextAreaField(member) :
+                    member.component === 'SelectField' ? renderSelectField(member) :
+                        member.component === 'DatePicker' ? renderDatePickerField(member) :
+                            member.component === 'TimePicker' ? renderTimePickerField(member) :
+                                member.component === 'Checkbox' ? renderCheckboxField(member) :
+                                    member.component === 'RadioButtonGroup' ? renderRadioButtonGroupField(member) :
+                                        member.component === 'AutoComplete' ? renderAutoCompleteField(member) :
+                                            member.component === 'Toggle' ? renderToggleField(member) :
+                                                renderTextField(member)}
+    </div>
 );
 
 
 class Form extends Component {
-    state = {fieldSchemas:[]};
+    state = {fieldSchemas: []};
 
     componentWillMount() {
         this.getFieldSchemas();
@@ -210,14 +224,8 @@ class Form extends Component {
             <form onSubmit={handleSubmit}>
                 {fieldSchemas.map(renderMuiField) }
                 <div>
-                    <button type="submit" disabled={submitting}>Submit</button>
-                    <button
-                        type="button"
-                        disabled={pristine || submitting}
-                        onClick={reset}
-                    >
-                        Clear
-                    </button>
+                    <FlatButton label="Submit" type="submit" primary={true} disabled={submitting}/>
+                    <FlatButton label="Clear" secondary={true} disabled={pristine || submitting} onClick={reset}/>
                 </div>
             </form>
         );

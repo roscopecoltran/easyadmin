@@ -1,7 +1,10 @@
 package com.easyform.schema;
 
 import com.easyform.schema.enums.Component;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -12,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-public class Field implements Serializable{
-    protected  String name;
-    protected  Component component;
+public class Field implements Serializable {
+    protected String name;
+    protected Component component;
 }
