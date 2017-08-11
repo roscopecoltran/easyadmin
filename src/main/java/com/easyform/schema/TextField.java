@@ -15,11 +15,15 @@ import lombok.ToString;
 public class TextField extends Field {
     private String floatingLabelText;
     private Object defaultValue;
+    private Boolean password;
+    private Boolean email;
 
     @Builder(toBuilder = true)
-    private TextField(String name, String floatingLabelText, Object defaultValue) {
+    private TextField(String name, String floatingLabelText, Object defaultValue, Boolean password, Boolean email) {
         super(name, Component.TextField);
         this.floatingLabelText = floatingLabelText;
         this.defaultValue = defaultValue;
+        this.password = password;
+        this.email = email;
     }
 }

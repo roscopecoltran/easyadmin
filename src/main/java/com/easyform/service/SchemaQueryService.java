@@ -14,7 +14,7 @@ import java.util.List;
  * Created by gongxinyi on 2017-08-10.
  */
 @Controller
-public class SchemaService {
+public class SchemaQueryService {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/schemas")
     @ResponseBody
@@ -22,6 +22,7 @@ public class SchemaService {
         List<Field> fields = new ArrayList<>();
         fields.add(TextField.builder()
                 .name("name")
+                .email(true)
                 .floatingLabelText("Name")
                 .defaultValue("11")
                 .build());

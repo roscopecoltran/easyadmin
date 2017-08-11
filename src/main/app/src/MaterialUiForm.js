@@ -1,22 +1,21 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {Field, reduxForm, formValueSelector} from 'redux-form';
-import {RadioButton} from 'material-ui/RadioButton';
-import MenuItem from 'material-ui/MenuItem';
-import {AutoComplete as MUIAutoComplete} from 'material-ui';
+import React, {Component} from "react";
+import {Field, reduxForm,submit} from "redux-form";
+import {RadioButton} from "material-ui/RadioButton";
+import MenuItem from "material-ui/MenuItem";
+import {AutoComplete as MUIAutoComplete} from "material-ui";
 import {
     AutoComplete,
     Checkbox,
     DatePicker,
-    TimePicker,
     RadioButtonGroup,
     SelectField,
     Slider,
     TextField,
-    Toggle,
-} from 'redux-form-material-ui';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import FlatButton from 'material-ui/FlatButton';
+    TimePicker,
+    Toggle
+} from "redux-form-material-ui";
+import injectTapEventPlugin from "react-tap-event-plugin";
+import FlatButton from "material-ui/FlatButton";
 injectTapEventPlugin();
 
 var url = "/schemas";
@@ -29,61 +28,6 @@ const email = value =>
     (value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
         ? 'Invalid email'
         : undefined);
-// const fieldSchemas = [{
-//     name: 'name',
-//     component: 'TextField',
-//     floatingLabelText: 'Name'
-// }, {
-//     name: 'driver',
-//     component: 'SelectField',
-//     floatingLabelText: 'driver',
-//     items: [{value: 'v1', name: 'n1'}, {value: 'v2', name: 'n2'}]
-// }, {
-//     name: 'when',
-//     component: 'DatePicker',
-//     hintText: 'Day of delivery?',
-// }, {
-//     name: 'delivery',
-//     component: 'RadioButtonGroup',
-//     items: [{value: 'pickup', name: 'pickup'}, {value: 'delivery', name: 'Delivery'}]
-// }, {
-//     name: 'Thincrust',
-//     component: 'Toggle',
-//     label: 'Thin Crust',
-//     labelPosition: 'right'
-// }, {
-//     name: 'at',
-//     component: 'TimePicker',
-//     hintText: 'At what time?',
-// }, {
-//     name: 'notes',
-//     component: 'TextArea',
-//     hintText: 'Notes',
-//     floatingLabelText: 'Notes',
-//     rows: 4
-// }, {
-//     name: 'pepperoni',
-//     component: 'Checkbox',
-//     label: 'pepperoni',
-// }, {
-//     name: 'referral',
-//     floatingLabelText: 'aaa',
-//     component: 'AutoComplete',
-//     dataSource: [
-//         {id: 0, name: 'Facebook'},
-//         {id: 1, name: 'Yelp'},
-//         {id: 2, name: 'TV Ad'},
-//         {id: 3, name: 'Friend'},
-//         {id: 4, name: 'Other'},
-//     ]
-// }, {
-//     name: 'pizzas',
-//     component: 'Slider',
-//     defaultValue: 0,
-//     min: 0,
-//     max: 20,
-//     step: 1
-// }];
 const renderSliderField = (field) => {
     return <Field
         name={field.name}
@@ -94,13 +38,15 @@ const renderSliderField = (field) => {
         max={field.max}
         step={field.step}
     />
+
 };
 const renderTextField = (field) => {
     return <Field
         name={field.name}
         component={ TextField }
         floatingLabelText={field.floatingLabelText}
-        validate={[required, email]}
+        validate={[required, field.email ? email : null]}
+        type={field.password ? 'password' : 'text'}
         defaultValue={field.defaultValue}
     />
 };
@@ -141,7 +87,6 @@ const renderTimePickerField = (field) => {
         name={field.name}
         component={TimePicker}
         format={null}
-        // and redux-form defaults to ''
         hintText={field.hintText}
         validate={required}
     />
@@ -195,7 +140,6 @@ const renderMuiField = (member, index, fields) => (
     </div>
 );
 
-
 class Form extends Component {
     state = {fieldSchemas: []};
 
@@ -224,7 +168,7 @@ class Form extends Component {
             <form onSubmit={handleSubmit}>
                 {fieldSchemas.map(renderMuiField) }
                 <div>
-                    <FlatButton label="Submit" type="submit" primary={true} disabled={submitting}/>
+                    <FlatButton label="Submit" type="submit" primary={true} disabled={submitting} />
                     <FlatButton label="Clear" secondary={true} disabled={pristine || submitting} onClick={reset}/>
                 </div>
             </form>
@@ -232,20 +176,9 @@ class Form extends Component {
     }
 }
 
-const selector = formValueSelector('example');
-
-Form = connect(state => ({
-    numPizzas: selector(state, 'pizzas'),
-}))(Form);
-
 Form = reduxForm({
-    form: 'example',
-    initialValues: {
-        delivery: 'delivery',
-        name: 'Jane Doe',
-        cheese: 'Cheddar',
-        pizzas: 1,
-    },
+    form: 'easyform',
+    initialValues: {},
 })(Form);
 
 export default Form;
