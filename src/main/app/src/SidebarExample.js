@@ -8,7 +8,7 @@ import MaterialUiForm from './MaterialUiForm';
 
 import submit from './submit';
 import FieldList from './FieldList';
-
+import QueryBuilder from './QueryBuilder';
 
 const routes = [
     {
@@ -19,6 +19,10 @@ const routes = [
     {
         path: '/field',
         main: () => (<FieldList/>)
+    },
+    {
+        path: '/field',
+        main: () => (<Querybuilder/>)
     }
 ]
 
@@ -33,6 +37,7 @@ const SidebarExample = () => (
                 <ul style={{listStyleType: 'none', padding: 15}}>
                     <li><Link to="/">Form</Link></li>
                     <li><Link to="/field">FieldList</Link></li>
+                    <li><Link to="/querybuilder">querybuilder</Link></li>
                 </ul>
 
                 {routes.map((route, index) => (

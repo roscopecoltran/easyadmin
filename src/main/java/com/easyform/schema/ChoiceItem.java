@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class DataSourceItem {
-    private Integer id;
+public class ChoiceItem {
+    private String id;
     private String name;
 }

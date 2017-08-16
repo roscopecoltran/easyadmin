@@ -7,16 +7,15 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Created by gongxinyi on 2017-08-10.
+ * Created by gongxinyi on 2017-08-16.
  */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AutoCompleteField extends Field {
+public class CheckboxGroupField extends Field{
     private ChoiceItem[] choices;
-
     @Builder(toBuilder = true)
-    private AutoCompleteField(String name, ChoiceItem[] choices) {
+    private CheckboxGroupField(String name, ChoiceItem[] choices) {
         super(name, Component.Autocomplete);
         this.choices=choices;
     }

@@ -7,17 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Created by gongxinyi on 2017-08-10.
+ * Created by gongxinyi on 2017-08-16.
  */
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AutoCompleteField extends Field {
-    private ChoiceItem[] choices;
-
+public class NullableBooleanField extends BooleanField {
     @Builder(toBuilder = true)
-    private AutoCompleteField(String name, ChoiceItem[] choices) {
-        super(name, Component.Autocomplete);
-        this.choices=choices;
+    private NullableBooleanField(String name, String label) {
+        super(name, Component.NullableBoolean, label);
     }
 }

@@ -4,14 +4,21 @@ package com.easyform.schema.enums;
  * Created by gongxinyi on 2017-08-10.
  */
 public enum Component {
-    TextField,
-    SelectField,
-    DatePicker,
+    Autocomplete,
+    Boolean,
+    CheckboxGroup,
+    Date,
+    Disabled,
+    File,
+    Image,
+    LongText,
+    NullableBoolean,
+    Number,
     RadioButtonGroup,
-    Toggle,
-    TimePicker,
-    TextArea,
-    Checkbox,
-    AutoComplete,
-    Slider;
+    ReferenceArray,
+    Reference,
+    RichText,
+    SelectArray,
+    Select,
+    Text;
 }
