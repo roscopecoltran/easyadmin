@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.easyform</groupId>
-    <artifactId>schema</artifactId>
+    <groupId>com.clouddata</groupId>
+    <artifactId>easyadmin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>schema</name>
-    <description>Demo project for Spring Boot</description>
+    <name>clouddata</name>
+    <description>clouddata-backend</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
