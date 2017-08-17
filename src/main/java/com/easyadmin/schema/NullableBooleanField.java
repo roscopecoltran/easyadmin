@@ -12,9 +12,10 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class NullableBooleanField extends BooleanField {
-    @Builder(toBuilder = true)
-    private NullableBooleanField(String name, String label) {
-        super(name, Component.NullableBoolean, label);
+public class NullableBooleanField extends Field {
+
+    @Builder
+    public NullableBooleanField(String name, String label, Object defaultValue, Boolean required) {
+        super(name, Component.NullableBoolean, label, defaultValue, required);
     }
 }

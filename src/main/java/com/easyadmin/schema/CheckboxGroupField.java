@@ -15,8 +15,8 @@ import lombok.ToString;
 public class CheckboxGroupField extends Field{
     private ChoiceItem[] choices;
     @Builder(toBuilder = true)
-    private CheckboxGroupField(String name, ChoiceItem[] choices) {
-        super(name, Component.CheckboxGroup);
-        this.choices=choices;
+    public CheckboxGroupField(String name, String label, Object defaultValue,Boolean required, ChoiceItem[] choices) {
+        super(name, Component.CheckboxGroup, label, defaultValue,required);
+        this.choices = choices;
     }
 }

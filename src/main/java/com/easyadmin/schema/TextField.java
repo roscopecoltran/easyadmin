@@ -15,10 +15,12 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class TextField extends Field {
     private InputType type;
+    private Integer maxLength;
 
-    @Builder(toBuilder = true)
-    private TextField(String name,InputType type) {
-        super(name, Component.Text);
-        this.type=type;
+    @Builder
+    private TextField(String name, String label, Object defaultValue, Boolean required, InputType type, Integer maxLength) {
+        super(name, Component.Text, label, defaultValue, required);
+        this.type = type;
+        this.maxLength = maxLength;
     }
 }

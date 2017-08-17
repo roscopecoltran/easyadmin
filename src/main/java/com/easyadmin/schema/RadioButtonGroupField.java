@@ -13,11 +13,12 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class RadioButtonGroupField extends Field {
-    private Item[] items;
+    private ChoiceItem[] choices;
 
     @Builder(toBuilder = true)
-    private RadioButtonGroupField(String name, Item[] items) {
-        super(name, Component.RadioButtonGroup);
-        this.items = items;
+    public RadioButtonGroupField(String name, String label, Object defaultValue, Boolean required, ChoiceItem[] choices) {
+        super(name, Component.RadioButtonGroup, label, defaultValue, required);
+        this.choices = choices;
     }
+
 }

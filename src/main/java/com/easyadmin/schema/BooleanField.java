@@ -13,16 +13,9 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class BooleanField extends Field {
-    private String label;
 
     @Builder(toBuilder = true)
-    public BooleanField(String name, String label) {
-        super(name, Component.Boolean);
-        this.label = label;
-    }
-
-    protected BooleanField(String name,Component component, String label) {
-        super(name, component);
-        this.label = label;
+    public BooleanField(String name, String label, Object defaultValue,Boolean required) {
+        super(name, Component.Boolean, label, defaultValue,required);
     }
 }

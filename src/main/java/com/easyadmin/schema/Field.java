@@ -1,10 +1,7 @@
 package com.easyadmin.schema;
 
 import com.easyadmin.schema.enums.Component;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -18,4 +15,8 @@ import java.io.Serializable;
 public class Field implements Serializable {
     protected String name;
     protected Component component;
+    protected String label;
+    protected Object defaultValue;
+    protected Boolean required;
+
 }

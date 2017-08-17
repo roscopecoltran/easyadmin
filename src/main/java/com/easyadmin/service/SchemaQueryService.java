@@ -1,6 +1,7 @@
 package com.easyadmin.service;
 
 import com.easyadmin.schema.*;
+import com.easyadmin.schema.enums.InputType;
 import com.easyadmin.schema.enums.LabelPosition;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,60 +23,45 @@ public class SchemaQueryService {
         List<Field> fields = new ArrayList<>();
         fields.add(TextField.builder()
                 .name("name")
-                .email(true)
-                .floatingLabelText("Name")
+                .type(InputType.email)
+                .required(true)
+                .maxLength(20)
                 .defaultValue("11")
                 .build());
         fields.add(SelectField.builder()
                 .name("driver")
-                .floatingLabelText("Driver")
-                .items(new Item[]{
-                        Item.builder().name("n1").value("v1").build(),
-                        Item.builder().name("n2").value("v2").build()
+                .choices(new ChoiceItem[]{
+                        ChoiceItem.builder().name("n1").id("v1").build(),
+                        ChoiceItem.builder().name("n2").id("v2").build()
                 }).build());
-        fields.add(ToggleField.builder()
+        fields.add(BooleanField.builder()
                 .name("toggle")
                 .label("toggle")
-                .labelPosition(LabelPosition.right)
                 .build());
-        fields.add(DatePickerField.builder()
+        fields.add(DateField.builder()
                 .name("date")
-                .hintText("出发日期")
+                .label("出发日期")
                 .build());
-        fields.add(TimePickerField.builder()
-                .name("time")
-                .hintText("出发时间")
-                .build());
-        fields.add(TextAreaField.builder()
+        fields.add(LongTextField.builder()
                 .name("backup")
                 .defaultValue("11")
-                .floatingLabelText("备注")
-                .rows(6)
-                .build());
-        fields.add(SliderField.builder()
-                .name("age")
-                .defaultValue(18)
-                .max(40)
-                .step(2)
-                .min(18)
                 .build());
         fields.add(RadioButtonGroupField.builder()
                 .name("gender")
-                .items(new Item[]{
-                        Item.builder().name("男").value("male").build(),
-                        Item.builder().name("女").value("female").build()
+                .choices(new ChoiceItem[]{
+                        ChoiceItem.builder().name("男").id("male").build(),
+                        ChoiceItem.builder().name("女").id("female").build()
                 }).build());
-        fields.add(CheckboxField.builder()
+        fields.add(CheckboxGroupField.builder()
                 .name("married")
                 .label("是否已婚")
                 .build());
         fields.add(AutoCompleteField.builder()
                 .name("city")
-                .dataSource(new DataSourceItem[]{
-                        DataSourceItem.builder().id(1).name("武汉").build(),
-                        DataSourceItem.builder().id(2).name("成都").build()
+                .choices(new ChoiceItem[]{
+                        ChoiceItem.builder().id("1").name("武汉").build(),
+                        ChoiceItem.builder().id("2").name("成都").build()
                 })
-                .floatingLabelText("城市")
                 .build());
         return fields;
     }
