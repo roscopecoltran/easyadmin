@@ -105,4 +105,14 @@ export default [{
 }, {
     label: '用户',
     name: 'users',
+    fields:[{
+            'component': 'Text',
+            'label': 'Text',
+            'name': 'name',
+            'type': 'email',
+            'required': true,
+            'maxLength': 20,
+            'defaultValue': 'data@cloud.com',
+        'showInList':true
+    }]
 }];

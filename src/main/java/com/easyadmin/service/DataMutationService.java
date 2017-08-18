@@ -23,18 +23,22 @@ public class DataMutationService {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping(value = "/api/{table}", method = RequestMethod.POST)
     @SneakyThrows(JsonProcessingException.class)
-    public ResponseEntity<String> dataMutation(@RequestBody final Map<String, Object> allRequestParams) {
+    public ResponseEntity<String> dataMutation(@PathVariable("table") String table, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", new ObjectMapper().writeValueAsString(allRequestParams));
 
-        save(allRequestParams);
+        save(table, allRequestParams);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    private void save(Map<String, Object> data) {
+    private String save(String table, Map<String, Object> data) {
         MongoClient mongoClient = new MongoClient("localhost", 27017);
         MongoDatabase database = mongoClient.getDatabase("mydb");
-        MongoCollection collection = database.getCollection("test");
+        MongoCollection collection = database.getCollection(table);
+        String id = SequenceUtil.getNextSequence(table + "_id", database).toString();
+        data.put("id", id);
         Document document = new Document(data);
+        document.put("_id",id);
         collection.insertOne(document);
+        return id;
     }
 }
