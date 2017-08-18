@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import lombok.ToString;
 public class BooleanField extends Field {
 
     @Builder(toBuilder = true)
-    public BooleanField(String name, String label, Object defaultValue,Boolean required) {
-        super(name, Component.Boolean, label, defaultValue,required);
+    public BooleanField(String name, String label, Object defaultValue, Boolean required) {
+        super(name, Component.Boolean, label, defaultValue, required);
     }
 }

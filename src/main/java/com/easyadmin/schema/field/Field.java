@@ -1,7 +1,10 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.Serializable;
 

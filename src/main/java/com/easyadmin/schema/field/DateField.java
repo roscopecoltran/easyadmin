@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class DateField extends Field {
     @Builder(toBuilder = true)
-    public DateField(String name, String label, Object defaultValue,Boolean required) {
-        super(name, Component.Date, label, defaultValue,required);
+    public DateField(String name, String label, Object defaultValue, Boolean required) {
+        super(name, Component.Date, label, defaultValue, required);
     }
 }

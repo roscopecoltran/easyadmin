@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import lombok.Builder;
 import lombok.Data;

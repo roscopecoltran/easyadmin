@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import lombok.Builder;

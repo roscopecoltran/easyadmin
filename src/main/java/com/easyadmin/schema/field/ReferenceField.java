@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import lombok.Builder;
@@ -12,13 +12,13 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ReferenceArrayField extends Field {
+public class ReferenceField extends Field {
     private String reference;
     private String referenceOptionText;
 
     @Builder
-    public ReferenceArrayField(String name, String label, Object defaultValue, Boolean required, String reference, String referenceOptionText) {
-        super(name, Component.ReferenceArray, label, defaultValue, required);
+    public ReferenceField(String name, String label, Object defaultValue, Boolean required, String reference, String referenceOptionText) {
+        super(name, Component.Reference, label, defaultValue, required);
         this.reference = reference;
         this.referenceOptionText = referenceOptionText;
     }

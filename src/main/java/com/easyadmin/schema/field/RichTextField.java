@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import lombok.Builder;
@@ -12,10 +12,9 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class ImageField extends Field {
-
-    @Builder(toBuilder = true)
-    public ImageField(String name, String label, Object defaultValue, Boolean required) {
-        super(name, Component.Image, label, defaultValue, required);
+public class RichTextField extends Field {
+    @Builder
+    public RichTextField(String name, String label, Object defaultValue, Boolean required) {
+        super(name, Component.RichText, label, defaultValue, required);
     }
 }

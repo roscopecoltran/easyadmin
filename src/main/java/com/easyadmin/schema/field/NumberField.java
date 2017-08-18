@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class NumberField extends Field {
     private String maxValue;
 
     @Builder
-    public NumberField(String name,  String label, Object defaultValue, Boolean required, String minValue, String maxValue) {
+    public NumberField(String name, String label, Object defaultValue, Boolean required, String minValue, String maxValue) {
         super(name, Component.Number, label, defaultValue, required);
         this.minValue = minValue;
         this.maxValue = maxValue;

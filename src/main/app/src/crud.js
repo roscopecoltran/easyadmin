@@ -2,7 +2,6 @@ import React from 'react';
 import {
     List,
     Datagrid,
-    TextField,
     Create,
     Edit,
     SimpleForm,
@@ -11,13 +10,10 @@ import {
     TextInput,
     DateInput,
     LongTextInput,
-    ReferenceManyField,
-    DateField,
     EditButton,
     BooleanInput,
     CheckboxGroupInput,
     FileInput,
-    FileField,
     ReferenceInput,
     SelectInput,
     ReferenceArrayInput,
@@ -25,17 +21,25 @@ import {
     NumberInput,
     RadioButtonGroupInput,
     ImageInput,
-    ImageField,
     NullableBooleanInput,
     Show,
-    SimpleShowLayout
+    SimpleShowLayout,
+    TextField,
+    FileField,
+    DateField,
+    ImageField,
+    BooleanField,
+    EmailField,
+    UrlField,
+    NumberField
 } from 'admin-on-rest';
 import RichTextInput from 'aor-rich-text-input';
 import {required, minLength, maxLength, minValue, maxValue, number, regex, email, choices} from 'admin-on-rest';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {ListButton, ShowButton, DeleteButton,Delete} from 'admin-on-rest';
+import {ListButton, ShowButton, DeleteButton, Delete} from 'admin-on-rest';
+
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
@@ -48,7 +52,7 @@ export const CRUDList = (props) => (
             {props.options.fields.filter(field => field.showInList).map(renderField)}
             <ShowButton/>
             <DeleteButton/>
-            <EditButton />
+            <EditButton/>
         </Datagrid>
     </List>
 );
@@ -66,14 +70,14 @@ const EditActions = ({basePath, data, refresh}) => (
         <ShowButton basePath={basePath} record={data}/>
         <ListButton basePath={basePath}/>
         <DeleteButton basePath={basePath} record={data}/>
-        <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh />}/>
+        <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh/>}/>
         {/* Add your custom actions */}
         {/*<FlatButton primary label="Custom Action" onClick={customAction} />*/}
     </CardActions>
 );
 
 export const CRUDEdit = (props) => (
-    <Edit actions={<EditActions />}{...props}>
+    <Edit actions={<EditActions/>}{...props}>
         <SimpleForm>
             {props.options.fields.map(renderInput)}
         </SimpleForm>
@@ -88,16 +92,58 @@ export const CRUDShow = (props) => (
     </Show>
 );
 
-const CRUDDeleteTitle = (({ record, translate }) => <span>
+const CRUDDeleteTitle = ({record, translate}) => <span>
     {'Delete'}&nbsp;
-    {record && `${record.id} ${record.title}`}
-</span>);
+    {record && `${record.id}`}
+</span>;
 
-export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle />} />;
+export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/>}/>;
 
 const renderField = (field, index) => (
-    <TextField key={index} source={field.name}/>
+    field.component === 'Boolean' ? renderBooleanField(field) :
+        field.component === 'NullableBoolean' ? renderBooleanField(field) :
+            field.component === 'Autocomplete' ? renderTextField(field) :
+                field.component === 'CheckboxGroup' ? renderTextField(field) :
+                    field.component === 'Date' ? renderDateField(field) :
+                        field.component === 'File' ? renderFileField(field) :
+                            field.component === 'LongText' ? renderTextField(field) :
+                                field.component === 'Number' ? renderNumberField(field) :
+                                    field.component === 'RadioButtonGroup' ? renderTextField(field) :
+                                        field.component === 'Reference' ? renderTextField(field) :
+                                            field.component === 'ReferenceArray' ? renderTextField(field) :
+                                                field.component === 'RichText' ? renderTextField(field) :
+                                                    field.component === 'Select' ? renderTextField(field) :
+                                                        field.component === 'SelectArray' ? renderTextField(field) :
+                                                            field.component === 'Image' ? renderImageField(field) :
+                                                                renderTextField(field)
 );
+
+const renderBooleanField = (field) => (
+    <BooleanField source={field.name}/>
+)
+
+const renderTextField = (field) => (
+    field.type === 'email' ? <EmailField source={field.name}/> :
+        field.type === 'url' ? <UrlField source={field.name}/> :
+            <TextField source={field.name}/>
+)
+
+const renderImageField = (field) => (
+    <ImageField source={field.name} title="title"/>
+)
+
+const renderDateField = (field) => (
+    <DateField source={field.name}/>
+)
+
+const renderFileField = (field) => (
+    <FileField source={field.name} title="title"/>
+)
+
+const renderNumberField = (field) => (
+    <NumberField source={field.name}/>
+)
+
 
 const renderInput = (field, index) => (
     field.component === 'Boolean' ? renderBooleanInput(field) :

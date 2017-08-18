@@ -1,13 +1,8 @@
 package com.easyadmin.service;
 
-import com.easyadmin.schema.*;
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.InputType;
-import com.easyadmin.schema.enums.LabelPosition;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import com.easyadmin.schema.field.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +10,9 @@ import java.util.List;
 /**
  * Created by gongxinyi on 2017-08-10.
  */
-@Controller
+@org.springframework.stereotype.Component
 public class SchemaQueryService {
-    @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping("/schemas")
-    @ResponseBody
+
     public List<Field> schemas() {
         List<Field> fields = new ArrayList<>();
         fields.add(BooleanField.builder()
@@ -103,12 +96,12 @@ public class SchemaQueryService {
                 .referenceOptionText("name")
                 .defaultValue(1)
                 .build());
-        fields.add( ReferenceArrayField.builder()
-                .name(Component. ReferenceArray.toString())
-                .label(Component. ReferenceArray.toString())
+        fields.add(ReferenceArrayField.builder()
+                .name(Component.ReferenceArray.toString())
+                .label(Component.ReferenceArray.toString())
                 .reference("users")
                 .referenceOptionText("name")
-                .defaultValue(new Integer[]{1,2})
+                .defaultValue(new Integer[]{1, 2})
                 .build());
         fields.add(RichTextField.builder()
                 .name(Component.RichText.toString())
