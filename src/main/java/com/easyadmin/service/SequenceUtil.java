@@ -1,25 +1,24 @@
 package com.easyadmin.service;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.ReturnDocument;
 import org.bson.Document;
 
+/**
+ * sequence util
+ *
+ * getNextSequence base on mongo
+ */
 public class SequenceUtil {
-    private final static String DB_NAME = "testdb";
 
     public final static String MY_SEQUENCE_COLLECTION = "mySequnceCollections";
 
     private final static String MY_SEQUENCE_NAME = "personId";
 
     public static void main(String[] args) {
-        MongoClient mongoClient = new MongoClient();
-        MongoDatabase database = mongoClient.getDatabase(DB_NAME);
         Object nextSequence = getNextSequence(MY_SEQUENCE_NAME);
         System.out.println(nextSequence);
-        mongoClient.close();
     }
 
 
@@ -31,6 +30,14 @@ public class SequenceUtil {
         countersCollection.insertOne(document);
     }
 
+    /**
+     * get next sequence
+     *
+     * for this project backend use {entity+"_"+field} name to keep identity
+     *
+     * @param sequenceName must identity for one collection
+     * @return
+     */
     public static Object getNextSequence(String sequenceName) {
         MongoCollection<Document> countersCollection = DbUtil.getCollection(MY_SEQUENCE_COLLECTION);
         if (countersCollection.count() == 0) {

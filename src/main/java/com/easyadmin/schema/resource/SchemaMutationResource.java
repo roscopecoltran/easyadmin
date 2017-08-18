@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ *
+ * schema mutation endpoints ,
+ *
+ * add field , change field type or label or somethings else
+ *
+ *
  * Created by gongxinyi on 2017-08-11.
  */
 @Slf4j

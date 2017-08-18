@@ -13,7 +13,7 @@ import java.util.List;
 @org.springframework.stereotype.Component
 public class SchemaQueryService {
 
-    public List<Field> schemas() {
+    public List<Field> list() {
         List<Field> fields = new ArrayList<>();
         fields.add(BooleanField.builder()
                 .name(Component.Boolean.toString())

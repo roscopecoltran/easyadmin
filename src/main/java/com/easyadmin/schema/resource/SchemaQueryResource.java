@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 /**
+ * schema query endpoints
+ *
  * Created by gongxinyi on 2017-08-10.
  */
 @Controller
@@ -21,7 +23,7 @@ public class SchemaQueryResource {
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/schemas")
     @ResponseBody
-    public List<Field> schemas() {
-        return schemaQueryService.schemas();
+    public List<Field> list() {
+        return schemaQueryService.list();
     }
 }

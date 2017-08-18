@@ -4,6 +4,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+/**
+ *
+ */
 public class DbUtil {
 
     public static MongoCollection getCollection(String host, int port, String db, String entity) {
