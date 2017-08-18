@@ -3,36 +3,41 @@ export default [{
     name: 'posts',
     fields: [{
         'component': 'Boolean',
-        'label': 'Allow comments?',
-        'name': 'commentable',
+        'label': 'Boolean',
+        'name': 'Boolean',
         'defaultValue': true,
+        'showInList':true
     }, {
         'component': 'NullableBoolean',
-        'label': 'Allow comments?',
+        'label': 'NullableBoolean',
         'name': 'NullableBoolean',
-        'defaultValue': true
+        'defaultValue': true,
+        'showInList':true
     }, {
         'component': 'Date',
-        'label': '发布时间',
-        'name': 'published_at',
-        'defaultValue': '2017-08-17'
+        'label': 'Date',
+        'name': 'Date',
+        'defaultValue': '2017-08-17',
+        'showInList':true
     }, {
         'component': 'File',
         'label': '文件',
-        'name': 'files',
-        'type': '*'
+        'name': 'File',
+        'type': '*',
+        'showInList':true
     }, {
         'component': 'Image',
         'label': 'Image',
-        'name': 'Image'
+        'name': 'Image',
+        'showInList':true
     }, {
-        'component': 'CheckboxGroup', 'label': 'CheckboxGroup', 'name': 'category', 'choices': [
+        'component': 'CheckboxGroup', 'label': 'CheckboxGroup', 'name': 'CheckboxGroup', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},
         ], 'defaultValue': ['programming']
     }, {
-        'component': 'Autocomplete', 'name': 'title', 'choices': [
+        'component': 'Autocomplete', 'name': 'Autocomplete', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},

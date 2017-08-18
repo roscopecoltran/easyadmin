@@ -9,7 +9,7 @@ const renderResources = (member, index) => (
               show={CRUDShow} remove={CRUDDelete}/>
 );
 const App = () => (
-    <Admin restClient={jsonServerRestClient('http://localhost:8080')}>
+    <Admin restClient={jsonServerRestClient('http://localhost:8080/api')}>
         {schemas.map(renderResources)}
         <Resource name=""/>
     </Admin>
