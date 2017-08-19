@@ -38,7 +38,7 @@ public class DataQueryResource {
     DataQueryService dataQueryService;
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(value = "/api/{entity}", method = RequestMethod.GET)
+    @GetMapping(value = "/api/{entity}")
     public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Consts.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         List data = dataQueryService.list(entity,allRequestParams);
@@ -51,7 +51,7 @@ public class DataQueryResource {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(value = "/api/{entity}/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Consts.ENTITY) String entity, @PathVariable(Consts.KEY) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         Map<String, Object> object = dataQueryService.findOne(entity, id);

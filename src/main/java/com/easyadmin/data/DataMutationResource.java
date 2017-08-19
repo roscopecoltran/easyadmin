@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class DataMutationResource {
     DataMutationService dataMutationService;
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(value = "/api/{entity}", method = RequestMethod.POST)
+    @PostMapping(value = "/api/{entity}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
@@ -33,7 +34,7 @@ public class DataMutationResource {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(value = "/api/{entity}/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
@@ -42,7 +43,7 @@ public class DataMutationResource {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @RequestMapping(value = "/api/{entity}/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id) {
         Document document = dataMutationService.deleteLogic(entity, id);
         return ResponseEntity.status(HttpStatus.OK).body(document);

@@ -19,19 +19,20 @@ export default [{
         'name': 'Date',
         'defaultValue': '2017-08-17',
         'showInList': true
-    }, {
-        'component': 'File',
-        'label': '文件',
-        'name': 'File',
-        'type': '*',
-        'showInList': true
-    }, {
-        'component': 'Image',
-        'label': 'Image',
-        'name': 'Image',
-        'showInList': true,
-    }, {
-        'component': 'CheckboxGroup', 'label': 'CheckboxGroup', 'name': 'CheckboxGroup', 'choices': [
+
+    }// }, {
+    //     'component': 'File',
+    //     'label': '文件',
+    //     'name': 'File',
+    //     'type': '*',
+    //     'showInList': true
+    // }, {
+    //     'component': 'Image',
+    //     'label': 'Image',
+    //     'name': 'Image',
+    //     'showInList': true,
+    // }, {
+    ,{    'component': 'CheckboxGroup', 'label': 'CheckboxGroup', 'name': 'CheckboxGroup', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},
@@ -71,7 +72,7 @@ export default [{
         'type': 'email',
         'required': true,
         'maxLength': 10,
-        'defaultValue': 'programming'
+        'defaultValue': 'progr@1.co'
     }, {
         'component': 'Reference',
         'label': 'Reference',

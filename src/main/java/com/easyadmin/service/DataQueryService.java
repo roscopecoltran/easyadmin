@@ -9,6 +9,7 @@ import com.mongodb.QueryBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -92,10 +93,15 @@ public class DataQueryService {
             query.text(search.toString());
         }
 
+        // common filter
         allRequestParams.entrySet()
                 .stream()
-                .filter(map -> (!map.getKey().equals(Consts.Q) && !map.getKey().startsWith("_")))
-                .map(k -> (query.and(k.getKey()).equals(k.getValue())));
+//                .filter(map ->
+//                        (!map.getKey().equals(Consts.Q) && !map.getKey().startsWith("_"))
+//                )
+                .map(k -> (
+                        query.and(QueryBuilder.start().put(k.getKey()).is(k.getValue()).get())
+                ));
         // logic del flag
         query.and(QueryBuilder.start(Consts.DEL_FLAG).notEquals(true).get());
         return query.get();
