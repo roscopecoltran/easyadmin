@@ -43,8 +43,8 @@ public class DataMutationResource {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping(value = "/api/{entity}/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> dataMutation(@PathVariable("table") String table, @PathVariable("id") String id) {
-        dataMutationService.deleteLogic(table, id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id) {
+        Document document = dataMutationService.deleteLogic(entity, id);
+        return ResponseEntity.status(HttpStatus.OK).body(document);
     }
 }

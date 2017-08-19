@@ -47,20 +47,18 @@ import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import {ListButton, ShowButton, DeleteButton, Delete,Filter} from 'admin-on-rest';
-
+import schemas from './schemas';
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
     float: 'right',
 };
-
+const filterComponent=['File','Image'];
 const CRUDFilter = (props) => (
     <Filter {...props}>
-        {
-        /* full text search will online when schema settings task done
-        <TextInput label="Search" source="q" alwaysOn />
-        */
-        }
+            {/*<TextInput label="Search" source="q" alwaysOn />*/
+                schemas.find(resource => (resource.name=== props.resource)).fields.filter(field=> !filterComponent.includes(field.component)).map(renderInput)}
+
     </Filter>
 );
 

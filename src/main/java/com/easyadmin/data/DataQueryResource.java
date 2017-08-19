@@ -42,9 +42,10 @@ public class DataQueryResource {
     public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Consts.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         List data = dataQueryService.list(entity,allRequestParams);
+        long count = dataQueryService.count(entity,allRequestParams);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .header("X-Total-Count", data.size() + "")
+                .header("X-Total-Count", count + "")
                 .header("Access-Control-Expose-Headers", "X-Total-Count")
                 .body(data);
     }

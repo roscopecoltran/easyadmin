@@ -35,10 +35,9 @@ public class DataMutationService {
         return document;
     }
 
-    public void deleteLogic(String entity, String id) {
-        MongoCollection collection = DbUtil.getCollection(entity);
+    public Document deleteLogic(String entity, String id) {
+        MongoCollection<Document> collection = DbUtil.getCollection(entity);
         BasicDBObject searchQuery = new BasicDBObject().append("id", id);
-
-        collection.updateOne(searchQuery, new BasicDBObject("$set", new BasicDBObject(Consts.DEL_FLAG, true)));
+       return collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Consts.DEL_FLAG, true)));
     }
 }

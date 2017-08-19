@@ -6,4 +6,6 @@ public class Consts {
     public static final String ENTITY = "entity";
 
     public static final String KEY = "id";
+
+    public static final String Q= "q";
 }
