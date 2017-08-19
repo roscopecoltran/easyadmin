@@ -31,22 +31,41 @@ import {
     BooleanField,
     EmailField,
     UrlField,
-    NumberField
+    NumberField,
+    ReferenceField,
+    ReferenceManyField,
+    SingleFieldList,
+    ChipField,
+    ReferenceArrayField,
+    RichTextField,
+    SelectField,
+    FunctionField
 } from 'admin-on-rest';
 import RichTextInput from 'aor-rich-text-input';
 import {required, minLength, maxLength, minValue, maxValue, number, regex, email, choices} from 'admin-on-rest';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {ListButton, ShowButton, DeleteButton, Delete} from 'admin-on-rest';
+import {ListButton, ShowButton, DeleteButton, Delete,Filter} from 'admin-on-rest';
 
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
     float: 'right',
 };
+
+const CRUDFilter = (props) => (
+    <Filter {...props}>
+        {
+        /* full text search will online when schema settings task done
+        <TextInput label="Search" source="q" alwaysOn />
+        */
+        }
+    </Filter>
+);
+
 export const CRUDList = (props) => (
-    <List {...props}>
+    <List {...props} filters={<CRUDFilter/>}>
         <Datagrid>
             <TextField source="id" sortable={false}/>
             {props.options.fields.filter(field => field.showInList).map(renderField)}
@@ -109,17 +128,39 @@ const renderField = (field, index) => (
                             field.component === 'LongText' ? renderTextField(field) :
                                 field.component === 'Number' ? renderNumberField(field) :
                                     field.component === 'RadioButtonGroup' ? renderTextField(field) :
-                                        field.component === 'Reference' ? renderTextField(field) :
-                                            field.component === 'ReferenceArray' ? renderTextField(field) :
-                                                field.component === 'RichText' ? renderTextField(field) :
-                                                    field.component === 'Select' ? renderTextField(field) :
+                                        field.component === 'Reference' ? renderReferenceField(field) :
+                                            field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
+                                                field.component === 'RichText' ? renderRichTextField(field) :
+                                                    field.component === 'Select' ? renderSelectField(field) :
                                                         field.component === 'SelectArray' ? renderTextField(field) :
                                                             field.component === 'Image' ? renderImageField(field) :
                                                                 renderTextField(field)
 );
 
+const renderArrayField = (field) =>(
+    <SingleFieldList>
+        <ChipField source={field.name} />
+    </SingleFieldList>
+)
+
 const renderBooleanField = (field) => (
     <BooleanField source={field.name}/>
+)
+const renderReferenceField = (field) => (
+    <ReferenceField label={field.label} source={field.name} reference={field.reference}>
+        <TextField source={field.referenceOptionText}/>
+    </ReferenceField>
+)
+const renderReferenceArrayField = (field) => (
+    <ReferenceArrayField label={field.label} reference={field.reference} source={field.name}>
+        <SingleFieldList>
+            <ChipField source={field.referenceOptionText}/>
+        </SingleFieldList>
+    </ReferenceArrayField>
+)
+
+const renderSelectField = (field) => (
+    <SelectField source={field.name} choices={field.choices}/>
 )
 
 const renderTextField = (field) => (
@@ -127,7 +168,9 @@ const renderTextField = (field) => (
         field.type === 'url' ? <UrlField source={field.name}/> :
             <TextField source={field.name}/>
 )
-
+const renderRichTextField = (field) => (
+    <RichTextField source={field.name} stripTags/>
+)
 const renderImageField = (field) => (
     <ImageField source={field.name} title="title"/>
 )

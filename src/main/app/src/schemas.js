@@ -6,53 +6,55 @@ export default [{
         'label': 'Boolean',
         'name': 'Boolean',
         'defaultValue': true,
-        'showInList':true
+        'showInList': true
     }, {
         'component': 'NullableBoolean',
         'label': 'NullableBoolean',
         'name': 'NullableBoolean',
         'defaultValue': true,
-        'showInList':true
+        'showInList': true
     }, {
         'component': 'Date',
         'label': 'Date',
         'name': 'Date',
         'defaultValue': '2017-08-17',
-        'showInList':true
+        'showInList': true
     }, {
         'component': 'File',
         'label': '文件',
         'name': 'File',
         'type': '*',
-        'showInList':true
+        'showInList': true
     }, {
         'component': 'Image',
         'label': 'Image',
         'name': 'Image',
-        'showInList':true
+        'showInList': true,
     }, {
         'component': 'CheckboxGroup', 'label': 'CheckboxGroup', 'name': 'CheckboxGroup', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},
-        ], 'defaultValue': ['programming']
+        ], 'defaultValue': ['programming'],
+        'showInList': true
     }, {
         'component': 'Autocomplete', 'name': 'Autocomplete', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},
         ], 'defaultValue': 'programming',
-        'showInList':true
+        'showInList': true
     }, {
         'component': 'LongText',
         'label': 'LongText',
         'name': 'LongText',
-        'defaultValue': '1'
+        'defaultValue': '1',
+        'textIndex': true
     }, {
         'component': 'Number',
         'label': 'Number',
         'name': 'Number',
-        'defaultValue': 1
+        'defaultValue': 1,
     }, {
         'component': 'RadioButtonGroup',
         'label': 'RadioButtonGroup',
@@ -76,43 +78,48 @@ export default [{
         'name': 'Reference',
         'reference': 'users',
         'referenceOptionText': 'name',
-        'defaultValue': 1
+        'defaultValue': 1,
+        'showInList': true
     }, {
         'component': 'ReferenceArray',
         'label': 'ReferenceArray',
         'name': 'ReferenceArray',
         'reference': 'users',
         'referenceOptionText': 'name',
-        'defaultValue': [1, 2]
+        // 'defaultValue': [1, 2],
+        'showInList': true
     }, {
         'component': 'RichText',
         'label': 'RichText',
         'name': 'RichText',
-        'defaultValue': 'RichText'
+        'defaultValue': 'RichText',
+        'showInList': true
     }, {
         'component': 'Select', 'name': 'Select', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},
-        ], 'defaultValue': 'lifestyle'
+        ], 'defaultValue': 'lifestyle',
+        'showInList': true
     }, {
         'component': 'SelectArray', 'name': 'SelectArray', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},
             {id: 'photography', name: 'Photography'},
-        ], 'defaultValue': ['lifestyle']
+        ],
+        'showInList': true
     }]
 }, {
     label: '用户',
     name: 'users',
-    fields:[{
-            'component': 'Text',
-            'label': 'Text',
-            'name': 'name',
-            'type': 'email',
-            'required': true,
-            'maxLength': 20,
-            'defaultValue': 'data@cloud.com',
-        'showInList':true
+    fields: [{
+        'component': 'Text',
+        'label': 'Text',
+        'name': 'name',
+        'type': 'email',
+        'required': true,
+        'maxLength': 20,
+        'defaultValue': 'data@cloud.com',
+        'showInList': true
     }]
 }];

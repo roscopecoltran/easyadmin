@@ -34,10 +34,10 @@ public class DataMutationResource {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping(value = "/api/{entity}/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable("table") String table, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
-        Document document = dataMutationService.update(table, id, allRequestParams);
+        Document document = dataMutationService.update(entity, id, allRequestParams);
         return ResponseEntity.status(HttpStatus.OK).body(document);
     }
 
