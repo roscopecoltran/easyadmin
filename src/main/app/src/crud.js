@@ -62,7 +62,7 @@ const CRUDFilter = (props) => (
 );
 
 export const CRUDList = (props) => (
-    <List {...props} filters={<CRUDFilter/>}>
+    <List {...props} filters={<CRUDFilter/>} title={props.options.label}>
         <Datagrid>
             <TextField source="id" sortable={false}/>
             {props.options.fields.filter(field => field.showInList).map(renderField)}
@@ -74,7 +74,7 @@ export const CRUDList = (props) => (
 );
 
 export const CRUDCreate = (props) => (
-    <Create {...props}>
+    <Create {...props} title={props.options.label}>
         <SimpleForm>
             {props.options.fields.map(renderInput)}
         </SimpleForm>
@@ -93,7 +93,7 @@ const EditActions = ({basePath, data, refresh}) => (
 );
 
 export const CRUDEdit = (props) => (
-    <Edit actions={<EditActions/>}{...props}>
+    <Edit actions={<EditActions/>}{...props} title={props.options.label}>
         <SimpleForm>
             {props.options.fields.map(renderInput)}
         </SimpleForm>
@@ -116,26 +116,27 @@ const CRUDDeleteTitle = ({record, translate}) => <span>
 export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/>}/>;
 
 const renderField = (field, index) => (
-    field.component === 'Boolean' ? renderBooleanField(field) :
-        field.component === 'NullableBoolean' ? renderBooleanField(field) :
-            field.component === 'Autocomplete' ? renderTextField(field) :
-                field.component === 'CheckboxGroup' ? renderTextField(field) :
-                    field.component === 'Date' ? renderDateField(field) :
-                        field.component === 'File' ? renderFileField(field) :
-                            field.component === 'LongText' ? renderTextField(field) :
-                                field.component === 'Number' ? renderNumberField(field) :
-                                    field.component === 'RadioButtonGroup' ? renderTextField(field) :
-                                        field.component === 'Reference' ? renderReferenceField(field) :
-                                            field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
-                                                field.component === 'RichText' ? renderRichTextField(field) :
-                                                    field.component === 'Select' ? renderSelectField(field) :
-                                                        field.component === 'SelectArray' ? renderTextField(field) :
-                                                            field.component === 'Image' ? renderImageField(field) :
-                                                                renderTextField(field)
+        field.component === 'Boolean' ? renderBooleanField(field) :
+            field.component === 'NullableBoolean' ? renderBooleanField(field) :
+                field.component === 'Autocomplete' ? renderTextField(field) :
+                    field.component === 'CheckboxGroup' ? renderTextField(field) :
+                        field.component === 'Date' ? renderDateField(field) :
+                            field.component === 'File' ? renderFileField(field) :
+                                field.component === 'LongText' ? renderTextField(field) :
+                                    field.component === 'Number' ? renderNumberField(field) :
+                                        field.component === 'RadioButtonGroup' ? renderTextField(field) :
+                                            field.component === 'Reference' ? renderReferenceField(field) :
+                                                field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
+                                                    field.component === 'RichText' ? renderRichTextField(field) :
+                                                        field.component === 'Select' ? renderSelectField(field) :
+                                                            field.component === 'SelectArray' ? renderTextField(field) :
+                                                                field.component === 'Image' ? renderImageField(field) :
+                                                                    renderTextField(field)
+
 );
 
 const renderBooleanField = (field) => (
-    <BooleanField source={field.name}/>
+    <BooleanField label={field.label} source={field.name}/>
 )
 const renderReferenceField = (field) => (
     <ReferenceField label={field.label} source={field.name} reference={field.reference}>
@@ -160,7 +161,7 @@ const renderTextField = (field) => (
             <TextField source={field.name}/>
 )
 const renderRichTextField = (field) => (
-    <RichTextField source={field.name} stripTags/>
+    <RichTextField label={field.label} source={field.name} stripTags/>
 )
 const renderImageField = (field) => (
     <ImageField source={field.name} title="title"/>
@@ -262,7 +263,7 @@ const renderReferenceArrayInput = (field, validators) => (
     </ReferenceArrayInput>
 )
 const renderRichTextInput = (field, validators) => (
-    <RichTextInput source={field.name} defaultValue={field.defaultValue} validate={generateValidators(field)}/>
+    <RichTextInput label={field.label} source={field.name} defaultValue={field.defaultValue} validate={generateValidators(field)}/>
 )
 const renderSelectInput = (field, validators) => (
     <SelectInput source={field.name} choices={field.choices} defaultValue={field.defaultValue}

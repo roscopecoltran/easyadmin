@@ -13,10 +13,12 @@ public class DbUtil {
     private static MongoClient mongoClient;
 
     public static MongoCollection getCollection(String host, int port, String db, String entity) {
-        MongoClientOptions.Builder options_builder = new MongoClientOptions.Builder();
-        options_builder.maxConnectionIdleTime(30000);
-        MongoClientOptions options = options_builder.build();
-        mongoClient = new MongoClient(host+":"+port,options);
+        if (mongoClient == null) {
+            MongoClientOptions.Builder options_builder = new MongoClientOptions.Builder();
+            options_builder.maxConnectionIdleTime(30000);
+            MongoClientOptions options = options_builder.build();
+            mongoClient = new MongoClient(host + ":" + port, options);
+        }
         MongoDatabase database = mongoClient.getDatabase(db);
         return database.getCollection(entity);
     }
@@ -38,7 +40,7 @@ public class DbUtil {
     }
 
     public static void main(String[] args) {
-        createTextIndex("users","name");
-        createTextIndex("posts","RichText");
+        createTextIndex("users", "name");
+        createTextIndex("posts", "RichText");
     }
 }

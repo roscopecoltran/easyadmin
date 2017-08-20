@@ -3,13 +3,13 @@ export default [{
     name: 'posts',
     fields: [{
         'component': 'Boolean',
-        'label': 'Boolean',
+        'label': '是否',
         'name': 'Boolean',
         'defaultValue': true,
         'showInList': true
     }, {
         'component': 'NullableBoolean',
-        'label': 'NullableBoolean',
+        'label': '是否',
         'name': 'NullableBoolean',
         'defaultValue': true,
         'showInList': true
@@ -80,7 +80,7 @@ export default [{
         'reference': 'users',
         'referenceOptionText': 'name',
         'defaultValue': 1,
-        'showInList': true
+        'showInList': false
     }, {
         'component': 'ReferenceArray',
         'label': 'ReferenceArray',
@@ -121,6 +121,22 @@ export default [{
         'required': true,
         'maxLength': 20,
         'defaultValue': 'data@cloud.com',
+        'showInList': true
+    }]
+}, {
+    label: '测试报告',
+    name: 'bug',
+    fields: [{
+        'component': 'Text',
+        'label': '报告标题',
+        'name': 'title',
+        'required': true,
+        'showInList': true
+    },{
+        'component': 'RichText',
+        'label': '报告内容',
+        'name': 'name',
+        'required': true,
         'showInList': true
     }]
 }];
