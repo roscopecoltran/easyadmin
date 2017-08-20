@@ -24,7 +24,6 @@ public class DataMutationResource {
     @Autowired
     DataMutationService dataMutationService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value = "/api/{entity}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
@@ -33,7 +32,6 @@ public class DataMutationResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(document);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PutMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
@@ -42,7 +40,6 @@ public class DataMutationResource {
         return ResponseEntity.status(HttpStatus.OK).body(document);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id) {
         Document document = dataMutationService.deleteLogic(entity, id);

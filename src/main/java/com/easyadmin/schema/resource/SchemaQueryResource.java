@@ -20,7 +20,6 @@ public class SchemaQueryResource {
     @Autowired
     SchemaQueryService schemaQueryService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @RequestMapping("/schemas")
     @ResponseBody
     public List<Field> list() {

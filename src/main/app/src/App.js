@@ -3,7 +3,6 @@ import {jsonServerRestClient, Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
 import schemas from './schemas';
 import zhcnMsg from 'aor-language-chinese';
-
 const messages = {
     'zh-cn': zhcnMsg,
 };

@@ -6,7 +6,6 @@ import {
     Edit,
     SimpleForm,
     AutocompleteInput,
-    DisabledInput,
     TextInput,
     DateInput,
     LongTextInput,
@@ -33,16 +32,14 @@ import {
     UrlField,
     NumberField,
     ReferenceField,
-    ReferenceManyField,
     SingleFieldList,
     ChipField,
     ReferenceArrayField,
     RichTextField,
     SelectField,
-    FunctionField
 } from 'admin-on-rest';
 import RichTextInput from 'aor-rich-text-input';
-import {required, minLength, maxLength, minValue, maxValue, number, regex, email, choices} from 'admin-on-rest';
+import {required, minLength, maxLength, minValue, maxValue, number, email} from 'admin-on-rest';
 import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';

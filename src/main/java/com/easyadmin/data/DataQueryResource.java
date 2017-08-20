@@ -37,7 +37,6 @@ public class DataQueryResource {
     @Autowired
     DataQueryService dataQueryService;
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/api/{entity}")
     public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Consts.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
@@ -50,7 +49,6 @@ public class DataQueryResource {
                 .body(data);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Consts.ENTITY) String entity, @PathVariable(Consts.KEY) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
