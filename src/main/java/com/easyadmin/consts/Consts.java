@@ -7,5 +7,5 @@ public class Consts {
 
     public static final String KEY = "id";
 
-    public static final String Q= "q";
+    public static final String Q = "q";
 }

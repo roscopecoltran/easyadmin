@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * schema query endpoints
- *
+ * <p>
  * Created by gongxinyi on 2017-08-10.
  */
 @Controller

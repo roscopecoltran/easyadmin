@@ -119,49 +119,14 @@ public class SchemaQueryService {
                 .defaultValue("lifestyle")
                 .build());
         fields.add(SelectArrayField.builder()
-                .name(Component.Select.toString())
-                .label(Component.Select.toString())
+                .name(Component.SelectArray.toString())
+                .label(Component.SelectArray.toString())
                 .choices(new ChoiceItem[]{
                         ChoiceItem.builder().id("programming").name("Programming").build(),
                         ChoiceItem.builder().id("lifestyle").name("Lifestyle").build(),
                         ChoiceItem.builder().id("photography").name("Photography'").build()
                 })
                 .defaultValue("lifestyle")
-                .build());
-        fields.add(SelectField.builder()
-                .name("driver")
-                .choices(new ChoiceItem[]{
-                        ChoiceItem.builder().name("n1").id("v1").build(),
-                        ChoiceItem.builder().name("n2").id("v2").build()
-                }).build());
-        fields.add(BooleanField.builder()
-                .name("toggle")
-                .label("toggle")
-                .build());
-        fields.add(DateField.builder()
-                .name("date")
-                .label("出发日期")
-                .build());
-        fields.add(LongTextField.builder()
-                .name("backup")
-                .defaultValue("11")
-                .build());
-        fields.add(RadioButtonGroupField.builder()
-                .name("gender")
-                .choices(new ChoiceItem[]{
-                        ChoiceItem.builder().name("男").id("male").build(),
-                        ChoiceItem.builder().name("女").id("female").build()
-                }).build());
-        fields.add(CheckboxGroupField.builder()
-                .name("married")
-                .label("是否已婚")
-                .build());
-        fields.add(AutoCompleteField.builder()
-                .name("city")
-                .choices(new ChoiceItem[]{
-                        ChoiceItem.builder().id("1").name("武汉").build(),
-                        ChoiceItem.builder().id("2").name("成都").build()
-                })
                 .build());
         return fields;
     }

@@ -10,13 +10,13 @@ import java.io.Serializable;
 
 /**
  * parent class for html input component
- *
+ * <p>
  * has some commmon props , ex:label,defaultValue,required
- *
+ * <p>
  * Component contains Text,Boolean and ...
- *
+ * <p>
  * the props of fields in list page will define in inherit class
- *
+ * <p>
  * Created by gongxinyi on 2017-08-10.
  */
 @Data

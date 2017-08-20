@@ -12,8 +12,8 @@ public class RequestScope {
     private int _start;
     private int _end;
 
-    public int getLimit(){
-        return _end-_start;
+    public int getLimit() {
+        return _end - _start;
     }
 
 }

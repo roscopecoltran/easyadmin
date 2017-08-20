@@ -7,7 +7,7 @@ import org.bson.Document;
 
 /**
  * sequence util
- *
+ * <p>
  * getNextSequence base on mongo
  */
 public class SequenceUtil {
@@ -32,7 +32,7 @@ public class SequenceUtil {
 
     /**
      * get next sequence
-     *
+     * <p>
      * for this project backend use {entity+"_"+field} name to keep identity
      *
      * @param sequenceName must identity for one collection
@@ -47,7 +47,7 @@ public class SequenceUtil {
         Document increase = new Document("seq", 1);
         Document updateQuery = new Document("$inc", increase);
         Document result = countersCollection.findOneAndUpdate(searchQuery, updateQuery, new FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER));
-
+        DbUtil.close();
         return result.get("seq");
     }
 

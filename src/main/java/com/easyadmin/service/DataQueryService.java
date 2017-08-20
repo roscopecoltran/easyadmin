@@ -2,6 +2,7 @@ package com.easyadmin.service;
 
 import com.easyadmin.consts.Consts;
 import com.easyadmin.data.RequestScope;
+import com.easyadmin.schema.field.Field;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -9,19 +10,25 @@ import com.mongodb.QueryBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.TextSearchOptions;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.BSONObject;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.mongodb.client.model.Filters.text;
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending;
 
@@ -31,6 +38,9 @@ import static com.mongodb.client.model.Sorts.descending;
 @Slf4j
 @Component
 public class DataQueryService {
+
+    @Autowired
+    SchemaQueryService schemaQueryService;
 
     /**
      * get data json
@@ -68,15 +78,19 @@ public class DataQueryService {
     public long count(String entity, Map<String, Object> allRequestParams) {
         MongoCollection collection = DbUtil.getCollection(entity);
         DBObject query = getQuery(allRequestParams);
-        return collection.count((Bson) query);
+        long count = collection.count((Bson) query);
+        return count;
     }
 
     public Map<String, Object> findOne(String entity, String id) {
+        Map<String, Object> data = null;
         MongoCollection collection = DbUtil.getCollection(entity);
         BasicDBObject query = new BasicDBObject("id", id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
-        return mongoCursor.next();
+        if (mongoCursor.hasNext())
+            data = mongoCursor.next();
+        return data;
     }
 
     /**
@@ -96,12 +110,10 @@ public class DataQueryService {
         // common filter
         allRequestParams.entrySet()
                 .stream()
-//                .filter(map ->
-//                        (!map.getKey().equals(Consts.Q) && !map.getKey().startsWith("_"))
-//                )
-                .map(k -> (
-                        query.and(QueryBuilder.start().put(k.getKey()).is(k.getValue()).get())
-                ));
+                .filter(map ->
+                        (!map.getKey().equals(Consts.Q) && !map.getKey().startsWith("_"))
+                )
+                .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaQueryService.list()).get()));
         // logic del flag
         query.and(QueryBuilder.start(Consts.DEL_FLAG).notEquals(true).get());
         return query.get();
@@ -115,5 +127,44 @@ public class DataQueryService {
      */
     private Bson sort(RequestScope requestScope) {
         return "DESC".equalsIgnoreCase(requestScope.get_order()) ? descending(requestScope.get_sort()) : ascending(requestScope.get_sort());
+    }
+
+    private QueryBuilder buildQuery(Map.Entry<String, Object> entry, List<Field> fields) {
+        log.info("entry:{}", entry);
+        Map<String, Field> result =
+                fields.stream().collect(Collectors.toMap(Field::getName,
+                        Function.identity()));
+        Field field = result.get(entry.getKey());
+        QueryBuilder qb = QueryBuilder.start().put(entry.getKey());
+        switch (field.getComponent()) {
+            case Boolean:
+                qb.is(Boolean.valueOf(entry.getValue().toString()));
+                break;
+            case NullableBoolean:
+                if ("null".equalsIgnoreCase(entry.getValue().toString())) {
+                    qb.is(null).get();
+                } else {
+                    qb.is(Boolean.valueOf(entry.getValue().toString()));
+                }
+                break;
+            case CheckboxGroup:
+                qb.is(entry.getValue().toString().split(","));
+                break;
+            case Number:
+                qb.is(Integer.parseInt(entry.getValue().toString()));
+                break;
+            case ReferenceArray:
+                qb.is(entry.getValue().toString().split(","));
+                break;
+            case SelectArray:
+                qb.is(entry.getValue().toString().split(","));
+                break;
+            default:
+                qb.is(entry.getValue().toString());
+                break;
+
+        }
+
+        return qb;
     }
 }

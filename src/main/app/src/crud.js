@@ -56,16 +56,13 @@ const cardActionStyle = {
 const filterComponent=['File','Image'];
 const CRUDFilter = (props) => (
     <Filter {...props}>
-            {
-                /*<TextInput label="Search" source="q" alwaysOn />*/
-
-                schemas.find(resource => (resource.name=== props.resource)).fields.filter(field=> !filterComponent.includes(field.component)).map(renderInput)}
-            }
+        <TextInput label="Search" source="q" alwaysOn/>
+        {schemas.find(resource => (resource.name=== props.resource)).fields.filter(field=> !filterComponent.includes(field.component)).map(renderInput)}
     </Filter>
 );
 
 export const CRUDList = (props) => (
-    <List {...props} >
+    <List {...props} filters={<CRUDFilter/>}>
         <Datagrid>
             <TextField source="id" sortable={false}/>
             {props.options.fields.filter(field => field.showInList).map(renderField)}

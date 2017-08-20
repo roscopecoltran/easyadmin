@@ -2,6 +2,7 @@ package com.easyadmin.service;
 
 import com.easyadmin.consts.Consts;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.client.MongoCollection;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
@@ -38,6 +39,7 @@ public class DataMutationService {
     public Document deleteLogic(String entity, String id) {
         MongoCollection<Document> collection = DbUtil.getCollection(entity);
         BasicDBObject searchQuery = new BasicDBObject().append("id", id);
-       return collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Consts.DEL_FLAG, true)));
+        Document document = collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Consts.DEL_FLAG, true)));
+        return document;
     }
 }
