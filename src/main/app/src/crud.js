@@ -114,171 +114,171 @@ const CRUDDeleteTitle = ({record, translate}) => <span>
 export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/>}/>;
 
 const renderField = (field, index) => (
-        field.component === 'Boolean' ? renderBooleanField(field) :
-            field.component === 'NullableBoolean' ? renderBooleanField(field) :
-                field.component === 'Autocomplete' ? renderSelectField(field) :
-                    field.component === 'CheckboxGroup' ? renderSelectArrayField(field) :
-                        field.component === 'Date' ? renderDateField(field) :
-                            field.component === 'File' ? renderFileField(field) :
-                                field.component === 'LongText' ? renderTextField(field) :
-                                    field.component === 'Number' ? renderNumberField(field) :
-                                        field.component === 'RadioButtonGroup' ? renderSelectField(field) :
-                                            field.component === 'Reference' ? renderReferenceField(field) :
-                                                field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
-                                                    field.component === 'RichText' ? renderRichTextField(field) :
-                                                        field.component === 'Select' ? renderSelectField(field) :
-                                                            field.component === 'SelectArray' ? renderSelectArrayField(field) :
-                                                                field.component === 'Image' ? renderImageField(field) :
-                                                                    renderTextField(field)
+        field.component === 'Boolean' ? renderBooleanField(field,index) :
+            field.component === 'NullableBoolean' ? renderBooleanField(field,index) :
+                field.component === 'Autocomplete' ? renderSelectField(field,index) :
+                    field.component === 'CheckboxGroup' ? renderSelectArrayField(field,index) :
+                        field.component === 'Date' ? renderDateField(field,index) :
+                            field.component === 'File' ? renderFileField(field,index) :
+                                field.component === 'LongText' ? renderTextField(field,index) :
+                                    field.component === 'Number' ? renderNumberField(field,index) :
+                                        field.component === 'RadioButtonGroup' ? renderSelectField(field,index) :
+                                            field.component === 'Reference' ? renderReferenceField(field,index) :
+                                                field.component === 'ReferenceArray' ? renderReferenceArrayField(field,index) :
+                                                    field.component === 'RichText' ? renderRichTextField(field,index) :
+                                                        field.component === 'Select' ? renderSelectField(field,index) :
+                                                            field.component === 'SelectArray' ? renderSelectArrayField(field,index) :
+                                                                field.component === 'Image' ? renderImageField(field,index) :
+                                                                    renderTextField(field,index)
 
 );
 
-const renderBooleanField = (field) => (
-    <BooleanField label={field.label} source={field.name}/>
+const renderBooleanField = (field,index) => (
+    <BooleanField key={index}label={field.label} source={field.name}/>
 )
-const renderReferenceField = (field) => (
-    <ReferenceField label={field.label} source={field.name} reference={field.reference}>
+const renderReferenceField = (field,index) => (
+    <ReferenceField key={index} label={field.label} source={field.name} reference={field.reference}>
         <TextField source={field.referenceOptionText}/>
     </ReferenceField>
 )
 
-const renderSelectArrayField = (field) =>(
-    <SelectArrayField label={field.label} source={field.name} choices={field.choices} optionText='name' optionValue='id'/>
+const renderSelectArrayField = (field,index) =>(
+    <SelectArrayField  key={index}label={field.label} source={field.name} choices={field.choices} optionText='name' optionValue='id'/>
 )
-const renderReferenceArrayField = (field) => (
-    <ReferenceArrayField label={field.label} reference={field.reference} source={field.name}>
+const renderReferenceArrayField = (field,index) => (
+    <ReferenceArrayField  key={index}label={field.label} reference={field.reference} source={field.name}>
         <SingleFieldList>
             <ChipField source={field.referenceOptionText}/>
         </SingleFieldList>
     </ReferenceArrayField>
 )
 
-const renderSelectField = (field) => (
-    <SelectField source={field.name} choices={field.choices}/>
+const renderSelectField = (field,index) => (
+    <SelectField  key={index}source={field.name} choices={field.choices}/>
 )
 
-const renderTextField = (field) => (
-    field.type === 'email' ? <EmailField source={field.name}/> :
-        field.type === 'url' ? <UrlField source={field.name}/> :
-            <TextField source={field.name}/>
+const renderTextField = (field,index) => (
+    field.type === 'email' ? <EmailField key={index} source={field.name}/> :
+        field.type === 'url' ? <UrlField key={index} source={field.name}/> :
+            <TextField key={index} source={field.name}/>
 )
-const renderRichTextField = (field) => (
-    <RichTextField label={field.label} source={field.name} stripTags/>
+const renderRichTextField = (field,index) => (
+    <RichTextField  key={index} label={field.label} source={field.name} stripTags/>
 )
-const renderImageField = (field) => (
-    <ImageField source={field.name} title="title"/>
-)
-
-const renderDateField = (field) => (
-    <DateField source={field.name}/>
+const renderImageField = (field,index) => (
+    <ImageField  key={index} source={field.name} title="title"/>
 )
 
-const renderFileField = (field) => (
-    <FileField source="url" title="title" />
+const renderDateField = (field,index) => (
+    <DateField  key={index} source={field.name}/>
 )
 
-const renderNumberField = (field) => (
-    <NumberField source={field.name}/>
+const renderFileField = (field,index) => (
+    <FileField  key={index} source="url" title="title" />
+)
+
+const renderNumberField = (field,index) => (
+    <NumberField  key={index} source={field.name}/>
 )
 
 
 const renderInput = (field, index) => (
-    field.component === 'Boolean' ? renderBooleanInput(field) :
-        field.component === 'NullableBoolean' ? renderNullableBooleanInput(field) :
-            field.component === 'Autocomplete' ? renderAutoCompleteInput(field) :
-                field.component === 'CheckboxGroup' ? renderCheckboxGroupInput(field) :
-                    field.component === 'Date' ? renderDateInput(field) :
-                        field.component === 'File' ? renderFileInput(field) :
-                            field.component === 'LongText' ? renderLongTextInput(field) :
-                                field.component === 'Number' ? renderNumberInput(field) :
-                                    field.component === 'RadioButtonGroup' ? renderRadioButtonGroupInput(field) :
-                                        field.component === 'Reference' ? renderReferenceInput(field) :
-                                            field.component === 'ReferenceArray' ? renderReferenceArrayInput(field) :
-                                                field.component === 'RichText' ? renderRichTextInput(field) :
-                                                    field.component === 'Select' ? renderSelectInput(field) :
-                                                        field.component === 'SelectArray' ? renderSelectArrayInput(field) :
-                                                            field.component === 'Image' ? renderImageInput(field) :
-                                                                renderTextInput(field)
+    field.component === 'Boolean' ? renderBooleanInput(field,index) :
+        field.component === 'NullableBoolean' ? renderNullableBooleanInput(field,index) :
+            field.component === 'Autocomplete' ? renderAutoCompleteInput(field,index) :
+                field.component === 'CheckboxGroup' ? renderCheckboxGroupInput(field,index) :
+                    field.component === 'Date' ? renderDateInput(field,index) :
+                        field.component === 'File' ? renderFileInput(field,index) :
+                            field.component === 'LongText' ? renderLongTextInput(field,index) :
+                                field.component === 'Number' ? renderNumberInput(field,index) :
+                                    field.component === 'RadioButtonGroup' ? renderRadioButtonGroupInput(field,index) :
+                                        field.component === 'Reference' ? renderReferenceInput(field,index) :
+                                            field.component === 'ReferenceArray' ? renderReferenceArrayInput(field,index) :
+                                                field.component === 'RichText' ? renderRichTextInput(field,index) :
+                                                    field.component === 'Select' ? renderSelectInput(field,index) :
+                                                        field.component === 'SelectArray' ? renderSelectArrayInput(field,index) :
+                                                            field.component === 'Image' ? renderImageInput(field,index) :
+                                                                renderTextInput(field,index)
 );
 
-const renderAutoCompleteInput = (field, validators) => (
-    <AutocompleteInput source={field.name} choices={field.choices} defaultValue={field.defaultValue}
+const renderAutoCompleteInput = (field,index) => (
+    <AutocompleteInput key={index} source={field.name} choices={field.choices} defaultValue={field.defaultValue}
                        validate={generateValidators(field)}/>
 );
 
-const renderBooleanInput = (field, validators) => (
-    <BooleanInput label={field.label} source={field.name} defaultValue={field.defaultValue}/>
+const renderBooleanInput = (field,index) => (
+    <BooleanInput key={index} label={field.label} source={field.name} defaultValue={field.defaultValue}/>
 )
 
-const renderNullableBooleanInput = (field, validators) => (
-    <NullableBooleanInput label={field.label} source={field.name} defaultValue={field.defaultValue}
+const renderNullableBooleanInput = (field, index) => (
+    <NullableBooleanInput key={index} label={field.label} source={field.name} defaultValue={field.defaultValue}
                           validate={generateValidators(field)}/>
 )
 
-const renderCheckboxGroupInput = (field, validators) => (
-    <CheckboxGroupInput label={field.label} source={field.name} choices={field.choices}
+const renderCheckboxGroupInput = (field, index) => (
+    <CheckboxGroupInput key={index} label={field.label} source={field.name} choices={field.choices}
                         defaultValue={field.defaultValue}/>
 )
 
-const renderFileInput = (field, validators) => (
-    <FileInput source={field.name} label={field.label} accept={'application/' + field.type}>
+const renderFileInput = (field, index) => (
+    <FileInput key={index} source={field.name} label={field.label} accept={'application/' + field.type}>
         <FileField source="src" title="title"/>
     </FileInput>
 )
 
-const renderDateInput = (field, validators) => (
-    <DateInput source={field.name} label={field.label} defaultValue={field.defaultValue}
+const renderDateInput = (field, index) => (
+    <DateInput key={index} source={field.name} label={field.label} defaultValue={field.defaultValue}
                validate={generateValidators(field)}/>
 )
 
-const renderLongTextInput = (field, validators) => (
-    <LongTextInput source={field.name} label={field.label} defaultValue={field.defaultValue}
+const renderLongTextInput = (field, index) => (
+    <LongTextInput key={index} source={field.name} label={field.label} defaultValue={field.defaultValue}
                    validate={generateValidators(field)}/>
 )
 
-const renderNumberInput = (field, validators) => (
-    <NumberInput source={field.name} label={field.label} defaultValue={field.defaultValue}
+const renderNumberInput = (field, index) => (
+    <NumberInput  key={index} source={field.name} label={field.label} defaultValue={field.defaultValue}
                  validate={generateValidators(field)}/>
 )
 
-const renderRadioButtonGroupInput = (field, validators) => (
-    <RadioButtonGroupInput source={field.name} choices={field.choices} defaultValue={field.defaultValue}
+const renderRadioButtonGroupInput = (field, index) => (
+    <RadioButtonGroupInput key={index} source={field.name} choices={field.choices} defaultValue={field.defaultValue}
                            validate={generateValidators(field)}/>
 )
 
-const renderTextInput = (field) => (
-    <TextInput label={field.label} source={field.name} type={field.type} defaultValue={field.defaultValue}
+const renderTextInput = (field,index) => (
+    <TextInput key={index} label={field.label} source={field.name} type={field.type} defaultValue={field.defaultValue}
                validate={generateValidators(field)}/>
 )
 
-const renderReferenceInput = (field, validators) => (
-    <ReferenceInput label={field.label} source={field.name} reference={field.reference}
+const renderReferenceInput = (field, index) => (
+    <ReferenceInput key={index} label={field.label} source={field.name} reference={field.reference}
                     defaultValue={field.defaultValue} validate={generateValidators(field)} allowEmpty>
         <SelectInput source={field.referenceOptionText}/>
     </ReferenceInput>
 )
 
-const renderReferenceArrayInput = (field, validators) => (
-    <ReferenceArrayInput source={field.name} reference={field.reference} defaultValue={field.defaultValue}
+const renderReferenceArrayInput = (field, index) => (
+    <ReferenceArrayInput key={index} source={field.name} reference={field.reference} defaultValue={field.defaultValue}
                          validate={generateValidators(field)} allowEmpty>
         <SelectArrayInput source={field.referenceOptionText}/>
     </ReferenceArrayInput>
 )
-const renderRichTextInput = (field, validators) => (
-    <RichTextInput label={field.label} source={field.name} defaultValue={field.defaultValue} validate={generateValidators(field)}/>
+const renderRichTextInput = (field, index) => (
+    <RichTextInput  key={index} label={field.label} source={field.name} defaultValue={field.defaultValue} validate={generateValidators(field)}/>
 )
-const renderSelectInput = (field, validators) => (
-    <SelectInput source={field.name} choices={field.choices} defaultValue={field.defaultValue}
+const renderSelectInput = (field, index) => (
+    <SelectInput  key={index} source={field.name} choices={field.choices} defaultValue={field.defaultValue}
                  validate={generateValidators(field)}/>
 )
 
-const renderSelectArrayInput = (field, validators) => (
-    <SelectArrayInput label={field.label} source={field.name} choices={field.choices}
+const renderSelectArrayInput = (field, index) => (
+    <SelectArrayInput key={index} label={field.label} source={field.name} choices={field.choices}
                       defaultValue={field.defaultValue} validate={generateValidators(field)}/>
 )
 
-const renderImageInput = (field, validators) => (
-    <ImageInput source={field.name} label={field.label} accept="image/*" validate={generateValidators(field)}>
+const renderImageInput = (field, index) => (
+    <ImageInput key={index} source={field.name} label={field.label} accept="image/*" validate={generateValidators(field)}>
         <ImageField source="src" title="title"/>
     </ImageInput>
 )

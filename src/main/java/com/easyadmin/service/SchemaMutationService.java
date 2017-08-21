@@ -18,6 +18,5 @@ public class SchemaMutationService {
      */
     public void createTextIndex(String entity, String field) {
         DbUtil.getCollection(entity).createIndex(Indexes.text(field));
-        DbUtil.close();
     }
 }

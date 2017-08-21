@@ -47,7 +47,6 @@ public class SequenceUtil {
         Document increase = new Document("seq", 1);
         Document updateQuery = new Document("$inc", increase);
         Document result = countersCollection.findOneAndUpdate(searchQuery, updateQuery, new FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER));
-        DbUtil.close();
         return result.get("seq");
     }
 

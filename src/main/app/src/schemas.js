@@ -25,13 +25,13 @@ export default [{
     //     'label': '文件',
     //     'name': 'File',
     //     'type': '*',
-    //     'showInList': true
-    // }, {
+    //     'showInList': true}
+    // , {
     //     'component': 'Image',
     //     'label': 'Image',
     //     'name': 'Image',
     //     'showInList': true,
-    // }, {
+    // }
     ,{    'component': 'CheckboxGroup', 'label': 'CheckboxGroup', 'name': 'CheckboxGroup', 'choices': [
             {id: 'programming', name: 'Programming'},
             {id: 'lifestyle', name: 'Lifestyle'},

@@ -14,9 +14,9 @@ const styles = {
 const SelectArrayField = ({source, record, choices, elStyle, optionValue, optionText, translate, translateChoice = {}}) => {
     const value = record[source];
     if (!value) return null;
-    return <div style={styles.wrapper}>{value.map(v => {
+    return <div style={styles.wrapper}>{value.map((v,index) => {
         const choice = choices.find(c => c[optionValue] === v);
-        return <Chip style={styles.chip}>{choice[optionText]}</Chip>
+        return <Chip key={index} style={styles.chip}>{choice[optionText]}</Chip>
     })}</div>;
 };
 
