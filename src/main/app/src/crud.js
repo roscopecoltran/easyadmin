@@ -45,6 +45,7 @@ import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import {ListButton, ShowButton, DeleteButton, Delete,Filter} from 'admin-on-rest';
 import schemas from './schemas';
+import SelectArrayField from './SelectArrayField';
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
@@ -115,18 +116,18 @@ export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/
 const renderField = (field, index) => (
         field.component === 'Boolean' ? renderBooleanField(field) :
             field.component === 'NullableBoolean' ? renderBooleanField(field) :
-                field.component === 'Autocomplete' ? renderTextField(field) :
-                    field.component === 'CheckboxGroup' ? renderTextField(field) :
+                field.component === 'Autocomplete' ? renderSelectField(field) :
+                    field.component === 'CheckboxGroup' ? renderSelectArrayField(field) :
                         field.component === 'Date' ? renderDateField(field) :
                             field.component === 'File' ? renderFileField(field) :
                                 field.component === 'LongText' ? renderTextField(field) :
                                     field.component === 'Number' ? renderNumberField(field) :
-                                        field.component === 'RadioButtonGroup' ? renderTextField(field) :
+                                        field.component === 'RadioButtonGroup' ? renderSelectField(field) :
                                             field.component === 'Reference' ? renderReferenceField(field) :
                                                 field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
                                                     field.component === 'RichText' ? renderRichTextField(field) :
                                                         field.component === 'Select' ? renderSelectField(field) :
-                                                            field.component === 'SelectArray' ? renderTextField(field) :
+                                                            field.component === 'SelectArray' ? renderSelectArrayField(field) :
                                                                 field.component === 'Image' ? renderImageField(field) :
                                                                     renderTextField(field)
 
@@ -139,6 +140,10 @@ const renderReferenceField = (field) => (
     <ReferenceField label={field.label} source={field.name} reference={field.reference}>
         <TextField source={field.referenceOptionText}/>
     </ReferenceField>
+)
+
+const renderSelectArrayField = (field) =>(
+    <SelectArrayField label={field.label} source={field.name} choices={field.choices} optionText='name' optionValue='id'/>
 )
 const renderReferenceArrayField = (field) => (
     <ReferenceArrayField label={field.label} reference={field.reference} source={field.name}>
