@@ -128,6 +128,13 @@ public class SchemaQueryService {
                 })
                 .defaultValue("lifestyle")
                 .build());
+        fields.add(ReferenceField.builder()
+                .name("entity")
+                .label(Component.Reference.toString())
+                .reference("entitys")
+                .referenceOptionText("name")
+                .defaultValue(new Integer[]{2})
+                .build());
         return fields;
     }
 }

@@ -2,6 +2,8 @@ export default [{
     label: '文章',
     name: 'posts',
     crud: ['r', 'u', 'c', 'd'],
+    redirect : 'list', // 新增记录后跳转到哪个页面 edit,show,list
+    icon : '<VisitorIcon />',
     fields: [{
         'component': 'Boolean',
         'label': '是否',
@@ -116,6 +118,7 @@ export default [{
     label: '用户',
     name: 'users',
     crud: ['c', 'r', 'u', 'd'],
+    redirect : 'list', // 新增记录后跳转到哪个页面 edit,show,list
     fields: [{
         'component': 'Text',
         'label': 'Text',
@@ -130,6 +133,7 @@ export default [{
     label: '测试报告',
     name: 'bug',
     crud: ['c', 'r', 'u', 'd'],
+    redirect : 'list', // 新增记录后跳转到哪个页面 edit,show,list
     fields: [{
         'component': 'Text',
         'label': '报告标题',

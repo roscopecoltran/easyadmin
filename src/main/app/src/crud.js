@@ -62,7 +62,7 @@ const filterComponent = ['File', 'Image'];
 const CRUDFilter = (props) => (
     <Filter {...props}>
         <TextInput label="Search" source="q" alwaysOn/>
-        {schemas.find(resource => (resource.name === props.resource)).fields.filter(field => !filterComponent.includes(field.component)).map(renderInput)}
+        {schemas.find(resource => (resource.name === props.resource.replace("api/"))).fields.filter(field => !filterComponent.includes(field.component)).map(renderInput)}
     </Filter>
 );
 
@@ -113,7 +113,7 @@ export const CRUDList = (props) => (
  */
 export const CRUDCreate = (props) => (
     <Create {...props} title={props.options.label}>
-        <SimpleForm>
+        <SimpleForm redirect={props.options.redirect}>
             {props.options.fields.map(renderInput)}
         </SimpleForm>
     </Create>
@@ -150,7 +150,7 @@ const EditActions = ({basePath, data, refresh, options}) => {
  */
 export const CRUDEdit = (props) => (
     <Edit actions={<EditActions options={props}/>} {...props} title={props.options.label}>
-        <SimpleForm>
+        <SimpleForm redirect={props.options.redirect}>
             {props.options.fields.map(renderInput)}
         </SimpleForm>
     </Edit>

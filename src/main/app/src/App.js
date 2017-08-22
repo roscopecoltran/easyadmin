@@ -1,11 +1,14 @@
 import React from 'react';
-import {jsonServerRestClient, Admin, Resource} from 'admin-on-rest';
+import {jsonServerRestClient, Admin, Resource, MenuItemLink} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
 import schemas from './schemas';
 import zhcnMsg from 'aor-language-chinese';
 import Dashboard from './Dashboard';
 // import addUploadFeature from './addUploadFeature';
-import {EntityList,EntityCreate,EntityEdit,EntityShow} from './system/entitys';
+import {EntityList, EntityCreate, EntityEdit, EntityShow} from './system/entitys';
+import {FieldList, FieldCreate, FieldEdit, FieldShow} from './system/fields';
+import customRoutes from './routers';
+import Menu from './Menu';
 
 /**
  * i18n
@@ -19,16 +22,17 @@ const messages = {
  * profile for dev
  * @type {string}
  */
-var url = "/api";
+var url = "http://" + window.location.hostname;
 if (process.env.NODE_ENV === 'development') {
-    url = "http://" + window.location.hostname + ":8080/api";
+    url = url + ":8080";
 }
 
 /**
  * rest client
  */
-const restClient = jsonServerRestClient(url);
+const dataRestClient = jsonServerRestClient(url + '/api');
 
+const schemaRestClient = jsonServerRestClient(url + "/schema");
 /**
  * add file support
  */
@@ -45,9 +49,10 @@ const renderResources = (member, index) => {
 };
 
 const App = () => (
-    <Admin dashboard={Dashboard} restClient={restClient} locale='zh-cn' messages={messages}>
+    <Admin dashboard={Dashboard}  menu={Menu} restClient={dataRestClient} locale='zh-cn' messages={messages}>
         {schemas.map(renderResources)}
-        <Resource name="entitys" label="Settings" list={EntityList} create={EntityCreate} edit={EntityEdit} show={EntityShow}/>
+        <Resource name="entitys" list={EntityList} create={EntityCreate} edit={EntityEdit} show={EntityShow}/>
+        <Resource name="fields" list={FieldList} create={FieldCreate} edit={FieldEdit} />
     </Admin>
 );
 
