@@ -9,8 +9,6 @@ import {
     TextInput,
     EditButton,
     DisabledInput,
-    SimpleShowLayout,
-    Show
 } from 'admin-on-rest';
 import LinkToRelatedFields from './LinkToRelatedFields';
 export const EntityList = (props) => (
@@ -41,13 +39,4 @@ export const EntityEdit = (props) => (
             <TextInput source="label" label="标签"/>
         </SimpleForm>
     </Edit>
-);
-
-export const EntityShow = (props) => (
-    <Show {...props}>
-        <SimpleShowLayout>
-            <TextField source="name" label="唯一KEY"/>
-            <TextField source="label" label="标签"/>
-        </SimpleShowLayout>
-    </Show>
 );

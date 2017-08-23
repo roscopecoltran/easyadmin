@@ -19,12 +19,12 @@ import java.util.Map;
  * Created by gongxinyi on 2017-08-11.
  */
 @Slf4j
-@RestController
+@RestController("api")
 public class DataMutationResource {
     @Autowired
     DataMutationService dataMutationService;
 
-    @PostMapping(value = "/api/{entity}")
+    @PostMapping(value = "/{entity}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
@@ -32,7 +32,7 @@ public class DataMutationResource {
         return ResponseEntity.status(HttpStatus.CREATED).body(document);
     }
 
-    @PutMapping(value = "/api/{entity}/{id}")
+    @PutMapping(value = "/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
@@ -40,7 +40,7 @@ public class DataMutationResource {
         return ResponseEntity.status(HttpStatus.OK).body(document);
     }
 
-    @DeleteMapping(value = "/api/{entity}/{id}")
+    @DeleteMapping(value = "/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id) {
         Document document = dataMutationService.deleteLogic(entity, id);
         return ResponseEntity.status(HttpStatus.OK).body(document);

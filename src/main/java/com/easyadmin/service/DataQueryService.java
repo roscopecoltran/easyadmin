@@ -10,13 +10,9 @@ import com.mongodb.QueryBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
-import com.mongodb.client.model.TextSearchOptions;
-import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.BSONObject;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -24,11 +20,9 @@ import org.springframework.util.StringUtils;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.mongodb.client.model.Filters.text;
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending;
 
@@ -61,9 +55,13 @@ public class DataQueryService {
         FindIterable<Document> findIterable = collection.find((Bson) query).sort(sort(requestScope)).skip(requestScope.get_start()).limit(requestScope.getLimit());
 
         MongoCursor<Document> mongoCursor = findIterable.iterator();
-        while (mongoCursor.hasNext()) {
-            Document doc = mongoCursor.next();
-            dataList.add(doc);
+        try {
+            while (mongoCursor.hasNext()) {
+                Document doc = mongoCursor.next();
+                dataList.add(doc);
+            }
+        }finally {
+            mongoCursor.close();
         }
         return dataList;
     }
@@ -88,8 +86,13 @@ public class DataQueryService {
         BasicDBObject query = new BasicDBObject("id", id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
-        if (mongoCursor.hasNext())
-            data = mongoCursor.next();
+        try {
+            if (mongoCursor.hasNext())
+                data = mongoCursor.next();
+        }
+        finally {
+            mongoCursor.close();
+        }
         return data;
     }
 

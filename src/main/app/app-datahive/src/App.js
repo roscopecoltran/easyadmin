@@ -1,15 +1,10 @@
 import React from 'react';
-import {jsonServerRestClient, Admin, Resource, MenuItemLink} from 'admin-on-rest';
+import {jsonServerRestClient, Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
 import schemas from './schemas';
 import zhcnMsg from 'aor-language-chinese';
 import Dashboard from './Dashboard';
 // import addUploadFeature from './addUploadFeature';
-import {EntityList, EntityCreate, EntityEdit, EntityShow} from './system/entitys';
-import {FieldList, FieldCreate, FieldEdit, FieldShow} from './system/fields';
-import customRoutes from './routers';
-import Menu from './Menu';
-
 /**
  * i18n
  * @type {{zh-cn}}
@@ -32,7 +27,6 @@ if (process.env.NODE_ENV === 'development') {
  */
 const dataRestClient = jsonServerRestClient(url + '/api');
 
-const schemaRestClient = jsonServerRestClient(url + "/schema");
 /**
  * add file support
  */
@@ -49,10 +43,8 @@ const renderResources = (member, index) => {
 };
 
 const App = () => (
-    <Admin dashboard={Dashboard}  menu={Menu} restClient={dataRestClient} locale='zh-cn' messages={messages}>
+    <Admin dashboard={Dashboard}  restClient={dataRestClient} locale='zh-cn' messages={messages}>
         {schemas.map(renderResources)}
-        <Resource name="entitys" list={EntityList} create={EntityCreate} edit={EntityEdit} show={EntityShow}/>
-        <Resource name="fields" list={FieldList} create={FieldCreate} edit={FieldEdit} />
     </Admin>
 );
 

@@ -24,10 +24,18 @@ import java.io.Serializable;
 @ToString
 @EqualsAndHashCode
 public class Field implements Serializable {
+    protected String id;
     protected String name;
     protected Component component;
     protected String label;
     protected Object defaultValue;
     protected Boolean required;
 
+    public Field(String name, Component component, String label, Object defaultValue, Boolean required) {
+        this.name = name;
+        this.component = component;
+        this.label = label;
+        this.defaultValue = defaultValue;
+        this.required = required;
+    }
 }

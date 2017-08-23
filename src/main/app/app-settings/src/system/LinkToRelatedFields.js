@@ -12,6 +12,7 @@ const LinkToRelatedFields = ({ record, translate }) => (
         label="字段"
         containerElement={<Link to={{
             pathname: "/fields",
+            query : { entity: record.id },
             search: stringify({ page: 1, perPage: 9999,filter: JSON.stringify({ entity: record.id }) }),
         }} />}
     />

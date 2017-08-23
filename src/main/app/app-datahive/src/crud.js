@@ -1,0 +1,398 @@
+import React from 'react';
+import {
+    List,
+    Datagrid,
+    Create,
+    Edit,
+    SimpleForm,
+    AutocompleteInput,
+    TextInput,
+    DateInput,
+    LongTextInput,
+    EditButton,
+    BooleanInput,
+    CheckboxGroupInput,
+    FileInput,
+    ReferenceInput,
+    SelectInput,
+    ReferenceArrayInput,
+    SelectArrayInput,
+    NumberInput,
+    RadioButtonGroupInput,
+    ImageInput,
+    NullableBooleanInput,
+    Show,
+    SimpleShowLayout,
+    TextField,
+    FileField,
+    DateField,
+    ImageField,
+    BooleanField,
+    EmailField,
+    UrlField,
+    NumberField,
+    ReferenceField,
+    SingleFieldList,
+    ChipField,
+    ReferenceArrayField,
+    RichTextField,
+    SelectField,
+} from 'admin-on-rest';
+import RichTextInput from 'aor-rich-text-input';
+import {required, minLength, maxLength, minValue, maxValue, number, email} from 'admin-on-rest';
+import {CardActions} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import {ListButton, ShowButton, DeleteButton, Delete, Filter} from 'admin-on-rest';
+import schemas from './schemas';
+import SelectArrayField from './SelectArrayField';
+const cardActionStyle = {
+    zIndex: 2,
+    display: 'inline-block',
+    float: 'right',
+};
+const filterComponent = ['File', 'Image'];
+
+/**
+ * filter
+ * contains all the field and the full text search input
+ * @param props
+ * @constructor
+ */
+const CRUDFilter = (props) => (
+    <Filter {...props}>
+        <TextInput label="Search" source="q" alwaysOn/>
+        {schemas.find(resource => (resource.name === props.resource.replace("api/"))).fields.filter(field => !filterComponent.includes(field.component)).map(renderInput)}
+    </Filter>
+);
+
+/**
+ * render a record's enabled actions
+ *
+ * ex: c contains create action
+ *     r contains show action
+ *     u contains edit action
+ *     d contains delete action
+ * @param props
+ * @returns {Array}
+ */
+const renderRecordAction = (props) => {
+    const actions = [];
+    actions.push(<ShowButton key="1"/>);
+    if (props.hasDelete) {
+        actions.push(<DeleteButton key="2"/>);
+    }
+    if (props.hasEdit) {
+        actions.push(<EditButton key="3"/>);
+    }
+    return actions;
+}
+
+/**
+ * crud list contains all the fields
+ * @param props
+ * @constructor
+ */
+export const CRUDList = (props) => (
+    <List {...props} filters={<CRUDFilter/>} title={props.options.label}>
+        <Datagrid>
+            <TextField source="id" sortable={false}/>
+            {props.options.fields.filter(field => field.showInList).map(renderField)}
+            {renderRecordAction(props)}
+        </Datagrid>
+    </List>
+);
+
+/**
+ * create page with simple form layout
+ *
+ * contains validators
+ * @param props
+ * @constructor
+ */
+export const CRUDCreate = (props) => (
+    <Create {...props} title={props.options.label}>
+        <SimpleForm redirect={props.options.redirect}>
+            {props.options.fields.map(renderInput)}
+        </SimpleForm>
+    </Create>
+);
+
+/**
+ * edit action
+ *
+ * render the delete action from schema define
+ *
+ * TODO render the custom actions
+ * @param basePath
+ * @param data
+ * @param refresh
+ * @param options
+ * @returns {XML}
+ * @constructor
+ */
+const EditActions = ({basePath, data, refresh, options}) => {
+    return <CardActions style={cardActionStyle}>
+        <ShowButton basePath={basePath} record={data}/>
+        <ListButton basePath={basePath}/>
+        {options.hasDelete ? <DeleteButton basePath={basePath} record={data}/> : null}
+        <FlatButton primary label="Refresh" onClick={refresh} icon={<NavigationRefresh/>}/>
+        {/* Add your custom actions */}
+        {/*<FlatButton primary label="Custom Action" onClick={customAction} />*/}
+    </CardActions>
+};
+
+/**
+ * edit page with the record value
+ * @param props
+ * @constructor
+ */
+export const CRUDEdit = (props) => (
+    <Edit actions={<EditActions options={props}/>} {...props} title={props.options.label}>
+        <SimpleForm redirect={props.options.redirect}>
+            {props.options.fields.map(renderInput)}
+        </SimpleForm>
+    </Edit>
+);
+
+/**
+ * show page
+ * @param props
+ * @constructor
+ */
+export const CRUDShow = (props) => (
+    <Show {...props}>
+        <SimpleShowLayout>
+            {props.options.fields.map(renderField)}
+        </SimpleShowLayout>
+    </Show>
+);
+
+/**
+ * delete page content
+ * @param record
+ * @param translate
+ * @constructor
+ */
+const CRUDDeleteTitle = ({record, translate}) => <span>
+    {'Delete'}&nbsp;
+    {record && `${record.id}`}
+</span>;
+
+/**
+ * delete page
+ * @param props
+ * @constructor
+ */
+export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/>}/>;
+
+/**
+ * render the list and show page of all kinds of fields
+ *
+ * ex: boolean select text number ...
+ * @param field
+ * @param index
+ */
+const renderField = (field) => (
+    field.component === 'Boolean' ? renderBooleanField(field) :
+        field.component === 'NullableBoolean' ? renderBooleanField(field) :
+            field.component === 'Autocomplete' ? renderSelectField(field) :
+                field.component === 'CheckboxGroup' ? renderSelectArrayField(field) :
+                    field.component === 'Date' ? renderDateField(field) :
+                        field.component === 'File' ? renderFileField(field) :
+                            field.component === 'LongText' ? renderTextField(field) :
+                                field.component === 'Number' ? renderNumberField(field) :
+                                    field.component === 'RadioButtonGroup' ? renderSelectField(field) :
+                                        field.component === 'Reference' ? renderReferenceField(field) :
+                                            field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
+                                                field.component === 'RichText' ? renderRichTextField(field) :
+                                                    field.component === 'Select' ? renderSelectField(field) :
+                                                        field.component === 'SelectArray' ? renderSelectArrayField(field) :
+                                                            field.component === 'Image' ? renderImageField(field) :
+                                                                renderTextField(field)
+
+);
+
+const renderBooleanField = (field) => (
+    <BooleanField key={field.name} label={field.label} source={field.name}/>
+)
+const renderReferenceField = (field) => (
+    <ReferenceField key={field.name} label={field.label} source={field.name} reference={field.reference}>
+        <TextField source={field.referenceOptionText}/>
+    </ReferenceField>
+)
+
+const renderSelectArrayField = (field) => (
+    <SelectArrayField key={field.name} label={field.label} source={field.name} choices={field.choices} optionText='name'
+                      optionValue='id'/>
+)
+const renderReferenceArrayField = (field) => (
+    <ReferenceArrayField key={field.name} label={field.label} reference={field.reference} source={field.name}>
+        <SingleFieldList>
+            <ChipField source={field.referenceOptionText}/>
+        </SingleFieldList>
+    </ReferenceArrayField>
+)
+
+const renderSelectField = (field) => (
+    <SelectField key={field.name} source={field.name} choices={field.choices}/>
+)
+
+const renderTextField = (field) => (
+    field.type === 'email' ? <EmailField key={field.name} source={field.name}/> :
+        field.type === 'url' ? <UrlField key={field.name} source={field.name}/> :
+            <TextField key={field.name} source={field.name}/>
+)
+const renderRichTextField = (field) => (
+    <RichTextField key={field.name} label={field.label} source={field.name} stripTags/>
+)
+const renderImageField = (field) => (
+    <ImageField key={field.name} source={field.name} title="title"/>
+)
+
+const renderDateField = (field) => (
+    <DateField key={field.name} source={field.name}/>
+)
+
+const renderFileField = (field) => (
+    <FileField key={field.name} source="url" title="title"/>
+)
+
+const renderNumberField = (field) => (
+    <NumberField key={field.name} source={field.name}/>
+)
+
+/**
+ * render new and edit page
+ * @param field
+ * @param index
+ */
+const renderInput = (field) => (
+    field.component === 'Boolean' ? renderBooleanInput(field) :
+        field.component === 'NullableBoolean' ? renderNullableBooleanInput(field) :
+            field.component === 'Autocomplete' ? renderAutoCompleteInput(field) :
+                field.component === 'CheckboxGroup' ? renderCheckboxGroupInput(field) :
+                    field.component === 'Date' ? renderDateInput(field) :
+                        field.component === 'File' ? renderFileInput(field) :
+                            field.component === 'LongText' ? renderLongTextInput(field) :
+                                field.component === 'Number' ? renderNumberInput(field) :
+                                    field.component === 'RadioButtonGroup' ? renderRadioButtonGroupInput(field) :
+                                        field.component === 'Reference' ? renderReferenceInput(field) :
+                                            field.component === 'ReferenceArray' ? renderReferenceArrayInput(field) :
+                                                field.component === 'RichText' ? renderRichTextInput(field) :
+                                                    field.component === 'Select' ? renderSelectInput(field) :
+                                                        field.component === 'SelectArray' ? renderSelectArrayInput(field) :
+                                                            field.component === 'Image' ? renderImageInput(field) :
+                                                                renderTextInput(field)
+);
+
+const renderAutoCompleteInput = (field) => (
+    <AutocompleteInput key={field.name} source={field.name} choices={field.choices} defaultValue={field.defaultValue}
+                       validate={generateValidators(field)}/>
+);
+
+const renderBooleanInput = (field) => (
+    <BooleanInput key={field.name} label={field.label} source={field.name} defaultValue={field.defaultValue}/>
+)
+
+const renderNullableBooleanInput = (field) => (
+    <NullableBooleanInput key={field.name} label={field.label} source={field.name} defaultValue={field.defaultValue}
+                          validate={generateValidators(field)}/>
+)
+
+const renderCheckboxGroupInput = (field) => (
+    <CheckboxGroupInput key={field.name} label={field.label} source={field.name} choices={field.choices}
+                        defaultValue={field.defaultValue}/>
+)
+
+const renderFileInput = (field) => (
+    <FileInput key={field.name} source={field.name} label={field.label} accept={'application/' + field.type}>
+        <FileField source="src" title="title"/>
+    </FileInput>
+)
+
+const renderDateInput = (field) => (
+    <DateInput key={field.name} source={field.name} label={field.label} defaultValue={field.defaultValue}
+               validate={generateValidators(field)}/>
+)
+
+const renderLongTextInput = (field) => (
+    <LongTextInput key={field.name} source={field.name} label={field.label} defaultValue={field.defaultValue}
+                   validate={generateValidators(field)}/>
+)
+
+const renderNumberInput = (field) => (
+    <NumberInput key={field.name} source={field.name} label={field.label} defaultValue={field.defaultValue}
+                 validate={generateValidators(field)}/>
+)
+
+const renderRadioButtonGroupInput = (field) => (
+    <RadioButtonGroupInput key={field.name} source={field.name} choices={field.choices} defaultValue={field.defaultValue}
+                           validate={generateValidators(field)}/>
+)
+
+const renderTextInput = (field) => (
+    <TextInput key={field.name} label={field.label} source={field.name} type={field.type} defaultValue={field.defaultValue}
+               validate={generateValidators(field)}/>
+)
+
+const renderReferenceInput = (field) => (
+    <ReferenceInput key={field.name} label={field.label} source={field.name} reference={field.reference}
+                    defaultValue={field.defaultValue} validate={generateValidators(field)} allowEmpty>
+        <SelectInput source={field.referenceOptionText}/>
+    </ReferenceInput>
+)
+
+const renderReferenceArrayInput = (field) => (
+    <ReferenceArrayInput key={field.name} source={field.name} reference={field.reference} defaultValue={field.defaultValue}
+                         validate={generateValidators(field)} allowEmpty>
+        <SelectArrayInput source={field.referenceOptionText}/>
+    </ReferenceArrayInput>
+)
+const renderRichTextInput = (field) => (
+    <RichTextInput key={field.name} label={field.label} source={field.name} defaultValue={field.defaultValue}
+                   validate={generateValidators(field)}/>
+)
+const renderSelectInput = (field) => (
+    <SelectInput key={field.name} source={field.name} choices={field.choices} defaultValue={field.defaultValue}
+                 validate={generateValidators(field)}/>
+)
+
+const renderSelectArrayInput = (field) => (
+    <SelectArrayInput key={field.name} label={field.label} source={field.name} choices={field.choices}
+                      defaultValue={field.defaultValue} validate={generateValidators(field)}/>
+)
+
+const renderImageInput = (field) => (
+    <ImageInput key={field.name} source={field.name} label={field.label} accept="image/*"
+                validate={generateValidators(field)}>
+        <ImageField source="src" title="title"/>
+    </ImageInput>
+)
+
+/**
+ * generate validators from field schema define
+ *
+ * validate for email number  required
+ *
+ * TODO custom validators
+ * @param field
+ * @returns {Array}
+ */
+const generateValidators = (field) => {
+    const validators = [];
+    if (field.required) validators.push(required);
+    if (field.type === 'email' && field.component === 'Text') validators.push(email);
+    if (field.component === 'Number') {
+        validators.push(number);
+        if (field.minValue) {
+            validators.push(minValue(field.minValue));
+        }
+        if (field.maxValue) {
+            validators.push(maxValue(field.maxValue));
+        }
+    }
+    if (field.minLength) validators.push(minLength(field.minLength));
+    if (field.maxLength) validators.push(maxLength(field.maxLength));
+    return validators;
+}

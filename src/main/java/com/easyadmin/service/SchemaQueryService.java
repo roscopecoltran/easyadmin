@@ -1,8 +1,14 @@
 package com.easyadmin.service;
 
+import com.easyadmin.schema.Entity;
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.InputType;
 import com.easyadmin.schema.field.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Block;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +18,32 @@ import java.util.List;
  */
 @org.springframework.stereotype.Component
 public class SchemaQueryService {
+
+    public List<Entity> findEntitys() {
+        List<Entity> entities = new ArrayList<>();
+        Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
+        DbUtil.getCollection("entitys").find().forEach(wrapBlock);
+        return entities;
+    }
+
+    public Entity findOne(String entityId) {
+        List<Entity> entities = new ArrayList<>();
+        Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
+        DbUtil.getCollection("entitys").find(new BasicDBObject("id", entityId)).forEach(wrapBlock);
+        return entities.get(0);
+    }
+
+    private Entity doc2Entity(Document doc) {
+        return new Entity(doc.getString("id"), doc.getString("label"), doc.getString("name"));
+    }
+
+    public List<Field> findFields(String entity) {
+        List<Field> fields = new ArrayList<>();
+        final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Block<Document> wrapBlock = doc -> fields.add(mapper.convertValue(doc, Field.class));
+        DbUtil.getCollection("fields").find(new BasicDBObject("entity", entity)).forEach(wrapBlock);
+        return fields;
+    }
 
     public List<Field> list() {
         List<Field> fields = new ArrayList<>();
