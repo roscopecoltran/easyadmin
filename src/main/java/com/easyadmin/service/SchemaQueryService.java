@@ -45,6 +45,14 @@ public class SchemaQueryService {
         return fields;
     }
 
+    public Field findOneField(String fieldId) {
+        List<Field> fields = new ArrayList<>();
+        final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Block<Document> wrapBlock = doc -> fields.add(mapper.convertValue(doc, Field.class));
+        DbUtil.getCollection("fields").find(new BasicDBObject("id", fieldId)).forEach(wrapBlock);
+        return fields.get(0);
+    }
+
     public List<Field> list() {
         List<Field> fields = new ArrayList<>();
         fields.add(BooleanField.builder()

@@ -1,12 +1,20 @@
 package com.easyadmin.schema.resource;
 
+import com.easyadmin.schema.Entity;
+import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.field.Field;
+import com.easyadmin.service.DataMutationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * schema mutation endpoints ,
@@ -19,9 +27,30 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 public class SchemaMutationResource {
-    @RequestMapping(value = "/schemas", method = RequestMethod.POST)
-    public ResponseEntity addField(Model model) {
-        log.info("{}", JSON.serialize(model));
-        return null;
+    @Autowired
+    DataMutationService dataMutationService;
+
+    @PostMapping(value = "/schemas/entitys")
+    public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
+        dataMutationService.save("entitys", new ObjectMapper().convertValue(entity, Map.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(entity);
+    }
+
+    @PutMapping(value = "/schemas/entitys/{id}")
+    public ResponseEntity<Entity> editEntity(@PathVariable("id") String id, @RequestBody Entity entity) {
+        dataMutationService.update("entitys", id, new ObjectMapper().convertValue(entity, Map.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(entity);
+    }
+
+    @PostMapping(value = "/schemas/fields")
+    public ResponseEntity<Field> addField(@RequestBody Field field) {
+        dataMutationService.save("fields", new ObjectMapper().convertValue(field, Map.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(field);
+    }
+
+    @PutMapping(value = "/schemas/fields/{id}")
+    public ResponseEntity<Field> editField(@PathVariable("id") String id, @RequestBody Field field) {
+        dataMutationService.update("fields", id, new ObjectMapper().convertValue(field, Map.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 }

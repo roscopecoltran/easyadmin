@@ -13,30 +13,29 @@ import {
     BooleanField,
     BooleanInput,
     SelectField,
-    ReferenceInput
+    ReferenceInput,
+    ReferenceField
 } from 'admin-on-rest';
 import ComponentType from './ComponentType';
-import { CardActions } from 'material-ui/Card';
+import {CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import { ListButton, ShowButton, DeleteButton,CreateButton,FilterButton } from 'admin-on-rest';
-import {AddFieldButton} from './addFieldButton';
+import {ListButton, ShowButton, DeleteButton, CreateButton, FilterButton} from 'admin-on-rest';
+const keys = Object.keys(ComponentType);
 const arr = [];
-for (var [key, value] of Object.entries(ComponentType)) {
-    arr.push({id: key, name: value});
-}
-
+keys.forEach(v => {
+    arr.push({id: v, name: ComponentType[v]});
+})
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
     float: 'right',
 };
 
-const CreateFieldActions = ({ resource, filters, displayedFilters, filterValues, basePath, showFilter, refresh }) => (
+const CreateFieldActions = ({resource, filters, displayedFilters, filterValues, basePath, showFilter, refresh}) => (
     <CardActions style={cardActionStyle}>
-        <AddFieldButton />
-        <FilterButton filterValues={filterValues} basePath={basePath} />
-        <FlatButton primary label="refresh" onClick={refresh} icon={<NavigationRefresh />} />
+        <FilterButton filterValues={filterValues} basePath={basePath}/>
+        <FlatButton primary label="refresh" onClick={refresh} icon={<NavigationRefresh />}/>
         {/* Add your custom actions */}
     </CardActions>
 );
@@ -56,12 +55,11 @@ export const FieldList = (props) => (
 );
 
 export const FieldCreate = (props) => (
-    <Create {...props}>
-        <SimpleForm redirect="list">
-            <ReferenceInput label="实体" source="entity" reference="entitys" allowEmpty>
-                <SelectInput optionText="label" />
-            </ReferenceInput>
-            <SelectInput source="component" label="字段类型" choices={arr}/>
+    <Create {...props} actions={null}>
+        <SimpleForm redirect={'/entitys/' + props.location.data.entity}>
+            <TextInput source="entity" defaultValue={props.location.data.entity} disabled={true}/>
+            <SelectInput source="component" label="字段类型" choices={arr} defaultValue={props.location.data.component}
+                         disabled={true}/>
             <TextInput source="name" label="唯一KEY"/>
             <TextInput source="label" label="标签"/>
             <BooleanInput label="是否必填" source="required"/>
@@ -70,9 +68,10 @@ export const FieldCreate = (props) => (
 );
 
 export const FieldEdit = (props) => (
-    <Edit  {...props}>
-        <SimpleForm redirect="list">
-            <DisabledInput source="component" label="字段类型" choices={arr}/>
+    <Edit  {...props} actions={null}>
+        <SimpleForm redirect={'/entitys'}>
+            <DisabledInput source="entity"/>
+            <SelectField source="component" label="字段类型" choices={arr} disabled={true}/>
             <DisabledInput source="name" label="唯一KEY"/>
             <TextInput source="label" label="标签"/>
             <BooleanInput label="是否必填" source="required"/>

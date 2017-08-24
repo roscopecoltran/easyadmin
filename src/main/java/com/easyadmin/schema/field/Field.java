@@ -1,6 +1,7 @@
 package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.InputType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,12 +25,36 @@ import java.io.Serializable;
 @ToString
 @EqualsAndHashCode
 public class Field implements Serializable {
+    protected String entity;
     protected String id;
     protected String name;
     protected Component component;
     protected String label;
     protected Object defaultValue;
     protected Boolean required;
+
+    /**
+     * array field
+     */
+    private ChoiceItem[] choices;
+
+    /**
+     * input type
+     */
+    private InputType type;
+    private Integer maxLength;
+
+    /**
+     * reference field
+     */
+    private String reference;
+    private String referenceOptionText;
+
+    /**
+     * number field
+     */
+    private String minValue;
+    private String maxValue;
 
     public Field(String name, Component component, String label, Object defaultValue, Boolean required) {
         this.name = name;

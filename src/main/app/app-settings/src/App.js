@@ -5,6 +5,7 @@ import {EntityList,EntityCreate,EntityEdit} from './system/entitys';
 import {FieldList,FieldCreate,FieldEdit} from './system/fields';
 import Menu from './Menu';
 import routers from './routers';
+import Dashboard from './Dashboard';
 /**
  * i18n
  * @type {{zh-cn}}
@@ -28,7 +29,7 @@ if (process.env.NODE_ENV === 'development') {
 const schemaRestClient = jsonServerRestClient(url + '/schemas');
 
 const App = () => (
-    <Admin menu={Menu} restClient={schemaRestClient} locale='zh-cn' messages={messages}>
+    <Admin dashboard={Dashboard} menu={Menu} restClient={schemaRestClient} locale='zh-cn' messages={messages}>
         <Resource name="entitys" list={EntityList} create={EntityCreate} edit={EntityEdit}/>
         <Resource name="fields" list={FieldList} create={FieldCreate} edit={FieldEdit} />
     </Admin>

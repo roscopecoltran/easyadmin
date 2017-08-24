@@ -1,16 +1,37 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-
-export default class AddFieldButton extends React.Component {
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import ComponentType from './ComponentType';
+import {Link} from 'react-router-dom';
+const keys = Object.keys(ComponentType);
+const arr = [];
+keys.forEach(v => {
+    arr.push({id: v, name: ComponentType[v]});
+})
+const styles = {
+    floating: {
+        margin: 0,
+        top: 'auto',
+        right: 20,
+        bottom: 60,
+        left: 'auto',
+        position: 'fixed',
+    },
+    flat: {
+        overflow: 'inherit',
+    },
+};
+export default class PopoverExampleSimple extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             open: false,
+            props: props
         };
     }
 
@@ -33,9 +54,11 @@ export default class AddFieldButton extends React.Component {
     render() {
         return (
             <div>
-                <RaisedButton
+                <FlatButton
                     onClick={this.handleTouchTap}
-                    label="Click me"
+                    label="Add Fields"
+                    style={styles.flat}
+                    icon={<ContentAdd />}
                 />
                 <Popover
                     open={this.state.open}
@@ -45,14 +68,15 @@ export default class AddFieldButton extends React.Component {
                     onRequestClose={this.handleRequestClose}
                 >
                     <Menu>
-                        <MenuItem primaryText="Refresh" />
-                        <MenuItem primaryText="Help &amp; feedback" />
-                        <MenuItem primaryText="Settings" />
-                        <MenuItem primaryText="Sign out" />
+                        {arr.map((field) => (
+                            <MenuItem key={field.id} primaryText={field.name} containerElement={<Link to={{
+                                pathname: "/fields/create",
+                                data: {entity: this.state.props.record.id, component: field.id},
+                            }}/>}/>
+                        ))}
                     </Menu>
                 </Popover>
             </div>
         );
     }
 }
-
