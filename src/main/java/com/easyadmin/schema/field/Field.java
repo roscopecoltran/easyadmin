@@ -34,14 +34,14 @@ public class Field implements Serializable {
     protected Boolean required;
 
     /**
-     * array field
+     * array field Autocomplete、CheckboxGroup、RadioButtonGroup、SelectArray、Select
      */
     private ChoiceItem[] choices;
 
     /**
      * input type
      */
-    private InputType type;
+    private InputType inputType;
     private Integer maxLength;
 
     /**
