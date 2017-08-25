@@ -1,18 +1,17 @@
-import React from 'react';
+import React from "react";
 import {
-    List,
-    Edit,
-    Datagrid,
-    TextField,
     Create,
-    SimpleForm,
-    TextInput,
-    EditButton,
+    Datagrid,
     DisabledInput,
-    ReferenceManyField
-} from 'admin-on-rest';
-import { TabbedForm, FormTab ,CreateButton,DeleteButton,Button} from 'admin-on-rest';
-import PopoverExampleSimple from './AddFieldButton';
+    Edit,
+    EditButton,
+    List,
+    ReferenceManyField,
+    SimpleForm,
+    TextField,
+    TextInput
+} from "admin-on-rest";
+import AddFieldButton from "./AddFieldButton";
 
 export const EntityList = (props) => (
     <List {...props} pagination={null} perPage={9999}>
@@ -38,7 +37,7 @@ export const EntityEdit = (props) => (
         <SimpleForm>
                 <DisabledInput source="name" label="唯一KEY"/>
                 <TextInput source="label" label="标签"/>
-                <PopoverExampleSimple/>
+                <AddFieldButton/>
                 <ReferenceManyField  label="Fields" reference="fields" target="entity" >
                     <Datagrid>
                         <TextField source="name" />

@@ -1,10 +1,10 @@
-import FlatButton from 'material-ui/FlatButton';
-import React, { Component } from 'react';
-import { FieldArray, Field } from 'redux-form';
-import PropTypes from 'prop-types';
+import FlatButton from "material-ui/FlatButton";
+import React, {Component} from "react";
+import {Field, FieldArray} from "redux-form";
+import PropTypes from "prop-types";
 
-import ContentCreateIcon from 'material-ui/svg-icons/content/create';
-import ActionDeleteIcon from 'material-ui/svg-icons/action/delete';
+import ContentCreateIcon from "material-ui/svg-icons/content/create";
+import ActionDeleteIcon from "material-ui/svg-icons/action/delete";
 
 export class EmbeddedManyInput extends Component {
     constructor(props) {

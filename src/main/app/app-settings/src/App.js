@@ -1,11 +1,10 @@
-import React from 'react';
-import {jsonServerRestClient, Admin, Resource} from 'admin-on-rest';
-import zhcnMsg from 'aor-language-chinese';
-import {EntityList,EntityCreate,EntityEdit} from './system/entitys';
-import {FieldList,FieldCreate,FieldEdit} from './system/fields';
-import Menu from './Menu';
-import routers from './routers';
-import Dashboard from './Dashboard';
+import React from "react";
+import {Admin, jsonServerRestClient, Resource} from "admin-on-rest";
+import zhcnMsg from "aor-language-chinese";
+import {EntityCreate, EntityEdit, EntityList} from "./system/entitys";
+import {FieldCreate, FieldEdit, FieldList} from "./system/fields";
+import Menu from "./Menu";
+import Dashboard from "./Dashboard";
 /**
  * i18n
  * @type {{zh-cn}}

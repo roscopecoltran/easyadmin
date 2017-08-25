@@ -1,11 +1,11 @@
-import React from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import ComponentType from './ComponentType';
-import {Link} from 'react-router-dom';
+import React from "react";
+import FlatButton from "material-ui/FlatButton";
+import Popover from "material-ui/Popover";
+import Menu from "material-ui/Menu";
+import MenuItem from "material-ui/MenuItem";
+import ContentAdd from "material-ui/svg-icons/content/add";
+import ComponentType from "./ComponentType";
+import {Link} from "react-router-dom";
 const keys = Object.keys(ComponentType);
 const arr = [];
 keys.forEach(v => {
@@ -24,7 +24,7 @@ const styles = {
         overflow: 'inherit',
     },
 };
-export default class PopoverExampleSimple extends React.Component {
+export default class AddFieldButton extends React.Component {
 
     constructor(props) {
         super(props);
