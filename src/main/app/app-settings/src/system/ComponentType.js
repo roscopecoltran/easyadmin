@@ -1,12 +1,13 @@
 export default {
-    Autocomplete:'自动完成',
+    Text:'文本',
+    Autocomplete:'选择',
     Boolean:'布尔类型',
     NullableBoolean:'可以为空布尔类型',
     CheckboxGroup:'复选框',
     Date:'日期',
     Disabled:'不可编辑',
-    File:'文件',
-    Image:'图片',
+    // File:'文件',
+    // Image:'图片',
     LongText:'长文本',
     Number:'数字',
     RadioButtonGroup:'单选框',
@@ -14,6 +15,6 @@ export default {
     Reference:'引用类型',
     RichText:'富文本',
     SelectArray:'多选',
-    Select:'选择',
-    Text:'文本'
+    // Select:'选择',
+
 }

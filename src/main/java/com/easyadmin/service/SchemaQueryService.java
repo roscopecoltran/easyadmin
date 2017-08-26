@@ -11,7 +11,9 @@ import com.mongodb.Block;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongxinyi on 2017-08-10.
@@ -21,8 +23,20 @@ public class SchemaQueryService {
 
     public List<Entity> findEntitys() {
         List<Entity> entities = new ArrayList<>();
-        Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
-        DbUtil.getCollection("entitys").find().forEach(wrapBlock);
+        Block<Document> wrapEntitysBlock = doc -> entities.add(doc2Entity(doc));
+        DbUtil.getCollection("entitys").find().forEach(wrapEntitysBlock);
+
+        Map<String,List<Field>> entity2FieldsMap=new HashMap();
+        entities.forEach(entity ->
+            entity2FieldsMap.put(entity.getId(),new ArrayList<>())
+        );
+        Block<Document> wrapFieldsBlock = doc -> {
+            entity2FieldsMap.get(doc.getString("entity")).add(doc2Field(doc));
+        };
+
+        DbUtil.getCollection("fields").find().forEach(wrapFieldsBlock);
+
+        entities.forEach(entity -> entity.setFields(entity2FieldsMap.get(entity.getId())));
         return entities;
     }
 
@@ -31,6 +45,10 @@ public class SchemaQueryService {
         Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
         DbUtil.getCollection("entitys").find(new BasicDBObject("id", entityId)).forEach(wrapBlock);
         return entities.get(0);
+    }
+
+    private Field doc2Field(Document doc) {
+        return new ObjectMapper().convertValue(doc,Field.class);
     }
 
     private Entity doc2Entity(Document doc) {

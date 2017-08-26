@@ -15,7 +15,9 @@ import {
     SelectInput,
     SimpleForm,
     TextField,
-    TextInput
+    TextInput,
+    DateInput,
+    ReferenceField
 } from "admin-on-rest";
 import ComponentType from "./ComponentType";
 import {CardActions} from "material-ui/Card";
@@ -59,22 +61,27 @@ export const FieldList = (props) => (
 const arrayField = ['Autocomplete', 'CheckboxGroup', 'RadioButtonGroup', 'SelectArray', 'Select'];
 const checkNumber = (value) => value === 'Number';
 const checkText = (value) => value === 'Text';
-const checkReference = (value) => value === 'Reference';
+const checkDate = (value) => value === 'Date';
+const checkReference = (value) => ['Reference','ReferenceArray'].includes(value);
 const checkArray = (value) => arrayField.includes(value);
 const checkReferenceEntity = (value) => value;
-export const FieldCreate = (props) => (
-    <Create {...props} actions={null}>
-        <SimpleForm redirect={'/entitys/'}>
-            <ReferenceInput label="对象" source="entity" reference="entitys" allowEmpty validate={required}>
+export const FieldCreate = (props) => {
+    const record=props.location.data;
+
+    return   <Create {...props} actions={null}>
+        <SimpleForm redirect={'/entitys'+(record ? '/'+record.entity:'')}>
+
+            <ReferenceInput label="对象" source="entity" reference="entitys" allowEmpty defaultValue={record?record.entity:''} validate={required}>
                 <SelectInput optionText="label"/>
             </ReferenceInput>
-            <SelectInput source="component" choices={arr}/>
-            <TextInput source="name" label="唯一KEY" validate={[required]}/>
             <TextInput source="label" label="标签" validate={[required]}/>
+            <SelectInput source="component" choices={arr} defaultValue={record?record.component:'Text'}/>
+            <TextInput source="name" label="唯一KEY" validate={[required]}/>
             <BooleanInput label="是否必填" source="required"/>
             <DependentInput dependsOn="component" resolve={checkNumber}>
                 <NumberInput source="minValue" label="最小值"/>
                 <NumberInput source="maxValue" label="最大值"/>
+                <NumberInput source="defaultValue" label="默认值"/>
             </DependentInput>
             <DependentInput dependsOn="component" resolve={checkText}>
                 <SelectInput source="inputType" validate={required} label="文本类型" choices={[
@@ -83,6 +90,8 @@ export const FieldCreate = (props) => (
                     {id: 'password', name: '密码'},
                     {id: 'url', name: '网址'},
                 ]}/>
+                <NumberInput source="maxLength" label="最大长度"/>
+                <TextInput source="defaultValue" label="默认值"/>
             </DependentInput>
             <DependentInput dependsOn="component" resolve={checkReference}>
                 <ReferenceInput label="引用对象" source="reference" reference="entitys" allowEmpty validate={required}>
@@ -96,23 +105,27 @@ export const FieldCreate = (props) => (
                     <TextInput source="name"/>
                 </EmbeddedManyInput>
             </DependentInput>
+
         </SimpleForm>
     </Create>
-);
+};
 
-export const FieldEdit = (props) => (
-    <Edit  {...props} actions={null}>
-        <SimpleForm redirect={'/entitys'}>
-            <ReferenceInput label="引用对象" source="entity" reference="entitys" allowEmpty validate={required}>
-                <SelectInput optionText="label"/>
-            </ReferenceInput>
+export const FieldEdit = (props) => {
+    const record = props.location.data;
+    return <Edit  {...props} actions={null}>
+        <SimpleForm redirect={'/entitys' + (record ? record.entity : '')}>
+            <ReferenceField label="引用对象" source="entity" reference="entitys" allowEmpty
+                            defaultValue={record ? record.entity : ''} validate={required}>
+                <TextField source="label"/>
+            </ReferenceField>
+            <TextInput source="label" label="标签" validate={[required]}/>
             <SelectInput source="component" choices={arr}/>
             <TextInput source="name" label="唯一KEY" validate={[required]}/>
-            <TextInput source="label" label="标签" validate={[required]}/>
             <BooleanInput label="是否必填" source="required"/>
             <DependentInput dependsOn="component" resolve={checkNumber}>
                 <NumberInput source="minValue" label="最小值"/>
                 <NumberInput source="maxValue" label="最大值"/>
+                <NumberInput source="defaultValue" label="默认值"/>
             </DependentInput>
             <DependentInput dependsOn="component" resolve={checkText}>
                 <SelectInput source="inputType" validate={required} label="文本类型" choices={[
@@ -121,6 +134,8 @@ export const FieldEdit = (props) => (
                     {id: 'password', name: '密码'},
                     {id: 'url', name: '网址'},
                 ]}/>
+                <NumberInput source="maxLength" label="最大长度"/>
+                <TextInput source="defaultValue" label="默认值"/>
             </DependentInput>
             <DependentInput dependsOn="component" resolve={checkReference}>
                 <ReferenceInput label="引用对象" source="entity" reference="entitys" allowEmpty validate={required}>
@@ -128,11 +143,6 @@ export const FieldEdit = (props) => (
                 </ReferenceInput>
             </DependentInput>
 
-            <DependentInput dependsOn="reference" resolve={checkReferenceEntity}>
-                <ReferenceInput label="引用对象" source="reference" reference="fields" allowEmpty validate={required}>
-                    <SelectInput optionText="label"/>
-                </ReferenceInput>
-            </DependentInput>
 
             <DependentInput dependsOn="component" resolve={checkArray}>
                 <EmbeddedManyInput source="choices" validate={required} elStyle={{display: 'inline-block'}}>
@@ -143,5 +153,5 @@ export const FieldEdit = (props) => (
 
         </SimpleForm>
     </Edit>
-);
+};
 
