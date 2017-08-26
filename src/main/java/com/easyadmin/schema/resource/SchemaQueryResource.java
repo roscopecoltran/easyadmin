@@ -3,6 +3,7 @@ package com.easyadmin.schema.resource;
 import com.easyadmin.schema.Entity;
 import com.easyadmin.schema.field.Field;
 import com.easyadmin.service.SchemaQueryService;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

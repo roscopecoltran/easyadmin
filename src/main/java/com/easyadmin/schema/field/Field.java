@@ -2,6 +2,7 @@ package com.easyadmin.schema.field;
 
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.InputType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,6 +25,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class Field implements Serializable {
     protected String entity;
     protected String id;
@@ -56,6 +58,7 @@ public class Field implements Serializable {
     private String minValue;
     private String maxValue;
 
+    private Boolean showInList;
     public Field(String name, Component component, String label, Object defaultValue, Boolean required) {
         this.name = name;
         this.component = component;

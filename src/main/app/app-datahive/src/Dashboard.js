@@ -5,6 +5,6 @@ import { ViewTitle } from 'admin-on-rest/lib/mui';
 export default () => (
     <Card>
         <ViewTitle title="Dashboard" />
-        <CardText>Lorem ipsum sic dolor amet...</CardText>
+        <CardText>[TODO] this content will show notify , schedule , and reports</CardText>
     </Card>
 );

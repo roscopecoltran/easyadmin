@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {jsonServerRestClient, Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
-import schemas from './schemas';
 import zhcnMsg from 'aor-language-chinese';
 import Dashboard from './Dashboard';
+import localSchemas from './schemas';
+import AdminBuilder from './AdminBuilder';
 // import addUploadFeature from './addUploadFeature';
 /**
  * i18n
@@ -32,20 +33,34 @@ const dataRestClient = jsonServerRestClient(url + '/api');
  */
 // const uploadCapableClient = addUploadFeature(restClient);
 
-const renderResources = (member, index) => {
-    const c = member.crud.includes('c');
-    const u = member.crud.includes('u');
-    const d = member.crud.includes('d');
-    return <Resource key={index} label={member.label} name={member.name} options={member} list={CRUDList}
-                     create={c ? CRUDCreate : null}
-                     edit={u ? CRUDEdit : null}
-                     show={CRUDShow} remove={d ? CRUDDelete : null}/>;
-};
+class App extends Component {
+    constructor(props) {
+        super(props);
+    }
 
-const App = () => (
-    <Admin dashboard={Dashboard}  restClient={dataRestClient} locale='zh-cn' messages={messages}>
-        {schemas.map(renderResources)}
-    </Admin>
-);
+    state = {schemas:null};
+
+    componentDidMount() {
+        this.getSchemas();
+    }
+
+    getSchemas() {
+        fetch(url + `/schemas/entitys`)
+            .then((response) => {
+                return response.json()
+            })
+            .then((json) => {
+                this.setState({
+                    schemas: json
+                })
+            });
+    }
+
+    render() {
+        if (null === this.state.schemas) return <div>Loading...</div>;
+
+        return <AdminBuilder {...this.props} schemas={this.state.schemas} dashboard={Dashboard} restClient={dataRestClient} locale='zh-cn' messages={messages}/>
+    }
+};
 
 export default App;

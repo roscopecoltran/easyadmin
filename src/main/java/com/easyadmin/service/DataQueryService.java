@@ -46,7 +46,7 @@ public class DataQueryService {
     public List<Map<String, Object>> list(String entity, Map<String, Object> allRequestParams) {
         MongoCollection collection = DbUtil.getCollection(entity);
         List<Map<String, Object>> dataList = new LinkedList<>();
-        DBObject query = getQuery(allRequestParams);
+        DBObject query = getQuery(entity,allRequestParams);
         Map<String, Object> collect = allRequestParams.entrySet()
                 .stream()
                 .filter(map -> map.getKey().startsWith("_"))
@@ -75,7 +75,7 @@ public class DataQueryService {
      */
     public long count(String entity, Map<String, Object> allRequestParams) {
         MongoCollection collection = DbUtil.getCollection(entity);
-        DBObject query = getQuery(allRequestParams);
+        DBObject query = getQuery(entity,allRequestParams);
         long count = collection.count((Bson) query);
         return count;
     }
@@ -102,7 +102,7 @@ public class DataQueryService {
      * @param allRequestParams
      * @return
      */
-    private DBObject getQuery(Map<String, Object> allRequestParams) {
+    private DBObject getQuery(String entity,Map<String, Object> allRequestParams) {
         // text search
         Object search = allRequestParams.get(Consts.Q);
         QueryBuilder query = new QueryBuilder();
@@ -116,7 +116,7 @@ public class DataQueryService {
                 .filter(map ->
                         (!map.getKey().equals(Consts.Q) && !map.getKey().startsWith("_"))
                 )
-                .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaQueryService.list()).get()));
+                .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaQueryService.findFields(entity)).get()));
         // logic del flag
         query.and(QueryBuilder.start(Consts.DEL_FLAG).notEquals(true).get());
         return query.get();
