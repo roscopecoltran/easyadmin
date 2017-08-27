@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Chip from 'material-ui/Chip';
+
 const styles = {
     chip: {
         margin: 4,
@@ -14,7 +15,7 @@ const styles = {
 const SelectArrayField = ({source, record, choices, elStyle, optionValue, optionText, translate, translateChoice = {}}) => {
     const value = record[source];
     if (!value) return null;
-    return <div style={styles.wrapper}>{value.map((v,index) => {
+    return <div style={styles.wrapper}>{value.map((v, index) => {
         const choice = choices.find(c => c[optionValue] === v);
         return <Chip key={index} style={styles.chip}>{choice[optionText]}</Chip>
     })}</div>;

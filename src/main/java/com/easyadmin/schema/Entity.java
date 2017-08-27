@@ -18,15 +18,13 @@ import java.util.List;
 public final class Entity {
     private String id;
     private String label;
-    private String name;
     private List<Field> fields;
 
     private CRUDPermission[] crud;
     private Redirect redirect;// 新增记录后跳转到哪个页面 edit,show,list
     @Builder
-    public Entity(String id, String label, String name) {
+    public Entity(String id, String label) {
         this.id = id;
         this.label = label;
-        this.name = name;
     }
 }

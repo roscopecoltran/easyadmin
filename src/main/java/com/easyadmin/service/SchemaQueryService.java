@@ -40,7 +40,7 @@ public class SchemaQueryService {
                 entity2FieldsMap.get(doc.getString("entity")).add(doc2Field(doc));
         };
 
-        DbUtil.getCollection("fields").find().forEach(wrapFieldsBlock);
+        DbUtil.getCollection(Consts.SYS_COL_Field).find().forEach(wrapFieldsBlock);
 
         entities.forEach(entity -> {
             entity.setCrud(CRUDPermission.values());
@@ -69,7 +69,7 @@ public class SchemaQueryService {
     }
 
     private Entity doc2Entity(Document doc) {
-        return new Entity(doc.getString("id"), doc.getString("label"), doc.getString("name"));
+        return new Entity(doc.getString("id"), doc.getString("label"));
     }
 
     public List<Field> findFields(String entity) {

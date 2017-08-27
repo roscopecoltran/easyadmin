@@ -5,13 +5,14 @@ import MenuItem from "material-ui/MenuItem";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import compose from "recompose/compose";
+
 const Menu = ({resources, onMenuTap, logout}) => (
     <div>
-        <DashboardMenuItem onTouchTap={onMenuTap} />
+        <DashboardMenuItem onTouchTap={onMenuTap}/>
         <MenuItem
-            containerElement={<Link to="/entitys"/>}
+            containerElement={<Link to="/_entitys"/>}
             primaryText='Settings'
-            leftIcon={<SettingsIcon />}
+            leftIcon={<SettingsIcon/>}
             onTouchTap={onMenuTap}
         />
     </div>

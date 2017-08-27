@@ -24,7 +24,7 @@ public class SchemaQueryResource {
     @Autowired
     SchemaQueryService schemaQueryService;
 
-    @GetMapping("/schemas/entitys")
+    @GetMapping("/schemas/_entitys")
     public ResponseEntity<List<Entity>> list() {
         List<Entity> entities = schemaQueryService.findEntitys();
         return ResponseEntity
@@ -34,7 +34,7 @@ public class SchemaQueryResource {
                 .body(entities);
     }
 
-    @GetMapping("/schemas/entitys/{entityId}")
+    @GetMapping("/schemas/_entitys/{entityId}")
     public ResponseEntity<Entity> findOne(@PathVariable("entityId")String entityId) {
         Entity entity = schemaQueryService.findOne(entityId);
         return ResponseEntity
@@ -42,7 +42,7 @@ public class SchemaQueryResource {
                 .body(entity);
     }
 
-    @GetMapping("/schemas/fields")
+    @GetMapping("/schemas/_fields")
     public ResponseEntity<List<Field>> list(@RequestParam("entity") String entity) {
         List<Field> fields = schemaQueryService.findFields(entity);
         return ResponseEntity
@@ -52,7 +52,7 @@ public class SchemaQueryResource {
                 .body(fields);
     }
 
-    @GetMapping("/schemas/fields/{fieldId}")
+    @GetMapping("/schemas/_fields/{fieldId}")
     public ResponseEntity<Field> findOneField(@PathVariable("fieldId")String fieldId) {
         Field field= schemaQueryService.findOneField(fieldId);
         return ResponseEntity

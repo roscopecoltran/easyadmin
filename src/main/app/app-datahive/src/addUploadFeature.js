@@ -7,7 +7,7 @@
 const convertFileToBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file['rawFile']);
-    reader.onload = () => resolve({src:reader.result,title:file.title});
+    reader.onload = () => resolve({src: reader.result, title: file.title});
     reader.onerror = reject;
 });
 
@@ -16,9 +16,9 @@ const convertFileToBase64 = file => new Promise((resolve, reject) => {
  * the `picture` sent property, with `src` and `title` attributes.
  */
 export const addUploadCapabilities = requestHandler => (type, resource, params) => {
-    if (type === 'UPDATE' || type==='CREATE') {
+    if (type === 'UPDATE' || type === 'CREATE') {
         for (var key of Object.keys(params.data)) {
-            if(params.data[key] instanceof Array && params.data[key][0]['rawFile'] instanceof File){
+            if (params.data[key] instanceof Array && params.data[key][0]['rawFile'] instanceof File) {
                 // only freshly dropped pictures are instance of File
                 // const formerPictures = params.data.pictures.filter(p => !(p instanceof File));
                 const newPictures = params.data[key];

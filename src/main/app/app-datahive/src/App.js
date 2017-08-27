@@ -38,14 +38,14 @@ class App extends Component {
         super(props);
     }
 
-    state = {schemas:null};
+    state = {schemas: null};
 
     componentDidMount() {
         this.getSchemas();
     }
 
     getSchemas() {
-        fetch(url + `/schemas/entitys`)
+        fetch(url + `/schemas/_entitys`)
             .then((response) => {
                 return response.json()
             })
@@ -59,7 +59,8 @@ class App extends Component {
     render() {
         if (null === this.state.schemas) return <div>Loading...</div>;
 
-        return <AdminBuilder {...this.props} schemas={this.state.schemas} dashboard={Dashboard} restClient={dataRestClient} locale='zh-cn' messages={messages}/>
+        return <AdminBuilder {...this.props} schemas={this.state.schemas} dashboard={Dashboard}
+                             restClient={dataRestClient} locale='zh-cn' messages={messages}/>
     }
 };
 

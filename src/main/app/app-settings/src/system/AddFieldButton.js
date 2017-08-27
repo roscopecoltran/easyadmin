@@ -6,6 +6,7 @@ import MenuItem from "material-ui/MenuItem";
 import ContentAdd from "material-ui/svg-icons/content/add";
 import ComponentType from "./ComponentType";
 import {Link} from "react-router-dom";
+
 const keys = Object.keys(ComponentType);
 const arr = [];
 keys.forEach(v => {
@@ -56,9 +57,9 @@ export default class AddFieldButton extends React.Component {
             <div>
                 <FlatButton
                     onClick={this.handleTouchTap}
-                    label="Add Fields"
+                    label="新增字段"
                     style={styles.flat}
-                    icon={<ContentAdd />}
+                    icon={<ContentAdd/>}
                 />
                 <Popover
                     open={this.state.open}
@@ -70,7 +71,7 @@ export default class AddFieldButton extends React.Component {
                     <Menu>
                         {arr.map((field) => (
                             <MenuItem key={field.id} primaryText={field.name} containerElement={<Link to={{
-                                pathname: "/fields/create",
+                                pathname: "/_fields/create",
                                 data: {entity: this.state.props.record.id, component: field.id},
                             }}/>}/>
                         ))}

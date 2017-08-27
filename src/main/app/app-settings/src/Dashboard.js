@@ -4,7 +4,7 @@ import {ViewTitle} from "admin-on-rest/lib/mui";
 
 export default () => (
     <Card>
-        <ViewTitle title="Dashboard" />
+        <ViewTitle title="Dashboard"/>
         <CardText>schema settings page, these settings will affect datahive page</CardText>
     </Card>
 );

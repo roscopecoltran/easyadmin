@@ -9,8 +9,8 @@ public class Consts {
 
     public static final String Q = "q";
 
-    public static final String SYS_COL_Entity = "entitys";
+    public static final String SYS_COL_Entity = "_entitys";
 
-    public static final String SYS_COL_Field = "fields";
+    public static final String SYS_COL_Field = "_fields";
 
 }

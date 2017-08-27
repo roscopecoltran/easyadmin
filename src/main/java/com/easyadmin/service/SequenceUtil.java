@@ -12,7 +12,7 @@ import org.bson.Document;
  */
 public class SequenceUtil {
 
-    public final static String MY_SEQUENCE_COLLECTION = "mySequnceCollections";
+    public final static String MY_SEQUENCE_COLLECTION = "_sequence";
 
     private final static String MY_SEQUENCE_NAME = "personId";
 

@@ -34,6 +34,7 @@ import {
     ReferenceField,
     SingleFieldList,
     ChipField,
+    ReferenceManyField,
     ReferenceArrayField,
     RichTextField,
     SelectField,
@@ -45,6 +46,7 @@ import FlatButton from 'material-ui/FlatButton';
 import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
 import {ListButton, ShowButton, DeleteButton, Delete, Filter} from 'admin-on-rest';
 import SelectArrayField from './SelectArrayField';
+
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
@@ -60,7 +62,8 @@ const filterComponent = ['File', 'Image'];
  */
 const CRUDFilter = (props) => (
     <Filter {...props}>
-        <TextInput label="Search" source="q" alwaysOn/>
+        {/*全文搜索先注释掉，对于有全文索引的字段，才显示Search框 [TODO]*/}
+        {/*<TextInput label="Search" source="q" alwaysOn/>*/}
         {props.options.fields.filter(field => !filterComponent.includes(field.component)).map(renderInput)}
     </Filter>
 );
@@ -228,7 +231,7 @@ const renderSelectArrayField = (field) => (
 const renderReferenceArrayField = (field) => (
     <ReferenceArrayField key={field.id} label={field.label} reference={field.reference} source={field.id}>
         <SingleFieldList>
-            <ChipField label={field.label} source={field.referenceOptionText}/>
+            <ChipField source={field.referenceOptionText}/>
         </SingleFieldList>
     </ReferenceArrayField>
 )
@@ -246,11 +249,11 @@ const renderRichTextField = (field) => (
     <RichTextField key={field.id} label={field.label} source={field.id} stripTags/>
 )
 const renderImageField = (field) => (
-    <ImageField key={field.id} source={field.id} title="title"/>
+    <ImageField key={field.id} label={field.label} source={field.id} title="title"/>
 )
 
 const renderDateField = (field) => (
-    <DateField key={field.id} source={field.id}/>
+    <DateField key={field.id} label={field.label} source={field.id}/>
 )
 
 const renderFileField = (field) => (
@@ -258,7 +261,7 @@ const renderFileField = (field) => (
 )
 
 const renderNumberField = (field) => (
-    <NumberField key={field.id} source={field.id}/>
+    <NumberField key={field.id} label={field.label} source={field.id}/>
 )
 
 /**
@@ -286,7 +289,7 @@ const renderInput = (field) => (
 );
 
 const renderAutoCompleteInput = (field) => (
-    <AutocompleteInput key={field.id} source={field.id} choices={field.choices} defaultValue={field.defaultValue}
+    <AutocompleteInput key={field.id} label={field.label}  source={field.id} choices={field.choices} defaultValue={field.defaultValue}
                        validate={generateValidators(field)}/>
 );
 
@@ -326,7 +329,8 @@ const renderNumberInput = (field) => (
 )
 
 const renderRadioButtonGroupInput = (field) => (
-    <RadioButtonGroupInput key={field.id} source={field.id} choices={field.choices} defaultValue={field.defaultValue}
+    <RadioButtonGroupInput key={field.id} label={field.label} source={field.id} choices={field.choices}
+                           defaultValue={field.defaultValue}
                            validate={generateValidators(field)}/>
 )
 
@@ -343,7 +347,8 @@ const renderReferenceInput = (field) => (
 )
 
 const renderReferenceArrayInput = (field) => (
-    <ReferenceArrayInput key={field.id} label={field.label} source={field.id} reference={field.reference} defaultValue={field.defaultValue}
+    <ReferenceArrayInput key={field.id} label={field.label} source={field.id} reference={field.reference}
+                         defaultValue={field.defaultValue}
                          validate={generateValidators(field)} allowEmpty>
         <SelectArrayInput optionText={field.referenceOptionText}/>
     </ReferenceArrayInput>
@@ -353,7 +358,7 @@ const renderRichTextInput = (field) => (
                    validate={generateValidators(field)}/>
 )
 const renderSelectInput = (field) => (
-    <SelectInput key={field.id} source={field.id} choices={field.choices} defaultValue={field.defaultValue}
+    <SelectInput key={field.id} label={field.label} source={field.id} choices={field.choices} defaultValue={field.defaultValue}
                  validate={generateValidators(field)}/>
 )
 
