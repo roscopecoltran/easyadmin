@@ -135,7 +135,7 @@ public class DataQueryService {
     private QueryBuilder buildQuery(Map.Entry<String, Object> entry, List<Field> fields) {
         log.info("entry:{}", entry);
         Map<String, Field> result =
-                fields.stream().collect(Collectors.toMap(Field::getName,
+                fields.stream().collect(Collectors.toMap(Field::getId,
                         Function.identity()));
         Field field = result.get(entry.getKey());
         QueryBuilder qb = QueryBuilder.start().put(entry.getKey());

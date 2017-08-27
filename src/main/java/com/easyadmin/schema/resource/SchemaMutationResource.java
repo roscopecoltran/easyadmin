@@ -4,6 +4,7 @@ import com.easyadmin.schema.Entity;
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.field.Field;
 import com.easyadmin.service.DataMutationService;
+import com.easyadmin.service.SequenceUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,11 @@ public class SchemaMutationResource {
     @Autowired
     DataMutationService dataMutationService;
 
+
     @PostMapping(value = "/schemas/entitys")
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
+        String id = SequenceUtil.getNextSequence("entitys_id").toString();
+        entity.setId("e"+id);
         dataMutationService.save("entitys", new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
@@ -44,6 +48,8 @@ public class SchemaMutationResource {
 
     @PostMapping(value = "/schemas/fields")
     public ResponseEntity<Field> addField(@RequestBody Field field) {
+        String id = SequenceUtil.getNextSequence("fields_id").toString();
+        field.setId("f" + id);
         dataMutationService.save("fields", new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }

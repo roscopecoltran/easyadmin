@@ -16,8 +16,7 @@ import AddFieldButton from "./AddFieldButton";
 export const EntityList = (props) => (
     <List {...props} pagination={null} perPage={9999}>
         <Datagrid>
-            <TextField source="id"/>
-            <TextField source="label"/>
+            <TextField source="label" label="名称"/>
             <EditButton />
         </Datagrid>
     </List>
@@ -26,7 +25,6 @@ export const EntityList = (props) => (
 export const EntityCreate = (props) => (
     <Create {...props}>
         <SimpleForm>
-                <TextInput source="name" label="唯一KEY"/>
                 <TextInput source="label" label="标签"/>
         </SimpleForm>
     </Create>
@@ -35,14 +33,12 @@ export const EntityCreate = (props) => (
 export const EntityEdit = (props) => (
     <Edit {...props}>
         <SimpleForm>
-                <DisabledInput source="name" label="唯一KEY"/>
                 <TextInput source="label" label="标签"/>
                 <AddFieldButton/>
-                <ReferenceManyField  label="Fields" reference="fields" target="entity" >
+                <ReferenceManyField  label="字段" reference="fields" target="entity" >
                     <Datagrid>
-                        <TextField source="name" />
-                        <TextField source="label" />
-                        <TextField source="component" />
+                        <TextField source="label" label="标签"/>
+                        <TextField source="component" label="类型"/>
                         <EditButton />
                     </Datagrid>
                 </ReferenceManyField>

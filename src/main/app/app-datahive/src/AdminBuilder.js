@@ -9,7 +9,7 @@ export default class extends Component {
         return (
             <Admin {...props}>
                 {this.props.schemas.map(resource =>
-                    <Resource key={resource.name} label={resource.label} name={resource.name} options={resource} list={CRUDList}
+                    <Resource key={resource.id} label={resource.label} name={resource.id} options={resource} list={CRUDList}
                     create={resource.crud.includes('c') ? CRUDCreate : null}
                     edit={resource.crud.includes('u') ? CRUDEdit : null}
                     show={CRUDShow} remove={resource.crud.includes('c') ? CRUDDelete : null}/>

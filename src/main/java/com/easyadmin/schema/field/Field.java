@@ -66,4 +66,8 @@ public class Field implements Serializable {
         this.defaultValue = defaultValue;
         this.required = required;
     }
+
+    public boolean isReference(){
+        return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);
+    }
 }

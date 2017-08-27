@@ -48,9 +48,7 @@ export const FieldList = (props) => (
     // filter={{ entity: true }}
     <List {...props} pagination={null} perPage={9999} actions={<CreateFieldActions/>}>
         <Datagrid>
-            <TextField source="id" sortable={false}/>
             <SelectField source="component" label="字段类型" choices={arr}/>
-            <TextField source="name" label="字段KEY（唯一）"/>
             <TextField source="label" label="字段标签"/>
             <BooleanField source="required" label="是否必填"/>
             <EditButton />
@@ -76,7 +74,6 @@ export const FieldCreate = (props) => {
             </ReferenceInput>
             <TextInput source="label" label="标签" validate={[required]}/>
             <SelectInput source="component" choices={arr} defaultValue={record?record.component:'Text'}/>
-            <TextInput source="name" label="唯一KEY" validate={[required]}/>
             <BooleanInput label="是否必填" source="required"/>
             <DependentInput dependsOn="component" resolve={checkNumber}>
                 <NumberInput source="minValue" label="最小值"/>
@@ -120,7 +117,6 @@ export const FieldEdit = (props) => {
             </ReferenceField>
             <TextInput source="label" label="标签" validate={[required]}/>
             <SelectInput source="component" choices={arr}/>
-            <TextInput source="name" label="唯一KEY" validate={[required]}/>
             <BooleanInput label="是否必填" source="required"/>
             <DependentInput dependsOn="component" resolve={checkNumber}>
                 <NumberInput source="minValue" label="最小值"/>

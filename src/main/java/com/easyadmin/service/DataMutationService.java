@@ -7,6 +7,7 @@ import com.mongodb.client.MongoCollection;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -19,10 +20,12 @@ public class DataMutationService {
 
     public Document save(String entity, Map<String, Object> data) {
         MongoCollection collection = DbUtil.getCollection(entity);
-        String id = SequenceUtil.getNextSequence(entity + "_id").toString();
-        data.put("id", id);
+        if(StringUtils.isEmpty(data.get("id"))){
+            String id = SequenceUtil.getNextSequence(entity + "_id").toString();
+            data.put("id", id);
+        }
         Document document = new Document(data);
-        document.put("_id", id);
+        document.put("_id", data.get("id"));
         document.put(Consts.DEL_FLAG, false);
         collection.insertOne(document);
         return document;
