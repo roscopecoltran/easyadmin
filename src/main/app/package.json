@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "admin-on-rest": "^1.2.2",
+    "aor-dependent-input": "^1.1.1",
     "aor-language-chinese": "^1.0.3",
+    "aor-rest-client-router": "^0.1.0",
     "aor-rich-text-input": "^1.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

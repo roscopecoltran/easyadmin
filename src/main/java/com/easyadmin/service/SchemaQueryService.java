@@ -1,12 +1,10 @@
 package com.easyadmin.service;
 
 import com.easyadmin.consts.Consts;
-import com.easyadmin.schema.Entity;
+import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.enums.CRUDPermission;
-import com.easyadmin.schema.enums.Component;
-import com.easyadmin.schema.enums.InputType;
 import com.easyadmin.schema.enums.Redirect;
-import com.easyadmin.schema.field.*;
+import com.easyadmin.schema.domain.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;

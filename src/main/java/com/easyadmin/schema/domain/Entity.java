@@ -1,10 +1,9 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
-import com.easyadmin.schema.field.Field;
+import com.easyadmin.schema.domain.Field;
 import lombok.*;
-import org.bson.types.ObjectId;
 
 import java.util.List;
 

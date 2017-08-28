@@ -1,19 +1,15 @@
-package com.easyadmin.schema.resource;
+package com.easyadmin.schema;
 
 import com.easyadmin.consts.Consts;
-import com.easyadmin.schema.Entity;
-import com.easyadmin.schema.enums.Component;
-import com.easyadmin.schema.field.Field;
+import com.easyadmin.schema.domain.Field;
+import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.service.DataMutationService;
 import com.easyadmin.service.SequenceUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,7 +17,7 @@ import java.util.Map;
 /**
  * schema mutation endpoints ,
  * <p>
- * add field , change field type or label or somethings else
+ * add domain , change domain type or label or somethings else
  * <p>
  * <p>
  * Created by gongxinyi on 2017-08-11.

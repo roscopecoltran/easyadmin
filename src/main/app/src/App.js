@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {jsonServerRestClient, Admin, Resource} from 'admin-on-rest';
-import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
+import {jsonServerRestClient} from 'admin-on-rest';
 import zhcnMsg from 'aor-language-chinese';
 import Dashboard from './Dashboard';
-import localSchemas from './schemas';
 import AdminBuilder from './AdminBuilder';
-// import addUploadFeature from './addUploadFeature';
+import {url} from './constants';
+import restClientRouter from 'aor-rest-client-router';
+import Menu from './Menu';
 /**
  * i18n
  * @type {{zh-cn}}
@@ -15,29 +15,25 @@ const messages = {
 };
 
 /**
- * profile for dev
- * @type {string}
- */
-var url = "http://" + window.location.hostname;
-if (process.env.NODE_ENV === 'development') {
-    url = url + ":8080";
-}
-
-/**
  * rest client
  */
-const dataRestClient = jsonServerRestClient(url + '/api');
-
+const restRouter = restClientRouter({
+    rules: [
+        ['_entitys',                 'schema'],
+        ['_fields',                 'schema'],
+        ['*',                     'data']
+    ],
+    services: {
+        schema: jsonServerRestClient(url + '/schemas'),
+        data: jsonServerRestClient(url + '/api'),
+    }
+});
 /**
  * add file support
  */
 // const uploadCapableClient = addUploadFeature(restClient);
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     state = {schemas: null};
 
     componentDidMount() {
@@ -59,8 +55,8 @@ class App extends Component {
     render() {
         if (null === this.state.schemas) return <div>Loading...</div>;
 
-        return <AdminBuilder {...this.props} schemas={this.state.schemas} dashboard={Dashboard}
-                             restClient={dataRestClient} locale='zh-cn' messages={messages}/>
+        return <AdminBuilder {...this.props} menu={Menu} schemas={this.state.schemas} dashboard={Dashboard}
+                             restClient={restRouter} locale='zh-cn' messages={messages}/>
     }
 };
 

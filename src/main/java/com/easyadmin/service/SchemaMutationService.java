@@ -1,7 +1,7 @@
 package com.easyadmin.service;
 
-import com.easyadmin.schema.Entity;
-import com.easyadmin.schema.field.Field;
+import com.easyadmin.schema.domain.Entity;
+import com.easyadmin.schema.domain.Field;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.model.Indexes;
 import lombok.extern.slf4j.Slf4j;

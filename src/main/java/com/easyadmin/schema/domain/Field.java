@@ -1,4 +1,4 @@
-package com.easyadmin.schema.field;
+package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.InputType;
@@ -36,7 +36,7 @@ public class Field implements Serializable {
     protected Boolean required;
 
     /**
-     * array field Autocomplete、CheckboxGroup、RadioButtonGroup、SelectArray、Select
+     * array domain Autocomplete、CheckboxGroup、RadioButtonGroup、SelectArray、Select
      */
     private ChoiceItem[] choices;
 
@@ -47,13 +47,13 @@ public class Field implements Serializable {
     private Integer maxLength;
 
     /**
-     * reference field
+     * reference domain
      */
     private String reference;
     private String referenceOptionText;
 
     /**
-     * number field
+     * number domain
      */
     private String minValue;
     private String maxValue;

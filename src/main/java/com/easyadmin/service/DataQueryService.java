@@ -2,7 +2,7 @@ package com.easyadmin.service;
 
 import com.easyadmin.consts.Consts;
 import com.easyadmin.data.RequestScope;
-import com.easyadmin.schema.field.Field;
+import com.easyadmin.schema.domain.Field;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;

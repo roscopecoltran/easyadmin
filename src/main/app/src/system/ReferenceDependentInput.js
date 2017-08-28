@@ -1,10 +1,6 @@
 import React, {Component} from 'react';
 import {translate, SelectInput, ReferenceInput, required} from 'admin-on-rest';
-
-var url = "http://" + window.location.hostname;
-if (process.env.NODE_ENV === 'development') {
-    url = url + ":8080";
-}
+import {url} from '../constants';
 
 class ReferenceDependentInput extends Component {
     constructor(props) {

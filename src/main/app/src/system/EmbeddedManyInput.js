@@ -9,7 +9,6 @@ import ActionDeleteIcon from "material-ui/svg-icons/action/delete";
 export class EmbeddedManyInput extends Component {
     constructor(props) {
         super(props);
-        const {source} = props;
     }
 
     renderList = ({fields}) => {
@@ -40,7 +39,7 @@ export class EmbeddedManyInput extends Component {
 
 
     render() {
-        const {input, resource, label, source, allowEmpty, basePath, onChange, children, meta} = this.props;
+        const {source} = this.props;
 
         return (
             <FieldArray name={source} component={this.renderList}/>

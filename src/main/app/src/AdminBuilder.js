@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Admin, Resource, Delete} from 'admin-on-rest';
+import {Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
-
+import {EntityCreate, EntityEdit, EntityList} from "./system/entitys";
+import {FieldCreate, FieldEdit, FieldList} from "./system/fields";
 export default class extends Component {
 
     render() {
@@ -16,6 +17,8 @@ export default class extends Component {
                               edit={resource.crud.includes('u') ? CRUDEdit : null}
                               show={CRUDShow} remove={resource.crud.includes('c') ? CRUDDelete : null}/>
                 )}
+                <Resource name="_entitys" list={EntityList} create={EntityCreate} edit={EntityEdit}/>
+                <Resource name="_fields" list={FieldList} create={FieldCreate} edit={FieldEdit}/>
             </Admin>
         );
     }

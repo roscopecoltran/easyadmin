@@ -56,7 +56,7 @@ const filterComponent = ['File', 'Image'];
 
 /**
  * filter
- * contains all the field and the full text search input
+ * contains all the domain and the full text search input
  * @param props
  * @constructor
  */
@@ -375,7 +375,7 @@ const renderImageInput = (field) => (
 )
 
 /**
- * generate validators from field schema define
+ * generate validators from domain schema define
  *
  * validate for email number  required
  *
