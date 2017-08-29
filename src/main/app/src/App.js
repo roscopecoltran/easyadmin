@@ -19,9 +19,9 @@ const messages = {
  */
 const restRouter = restClientRouter({
     rules: [
-        ['_entitys',                 'schema'],
-        ['_fields',                 'schema'],
-        ['*',                     'data']
+        ['_entitys', 'schema'],
+        ['_fields', 'schema'],
+        ['*', 'data']
     ],
     services: {
         schema: jsonServerRestClient(url + '/schemas'),
@@ -58,6 +58,7 @@ class App extends Component {
         return <AdminBuilder {...this.props} menu={Menu} schemas={this.state.schemas} dashboard={Dashboard}
                              restClient={restRouter} locale='zh-cn' messages={messages}/>
     }
-};
+}
+;
 
 export default App;
