@@ -72,7 +72,7 @@ export default class AddFieldButton extends React.Component {
                         {arr.map((field) => (
                             <MenuItem key={field.id} primaryText={field.name} containerElement={<Link to={{
                                 pathname: "/_fields/create",
-                                data: {entity: this.state.props.record.id, component: field.id},
+                                data: {eid: this.state.props.record.id, component: field.id},
                             }}/>}/>
                         ))}
                     </Menu>

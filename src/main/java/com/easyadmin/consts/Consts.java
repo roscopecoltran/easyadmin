@@ -13,5 +13,9 @@ public class Consts {
 
     public static final String SYS_COL_Field = "_fields";
 
+    public static final String ENTITY_NAME_PREFIX = "e";
+    public static final String FIELD_NAME_PREFIX = "f";
 
+    public static final String _id = "_id";
+    public static final String id = "id";
 }

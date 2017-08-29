@@ -16,7 +16,7 @@ class ReferenceDependentInput extends Component {
     }
 
     getFields(entity){
-        fetch(url + `/schemas/_fields?entity=`+entity)
+        fetch(url + `/schemas/_fields?eid=`+entity)
             .then((response) => {
                 return response.json()
             })

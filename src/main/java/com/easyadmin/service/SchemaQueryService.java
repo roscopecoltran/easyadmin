@@ -2,9 +2,9 @@ package com.easyadmin.service;
 
 import com.easyadmin.consts.Consts;
 import com.easyadmin.schema.domain.Entity;
+import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
-import com.easyadmin.schema.domain.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
@@ -33,9 +33,9 @@ public class SchemaQueryService {
                 entity2FieldsMap.put(entity.getId(), new ArrayList<>())
         );
         Block<Document> wrapFieldsBlock = doc -> {
-            String entity = doc.getString("entity");
+            String entity = doc.getString("eid");
             if (!StringUtils.isEmpty(entity))
-                entity2FieldsMap.get(doc.getString("entity")).add(doc2Field(doc));
+                entity2FieldsMap.get(doc.getString("eid")).add(doc2Field(doc));
         };
 
         DbUtil.getCollection(Consts.SYS_COL_Field).find().forEach(wrapFieldsBlock);
@@ -50,39 +50,46 @@ public class SchemaQueryService {
         return entities;
     }
 
-    public Entity findOne(String entityId) {
+    public Entity findOne(String eid) {
         List<Entity> entities = new ArrayList<>();
         Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
-        DbUtil.getCollection(Consts.SYS_COL_Entity).find(new BasicDBObject("_id", entityId)).forEach(wrapBlock);
+        DbUtil.getCollection(Consts.SYS_COL_Entity).find(new BasicDBObject(Consts._id, eid)).forEach(wrapBlock);
         return entities.get(0);
     }
 
     private Field doc2Field(Document doc) {
         final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        doc.put(Consts.id, doc.get(Consts._id));
         Field field = mapper.convertValue(doc, Field.class);
         field.setShowInList(true);
-        if(field.isReference() && StringUtils.isEmpty(field.getReferenceOptionText()))
+        if (field.isReference() && StringUtils.isEmpty(field.getReferenceOptionText()))
             field.setReferenceOptionText("id");
         return field;
     }
 
     private Entity doc2Entity(Document doc) {
-        return new Entity(doc.getString("_id"), doc.getString("label"));
+        return new Entity(doc.getString(Consts._id), doc.getString("label"));
     }
 
-    public List<Field> findFields(String entity) {
+    public List<Field> findFields(String eid) {
         List<Field> fields = new ArrayList<>();
         final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Block<Document> wrapBlock = doc -> fields.add(mapper.convertValue(doc, Field.class));
-        DbUtil.getCollection(Consts.SYS_COL_Field).find(new BasicDBObject("entity", entity)).forEach(wrapBlock);
+        Block<Document> wrapBlock = doc -> {
+            doc.put(Consts.id, doc.get(Consts._id));
+            fields.add(mapper.convertValue(doc, Field.class));
+        };
+        DbUtil.getCollection(Consts.SYS_COL_Field).find(new BasicDBObject("eid", eid)).forEach(wrapBlock);
         return fields;
     }
 
     public Field findOneField(String fieldId) {
         List<Field> fields = new ArrayList<>();
         final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Block<Document> wrapBlock = doc -> fields.add(mapper.convertValue(doc, Field.class));
-        DbUtil.getCollection(Consts.SYS_COL_Field).find(new BasicDBObject("id", fieldId)).forEach(wrapBlock);
+        Block<Document> wrapBlock = doc -> {
+            doc.put(Consts.id, doc.get(Consts._id));
+            fields.add(mapper.convertValue(doc, Field.class));
+        };
+        DbUtil.getCollection(Consts.SYS_COL_Field).find(new BasicDBObject(Consts._id, fieldId)).forEach(wrapBlock);
         return fields.get(0);
     }
 }

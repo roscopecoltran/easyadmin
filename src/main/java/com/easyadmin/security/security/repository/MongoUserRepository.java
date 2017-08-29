@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * Created by gongxinyi on 2017-08-29.
  */
 @Component
-public class MongoUserRepository implements UserRepository{
+public class MongoUserRepository implements UserRepository {
     final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public User findByUsername(String username) {
@@ -41,7 +41,7 @@ public class MongoUserRepository implements UserRepository{
         Block<Document> wrapRolesBlock = doc -> roles.add(doc.getString("role_id"));
         DbUtil.getCollection("_user_role").find(query2).forEach(wrapRolesBlock);
 
-        List<Authority> userAuthoritys=authoritys.stream().filter(authority -> roles.contains(String.valueOf(authority.getId()))).collect(Collectors.toList());
+        List<Authority> userAuthoritys = authoritys.stream().filter(authority -> roles.contains(String.valueOf(authority.getId()))).collect(Collectors.toList());
         user.setAuthorities(userAuthoritys);
         return user;
     }

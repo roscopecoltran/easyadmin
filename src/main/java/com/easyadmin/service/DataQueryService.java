@@ -46,7 +46,7 @@ public class DataQueryService {
     public List<Map<String, Object>> list(String entity, Map<String, Object> allRequestParams) {
         MongoCollection collection = DbUtil.getCollection(entity);
         List<Map<String, Object>> dataList = new LinkedList<>();
-        DBObject query = getQuery(entity,allRequestParams);
+        DBObject query = getQuery(entity, allRequestParams);
         Map<String, Object> collect = allRequestParams.entrySet()
                 .stream()
                 .filter(map -> map.getKey().startsWith("_"))
@@ -58,10 +58,10 @@ public class DataQueryService {
         try {
             while (mongoCursor.hasNext()) {
                 Document doc = mongoCursor.next();
-                doc.put("id",doc.get("_id"));
+                doc.put(Consts.id, doc.get(Consts._id));
                 dataList.add(doc);
             }
-        }finally {
+        } finally {
             mongoCursor.close();
         }
         return dataList;
@@ -76,7 +76,7 @@ public class DataQueryService {
      */
     public long count(String entity, Map<String, Object> allRequestParams) {
         MongoCollection collection = DbUtil.getCollection(entity);
-        DBObject query = getQuery(entity,allRequestParams);
+        DBObject query = getQuery(entity, allRequestParams);
         long count = collection.count((Bson) query);
         return count;
     }
@@ -84,18 +84,17 @@ public class DataQueryService {
     public Map<String, Object> findOne(String entity, String id) {
         Map<String, Object> data = null;
         MongoCollection collection = DbUtil.getCollection(entity);
-        BasicDBObject query = new BasicDBObject("_id", id);
+        BasicDBObject query = new BasicDBObject(Consts._id, id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
         try {
             if (mongoCursor.hasNext())
                 data = mongoCursor.next();
-        }
-        finally {
+        } finally {
             mongoCursor.close();
         }
-        data.put("id",data.get("_id"));
-        data.remove("id");
+        data.put(Consts._id, data.get(Consts._id));
+        data.remove(Consts._id);
         return data;
     }
 
@@ -105,7 +104,7 @@ public class DataQueryService {
      * @param allRequestParams
      * @return
      */
-    private DBObject getQuery(String entity,Map<String, Object> allRequestParams) {
+    private DBObject getQuery(String entity, Map<String, Object> allRequestParams) {
         // text search
         Object search = allRequestParams.get(Consts.Q);
         QueryBuilder query = new QueryBuilder();

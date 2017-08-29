@@ -1,7 +1,7 @@
 package com.easyadmin.schema;
 
-import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Entity;
+import com.easyadmin.schema.domain.Field;
 import com.easyadmin.service.SchemaQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,17 +33,17 @@ public class SchemaQueryResource {
                 .body(entities);
     }
 
-    @GetMapping("/schemas/_entitys/{entityId}")
-    public ResponseEntity<Entity> findOne(@PathVariable("entityId")String entityId) {
-        Entity entity = schemaQueryService.findOne(entityId);
+    @GetMapping("/schemas/_entitys/{eid}")
+    public ResponseEntity<Entity> findOne(@PathVariable("eid") String eid) {
+        Entity entity = schemaQueryService.findOne(eid);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(entity);
     }
 
     @GetMapping("/schemas/_fields")
-    public ResponseEntity<List<Field>> list(@RequestParam("entity") String entity) {
-        List<Field> fields = schemaQueryService.findFields(entity);
+    public ResponseEntity<List<Field>> list(@RequestParam("eid") String eid) {
+        List<Field> fields = schemaQueryService.findFields(eid);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", fields.size() + "")
@@ -51,9 +51,9 @@ public class SchemaQueryResource {
                 .body(fields);
     }
 
-    @GetMapping("/schemas/_fields/{fieldId}")
-    public ResponseEntity<Field> findOneField(@PathVariable("fieldId")String fieldId) {
-        Field field= schemaQueryService.findOneField(fieldId);
+    @GetMapping("/schemas/_fields/{fid}")
+    public ResponseEntity<Field> findOneField(@PathVariable("fid") String fid) {
+        Field field = schemaQueryService.findOneField(fid);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(field);

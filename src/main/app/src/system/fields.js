@@ -71,10 +71,10 @@ export const FieldCreate = (props) => {
     const record = props.location.data;
 
     return <Create {...props} actions={null} title="新增字段">
-        <SimpleForm redirect={'/_entitys' + (record ? '/' + record.entity : '')}>
+        <SimpleForm redirect={'/_entitys' + (record ? '/' + record.eid : '')}>
 
-            <ReferenceInput label="对象" source="entity" reference="_entitys" allowEmpty
-                            defaultValue={record ? record.entity : ''} validate={required}>
+            <ReferenceInput label="对象" source="eid" reference="_entitys" allowEmpty
+                            defaultValue={record ? record.eid : ''} validate={required}>
                 <SelectInput optionText="label"/>
             </ReferenceInput>
             <TextInput source="label" label="标签" validate={[required]}/>
@@ -122,7 +122,7 @@ export const FieldEdit = (props) => {
     const record = props.location.data;
     return <Edit  {...props} actions={null} title="编辑字段">
         <SimpleForm redirect={'/_entitys' + (record ? record.entity : '')}>
-            <ReferenceField label="引用对象" source="entity" reference="_entitys" allowEmpty
+            <ReferenceField label="引用对象" source="eid" reference="_entitys" allowEmpty
                             defaultValue={record ? record.entity : ''} validate={required}>
                 <TextField source="label"/>
             </ReferenceField>

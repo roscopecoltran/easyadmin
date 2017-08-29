@@ -1,8 +1,8 @@
 package com.easyadmin.schema;
 
 import com.easyadmin.consts.Consts;
-import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Entity;
+import com.easyadmin.schema.domain.Field;
 import com.easyadmin.service.DataMutationService;
 import com.easyadmin.service.SequenceUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +32,7 @@ public class SchemaMutationResource {
     @PostMapping(value = "/schemas/_entitys")
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Entity + "_id").toString();
-        entity.setId("e" + id);
+        entity.setId(Consts.ENTITY_NAME_PREFIX + id);
         dataMutationService.save(Consts.SYS_COL_Entity, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
@@ -45,8 +45,8 @@ public class SchemaMutationResource {
 
     @PostMapping(value = "/schemas/_fields")
     public ResponseEntity<Field> addField(@RequestBody Field field) {
-        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Field + "_" + field.getEntity() + "_id").toString();
-        field.setId("f" + id);
+        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Field + "_id").toString();
+        field.setId(Consts.FIELD_NAME_PREFIX + id);
         dataMutationService.save(Consts.SYS_COL_Field, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }

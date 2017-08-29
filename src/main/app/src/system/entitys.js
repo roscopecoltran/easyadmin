@@ -35,7 +35,7 @@ export const EntityEdit = (props) => (
         <SimpleForm>
             <TextInput source="label" label="标签"/>
             <AddFieldButton/>
-            <ReferenceManyField label="字段" reference="_fields" target="entity">
+            <ReferenceManyField label="字段" reference="_fields" target="eid">
                 <Datagrid>
                     <TextField source="label" label="标签"/>
                     <TextField source="component" label="类型"/>

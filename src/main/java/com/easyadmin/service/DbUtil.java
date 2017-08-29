@@ -5,13 +5,14 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+
 /**
  *
  */
 public class DbUtil {
     private static MongoClient mongoClient;
 
-    public static MongoCollection getCollection(String url,String dbName, String entity) {
+    public static MongoCollection getCollection(String url, String dbName, String entity) {
         if (mongoClient == null) {
             MongoClientURI uri = new MongoClientURI(url);
             mongoClient = new MongoClient(uri);

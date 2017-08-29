@@ -2,7 +2,6 @@ package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
-import com.easyadmin.schema.domain.Field;
 import lombok.*;
 
 import java.util.List;
@@ -21,6 +20,7 @@ public final class Entity {
 
     private CRUDPermission[] crud;
     private Redirect redirect;// 新增记录后跳转到哪个页面 edit,show,list
+
     @Builder
     public Entity(String id, String label) {
         this.id = id;

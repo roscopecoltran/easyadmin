@@ -25,9 +25,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Field implements Serializable {
-    protected String entity;
+    protected String eid;
     protected String id;
     protected String name;
     protected Component component;
@@ -59,6 +59,7 @@ public class Field implements Serializable {
     private String maxValue;
 
     private Boolean showInList;
+
     public Field(String name, Component component, String label, Object defaultValue, Boolean required) {
         this.name = name;
         this.component = component;
@@ -67,7 +68,7 @@ public class Field implements Serializable {
         this.required = required;
     }
 
-    public boolean isReference(){
+    public boolean isReference() {
         return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);
     }
 }
