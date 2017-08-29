@@ -58,6 +58,7 @@ public class DataQueryService {
         try {
             while (mongoCursor.hasNext()) {
                 Document doc = mongoCursor.next();
+                doc.put("id",doc.get("_id"));
                 dataList.add(doc);
             }
         }finally {
@@ -83,7 +84,7 @@ public class DataQueryService {
     public Map<String, Object> findOne(String entity, String id) {
         Map<String, Object> data = null;
         MongoCollection collection = DbUtil.getCollection(entity);
-        BasicDBObject query = new BasicDBObject("id", id);
+        BasicDBObject query = new BasicDBObject("_id", id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
         try {
@@ -93,6 +94,8 @@ public class DataQueryService {
         finally {
             mongoCursor.close();
         }
+        data.put("id",data.get("_id"));
+        data.remove("id");
         return data;
     }
 

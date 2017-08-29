@@ -22,10 +22,9 @@ public class DataMutationService {
         MongoCollection collection = DbUtil.getCollection(entity);
         if(StringUtils.isEmpty(data.get("id"))){
             String id = SequenceUtil.getNextSequence(entity + "_id").toString();
-            data.put("id", id);
+            data.put("_id", id);
         }
         Document document = new Document(data);
-        document.put("_id", data.get("id"));
         document.put(Consts.DEL_FLAG, false);
         collection.insertOne(document);
         return document;
@@ -34,14 +33,14 @@ public class DataMutationService {
     public Document update(String entity, String id, Map<String, Object> data) {
         MongoCollection collection = DbUtil.getCollection(entity);
         Document document = new Document(data);
-        BasicDBObject searchQuery = new BasicDBObject().append("id", id);
+        BasicDBObject searchQuery = new BasicDBObject().append("_id", id);
         collection.replaceOne(searchQuery, document);
         return document;
     }
 
     public Document deleteLogic(String entity, String id) {
         MongoCollection<Document> collection = DbUtil.getCollection(entity);
-        BasicDBObject searchQuery = new BasicDBObject().append("id", id);
+        BasicDBObject searchQuery = new BasicDBObject().append("_id", id);
         Document document = collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Consts.DEL_FLAG, true)));
         return document;
     }

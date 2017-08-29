@@ -53,7 +53,7 @@ public class SchemaQueryService {
     public Entity findOne(String entityId) {
         List<Entity> entities = new ArrayList<>();
         Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
-        DbUtil.getCollection(Consts.SYS_COL_Entity).find(new BasicDBObject("id", entityId)).forEach(wrapBlock);
+        DbUtil.getCollection(Consts.SYS_COL_Entity).find(new BasicDBObject("_id", entityId)).forEach(wrapBlock);
         return entities.get(0);
     }
 
@@ -67,7 +67,7 @@ public class SchemaQueryService {
     }
 
     private Entity doc2Entity(Document doc) {
-        return new Entity(doc.getString("id"), doc.getString("label"));
+        return new Entity(doc.getString("_id"), doc.getString("label"));
     }
 
     public List<Field> findFields(String entity) {

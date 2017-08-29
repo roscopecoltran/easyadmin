@@ -21,8 +21,8 @@ public class DbUtil {
     }
 
     public static MongoCollection getCollection(String entity) {
-        return getCollection("mongodb://admin:admin@ds161443.mlab.com:61443/easyadmin", "easyadmin", entity);
-//        return getCollection("mongodb://localhost:27017", "easyadmin", entity);
+//        return getCollection("mongodb://admin:admin@ds161443.mlab.com:61443/easyadmin", "easyadmin", entity);
+        return getCollection("mongodb://localhost:27017", "easyadmin", entity);
     }
 
     public static void createTextIndex(String entity, String field) {

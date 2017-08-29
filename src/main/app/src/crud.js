@@ -163,7 +163,7 @@ export const CRUDEdit = (props) => (
  * @constructor
  */
 export const CRUDShow = (props) => (
-    <Show {...props}>
+    <Show {...props}  title={props.options.label}>
         <SimpleShowLayout>
             {props.options.fields.map(renderField)}
         </SimpleShowLayout>
@@ -216,7 +216,7 @@ const renderField = (field) => (
 );
 
 const renderBooleanField = (field) => (
-    <BooleanField key={field.id} label={field.label} source={field.id}/>
+    <BooleanField key={field.id} elStyle={{ margin: 0 }} label={field.label} source={field.id}/>
 )
 const renderReferenceField = (field) => (
     <ReferenceField key={field.id} label={field.label} source={field.id} reference={field.reference}>

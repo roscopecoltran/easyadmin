@@ -31,7 +31,7 @@ public class SchemaMutationResource {
 
     @PostMapping(value = "/schemas/_entitys")
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
-        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Entity+"_id").toString();
+        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Entity + "_id").toString();
         entity.setId("e" + id);
         dataMutationService.save(Consts.SYS_COL_Entity, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
@@ -45,7 +45,7 @@ public class SchemaMutationResource {
 
     @PostMapping(value = "/schemas/_fields")
     public ResponseEntity<Field> addField(@RequestBody Field field) {
-        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Field+"_id").toString();
+        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Field + "_" + field.getEntity() + "_id").toString();
         field.setId("f" + id);
         dataMutationService.save(Consts.SYS_COL_Field, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
