@@ -1,6 +1,6 @@
 package com.easyadmin.data;
 
-import com.easyadmin.consts.Consts;
+import com.easyadmin.consts.Constants;
 import com.easyadmin.service.DataQueryService;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class DataQueryResource {
     DataQueryService dataQueryService;
 
     @GetMapping(value = "/api/{entity}")
-    public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Consts.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
+    public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Constants.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         List data = dataQueryService.list(entity, allRequestParams);
         long count = dataQueryService.count(entity, allRequestParams);
@@ -53,7 +53,7 @@ public class DataQueryResource {
     }
 
     @GetMapping(value = "/api/{entity}/{id}")
-    public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Consts.ENTITY) String entity, @PathVariable(Consts.KEY) String id, @RequestParam final Map<String, Object> allRequestParams) {
+    public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.KEY) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         Map<String, Object> object = dataQueryService.findOne(entity, id);
         return ResponseEntity

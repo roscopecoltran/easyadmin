@@ -1,6 +1,6 @@
 package com.easyadmin.service;
 
-import com.easyadmin.consts.Consts;
+import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.CRUDPermission;
@@ -26,19 +26,19 @@ public class SchemaQueryService {
     public List<Entity> findEntitys() {
         List<Entity> entities = new ArrayList<>();
         Block<Document> wrapEntitysBlock = doc -> entities.add(doc2Entity(doc));
-        DbUtil.getCollection(Consts.SYS_COL_Entity).find().forEach(wrapEntitysBlock);
+        DbUtil.getCollection(Constants.SYS_COL_Entity).find().forEach(wrapEntitysBlock);
 
         Map<String, List<Field>> entity2FieldsMap = new HashMap();
         entities.forEach(entity ->
                 entity2FieldsMap.put(entity.getId(), new ArrayList<>())
         );
         Block<Document> wrapFieldsBlock = doc -> {
-            String entity = doc.getString("eid");
+            String entity = doc.getString(Constants.ENTITY_ID);
             if (!StringUtils.isEmpty(entity))
-                entity2FieldsMap.get(doc.getString("eid")).add(doc2Field(doc));
+                entity2FieldsMap.get(doc.getString(Constants.ENTITY_ID)).add(doc2Field(doc));
         };
 
-        DbUtil.getCollection(Consts.SYS_COL_Field).find().forEach(wrapFieldsBlock);
+        DbUtil.getCollection(Constants.SYS_COL_Field).find().forEach(wrapFieldsBlock);
 
         entities.forEach(entity -> {
             entity.setCrud(CRUDPermission.values());
@@ -53,13 +53,13 @@ public class SchemaQueryService {
     public Entity findOne(String eid) {
         List<Entity> entities = new ArrayList<>();
         Block<Document> wrapBlock = doc -> entities.add(doc2Entity(doc));
-        DbUtil.getCollection(Consts.SYS_COL_Entity).find(new BasicDBObject(Consts._id, eid)).forEach(wrapBlock);
+        DbUtil.getCollection(Constants.SYS_COL_Entity).find(new BasicDBObject(Constants._id, eid)).forEach(wrapBlock);
         return entities.get(0);
     }
 
     private Field doc2Field(Document doc) {
         final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        doc.put(Consts.id, doc.get(Consts._id));
+        doc.put(Constants.id, doc.get(Constants._id));
         Field field = mapper.convertValue(doc, Field.class);
         field.setShowInList(true);
         if (field.isReference() && StringUtils.isEmpty(field.getReferenceOptionText()))
@@ -68,17 +68,17 @@ public class SchemaQueryService {
     }
 
     private Entity doc2Entity(Document doc) {
-        return new Entity(doc.getString(Consts._id), doc.getString("label"));
+        return new Entity(doc.getString(Constants._id), doc.getString("label"));
     }
 
     public List<Field> findFields(String eid) {
         List<Field> fields = new ArrayList<>();
         final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Block<Document> wrapBlock = doc -> {
-            doc.put(Consts.id, doc.get(Consts._id));
+            doc.put(Constants.id, doc.get(Constants._id));
             fields.add(mapper.convertValue(doc, Field.class));
         };
-        DbUtil.getCollection(Consts.SYS_COL_Field).find(new BasicDBObject("eid", eid)).forEach(wrapBlock);
+        DbUtil.getCollection(Constants.SYS_COL_Field).find(new BasicDBObject(Constants.ENTITY_ID, eid)).forEach(wrapBlock);
         return fields;
     }
 
@@ -86,10 +86,10 @@ public class SchemaQueryService {
         List<Field> fields = new ArrayList<>();
         final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Block<Document> wrapBlock = doc -> {
-            doc.put(Consts.id, doc.get(Consts._id));
+            doc.put(Constants.id, doc.get(Constants._id));
             fields.add(mapper.convertValue(doc, Field.class));
         };
-        DbUtil.getCollection(Consts.SYS_COL_Field).find(new BasicDBObject(Consts._id, fieldId)).forEach(wrapBlock);
+        DbUtil.getCollection(Constants.SYS_COL_Field).find(new BasicDBObject(Constants._id, fieldId)).forEach(wrapBlock);
         return fields.get(0);
     }
 }

@@ -1,6 +1,6 @@
 package com.easyadmin.consts;
 
-public class Consts {
+public class Constants {
     public static final String DEL_FLAG = "_delFlag";
 
     public static final String ENTITY = "entity";
@@ -18,4 +18,6 @@ public class Consts {
 
     public static final String _id = "_id";
     public static final String id = "id";
+
+    public static final String ENTITY_ID = "eid";
 }

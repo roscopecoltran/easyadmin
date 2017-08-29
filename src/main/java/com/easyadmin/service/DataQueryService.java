@@ -1,6 +1,6 @@
 package com.easyadmin.service;
 
-import com.easyadmin.consts.Consts;
+import com.easyadmin.consts.Constants;
 import com.easyadmin.data.RequestScope;
 import com.easyadmin.schema.domain.Field;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +58,7 @@ public class DataQueryService {
         try {
             while (mongoCursor.hasNext()) {
                 Document doc = mongoCursor.next();
-                doc.put(Consts.id, doc.get(Consts._id));
+                doc.put(Constants.id, doc.get(Constants._id));
                 dataList.add(doc);
             }
         } finally {
@@ -84,7 +84,7 @@ public class DataQueryService {
     public Map<String, Object> findOne(String entity, String id) {
         Map<String, Object> data = null;
         MongoCollection collection = DbUtil.getCollection(entity);
-        BasicDBObject query = new BasicDBObject(Consts._id, id);
+        BasicDBObject query = new BasicDBObject(Constants._id, id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
         try {
@@ -93,8 +93,8 @@ public class DataQueryService {
         } finally {
             mongoCursor.close();
         }
-        data.put(Consts._id, data.get(Consts._id));
-        data.remove(Consts._id);
+        data.put(Constants._id, data.get(Constants._id));
+        data.remove(Constants._id);
         return data;
     }
 
@@ -106,7 +106,7 @@ public class DataQueryService {
      */
     private DBObject getQuery(String entity, Map<String, Object> allRequestParams) {
         // text search
-        Object search = allRequestParams.get(Consts.Q);
+        Object search = allRequestParams.get(Constants.Q);
         QueryBuilder query = new QueryBuilder();
         if (!StringUtils.isEmpty(search)) {
             query.text(search.toString());
@@ -116,11 +116,11 @@ public class DataQueryService {
         allRequestParams.entrySet()
                 .stream()
                 .filter(map ->
-                        (!map.getKey().equals(Consts.Q) && !map.getKey().startsWith("_"))
+                        (!map.getKey().equals(Constants.Q) && !map.getKey().startsWith("_"))
                 )
                 .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaQueryService.findFields(entity)).get()));
         // logic del flag
-        query.and(QueryBuilder.start(Consts.DEL_FLAG).notEquals(true).get());
+        query.and(QueryBuilder.start(Constants.DEL_FLAG).notEquals(true).get());
         return query.get();
     }
 

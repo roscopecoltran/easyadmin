@@ -1,6 +1,6 @@
 package com.easyadmin.schema;
 
-import com.easyadmin.consts.Consts;
+import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.service.DataMutationService;
@@ -31,29 +31,29 @@ public class SchemaMutationResource {
 
     @PostMapping(value = "/schemas/_entitys")
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
-        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Entity + "_id").toString();
-        entity.setId(Consts.ENTITY_NAME_PREFIX + id);
-        dataMutationService.save(Consts.SYS_COL_Entity, new ObjectMapper().convertValue(entity, Map.class));
+        String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
+        entity.setId(Constants.ENTITY_NAME_PREFIX + id);
+        dataMutationService.save(Constants.SYS_COL_Entity, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
     @PutMapping(value = "/schemas/_entitys/{id}")
     public ResponseEntity<Entity> editEntity(@PathVariable("id") String id, @RequestBody Entity entity) {
-        dataMutationService.update(Consts.SYS_COL_Entity, id, new ObjectMapper().convertValue(entity, Map.class));
+        dataMutationService.update(Constants.SYS_COL_Entity, id, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
     @PostMapping(value = "/schemas/_fields")
     public ResponseEntity<Field> addField(@RequestBody Field field) {
-        String id = SequenceUtil.getNextSequence(Consts.SYS_COL_Field + "_id").toString();
-        field.setId(Consts.FIELD_NAME_PREFIX + id);
-        dataMutationService.save(Consts.SYS_COL_Field, new ObjectMapper().convertValue(field, Map.class));
+        String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
+        field.setId(Constants.FIELD_NAME_PREFIX + id);
+        dataMutationService.save(Constants.SYS_COL_Field, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 
     @PutMapping(value = "/schemas/_fields/{id}")
     public ResponseEntity<Field> editField(@PathVariable("id") String id, @RequestBody Field field) {
-        dataMutationService.update(Consts.SYS_COL_Field, id, new ObjectMapper().convertValue(field, Map.class));
+        dataMutationService.update(Constants.SYS_COL_Field, id, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 }

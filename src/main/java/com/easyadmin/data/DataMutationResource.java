@@ -1,6 +1,6 @@
 package com.easyadmin.data;
 
-import com.easyadmin.consts.Consts;
+import com.easyadmin.consts.Constants;
 import com.easyadmin.service.DataMutationService;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class DataMutationResource {
     DataMutationService dataMutationService;
 
     @PostMapping(value = "/api/{entity}")
-    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
         Document document = dataMutationService.save(entity, allRequestParams);
@@ -32,7 +32,7 @@ public class DataMutationResource {
     }
 
     @PutMapping(value = "/api/{entity}/{id}")
-    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
         Document document = dataMutationService.update(entity, id, allRequestParams);
@@ -40,7 +40,7 @@ public class DataMutationResource {
     }
 
     @DeleteMapping(value = "/api/{entity}/{id}")
-    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Consts.ENTITY) String entity, @PathVariable("id") String id) {
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
         Document document = dataMutationService.deleteLogic(entity, id);
         return ResponseEntity.status(HttpStatus.OK).body(document);
     }
