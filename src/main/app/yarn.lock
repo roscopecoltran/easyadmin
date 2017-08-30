@@ -179,6 +179,16 @@ aor-language-chinese@^1.0.3:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/aor-language-chinese/download/aor-language-chinese-1.0.3.tgz#72594b57f3ac248ad608fbd677bf5f05399fbfca"
 
+aor-permissions@^1.1.2:
+  version "1.1.2"
+  resolved "http://registry.npm.taobao.org/aor-permissions/download/aor-permissions-1.1.2.tgz#05e544c3d4e673ba7ec5af3e4fcee0f35f3ef37c"
+  dependencies:
+    babel-plugin-transform-runtime "~6.23.0"
+    lodash.get "~4.4.2"
+    lodash.omit "~4.5.0"
+    prop-types "~15.5.10"
+    recompose "~0.23.4"
+
 aor-rest-client-router@^0.1.0:
   version "0.1.0"
   resolved "http://registry.npm.taobao.org/aor-rest-client-router/download/aor-rest-client-router-0.1.0.tgz#3168f2591e111d7bd0d1cb3be51be584900b29a8"
@@ -3884,6 +3894,10 @@ jsx-ast-utils@^1.4.0, jsx-ast-utils@^1.4.1:
   version "1.4.1"
   resolved "http://registry.npm.taobao.org/jsx-ast-utils/download/jsx-ast-utils-1.4.1.tgz#3867213e8dd79bf1e8f2300c0cfc1efb182c0df1"
 
+jwt-decode@^2.2.0:
+  version "2.2.0"
+  resolved "http://registry.npm.taobao.org/jwt-decode/download/jwt-decode-2.2.0.tgz#7d86bd56679f58ce6a84704a657dd392bba81a79"
+
 keycode@^2.1.8:
   version "2.1.9"
   resolved "http://registry.npm.taobao.org/keycode/download/keycode-2.1.9.tgz#964a23c54e4889405b4861a5c9f0480d45141dfa"
@@ -4030,6 +4044,10 @@ lodash.memoize@^4.1.2:
 lodash.merge@^4.6.0:
   version "4.6.0"
   resolved "http://registry.npm.taobao.org/lodash.merge/download/lodash.merge-4.6.0.tgz#69884ba144ac33fe699737a6086deffadd0f89c5"
+
+lodash.omit@~4.5.0:
+  version "4.5.0"
+  resolved "http://registry.npm.taobao.org/lodash.omit/download/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
 
 lodash.set@~4.3.2:
   version "4.3.2"
@@ -5502,7 +5520,7 @@ readdirp@^2.0.0:
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
 
-recompose@^0.23.0, recompose@~0.23.1:
+recompose@^0.23.0, recompose@~0.23.1, recompose@~0.23.4:
   version "0.23.5"
   resolved "http://registry.npm.taobao.org/recompose/download/recompose-0.23.5.tgz#72ac8261246bec378235d187467d02a721e8b1de"
   dependencies:

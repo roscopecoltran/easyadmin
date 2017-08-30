@@ -2,6 +2,7 @@ package com.easyadmin.security.config;
 
 import com.easyadmin.security.security.JwtAuthenticationEntryPoint;
 import com.easyadmin.security.security.JwtAuthenticationTokenFilter;
+import com.easyadmin.security.security.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
+    private SecurityService securityService;
+
+    @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .userDetailsService(this.userDetailsService)
@@ -45,6 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
         return new JwtAuthenticationTokenFilter();
+    }
+
+    @Bean
+    public SecurityService securityService() {
+        return this.securityService;
     }
 
     @Override

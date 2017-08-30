@@ -25,6 +25,7 @@ const Menu = ({resources, onMenuTap, logout}) => (
             leftIcon={<SettingsIcon/>}
             onTouchTap={onMenuTap}
         />
+        {logout}
     </div>
 );
 

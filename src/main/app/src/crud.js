@@ -80,10 +80,10 @@ const CRUDFilter = (props) => (
  */
 const renderRecordAction = (props) => {
     const actions = [];
-    actions.push(<ShowButton key="1"/>);
-    if (props.hasDelete) {
-        actions.push(<DeleteButton key="2"/>);
-    }
+    // actions.push(<ShowButton key="1"/>);
+    // if (props.hasDelete) {
+    //     actions.push(<DeleteButton key="2"/>);
+    // }
     if (props.hasEdit) {
         actions.push(<EditButton key="3"/>);
     }
@@ -98,9 +98,9 @@ const renderRecordAction = (props) => {
 export const CRUDList = (props) => (
     <List {...props} filters={<CRUDFilter {...props}/>} title={props.options.label}>
         <Datagrid>
+            {renderRecordAction(props)}
             <TextField source="id" sortable={false}/>
             {props.options.fields.filter(field => field.showInList).map(renderField)}
-            {renderRecordAction(props)}
         </Datagrid>
     </List>
 );
