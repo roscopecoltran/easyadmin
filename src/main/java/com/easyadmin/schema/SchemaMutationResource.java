@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -30,6 +31,7 @@ public class SchemaMutationResource {
 
 
     @PostMapping(value = "/schemas/_entitys")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
@@ -38,12 +40,14 @@ public class SchemaMutationResource {
     }
 
     @PutMapping(value = "/schemas/_entitys/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> editEntity(@PathVariable("id") String id, @RequestBody Entity entity) {
         dataMutationService.update(Constants.SYS_COL_Entity, id, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
     @PostMapping(value = "/schemas/_fields")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Field> addField(@RequestBody Field field) {
         String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
@@ -52,6 +56,7 @@ public class SchemaMutationResource {
     }
 
     @PutMapping(value = "/schemas/_fields/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Field> editField(@PathVariable("id") String id, @RequestBody Field field) {
         dataMutationService.update(Constants.SYS_COL_Field, id, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);

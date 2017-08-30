@@ -1,5 +1,6 @@
 package com.easyadmin.security.security.controller;
 
+import com.easyadmin.security.security.AuthorityName;
 import com.easyadmin.security.security.JwtAuthenticationRequest;
 import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,9 +54,9 @@ public class AuthenticationRestController {
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails, device);
-
+        final boolean isAdmin = userDetails.getAuthorities().contains(new SimpleGrantedAuthority(AuthorityName.ROLE_ADMIN.toString()));
         // Return the token
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token, isAdmin));
     }
 
     @RequestMapping(value = "${jwt.route.authentication.refresh}", method = RequestMethod.GET)
@@ -65,7 +67,7 @@ public class AuthenticationRestController {
 
         if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
+            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken, user.getAuthorities().contains(AuthorityName.ROLE_ADMIN)));
         } else {
             return ResponseEntity.badRequest().body(null);
         }

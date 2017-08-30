@@ -18,10 +18,10 @@ export default (type, params) => {
                 }
                 return response.json();
             })
-            .then(({token, permissions}) => {
+            .then(({token, admin}) => {
                 const decoded = jwtDecode(token);
                 localStorage.setItem('token', token);
-                localStorage.setItem('permissions', decoded.permissions);
+                localStorage.setItem('permissions', admin);
             });
     }
     if (type === AUTH_LOGOUT) {

@@ -6,7 +6,8 @@ import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import compose from "recompose/compose";
 import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
-
+import { WithPermission } from 'aor-permissions';
+import authClient from './authClient';
 const Menu = ({resources, onMenuTap, logout}) => (
     <div>
         <DashboardMenuItem onTouchTap={onMenuTap}/>
@@ -19,12 +20,14 @@ const Menu = ({resources, onMenuTap, logout}) => (
                 onTouchTap={onMenuTap}
             />
         ))}
-        <MenuItem
-            containerElement={<Link to="/_entitys"/>}
-            primaryText='Settings'
-            leftIcon={<SettingsIcon/>}
-            onTouchTap={onMenuTap}
-        />
+        <WithPermission authClient={authClient} value="true">
+            <MenuItem
+                containerElement={<Link to="/_entitys"/>}
+                primaryText='Settings'
+                leftIcon={<SettingsIcon/>}
+                onTouchTap={onMenuTap}
+            />
+        </WithPermission>
         {logout}
     </div>
 );

@@ -47,19 +47,15 @@ const restRouter = restClientRouter({
  * add file support
  */
 // const uploadCapableClient = addUploadFeature(restClient);
-
 class App extends Component {
     state = {schemas: null};
 
     componentDidMount() {
-        this.getSchemas();
+            this.getSchemas();
     }
 
     getSchemas() {
-        fetch(url + `/schemas/_entitys`)
-            .then((response) => {
-                return response.json()
-            })
+        httpClient(url + `/schemas/_entitys`)
             .then((json) => {
                 this.setState({
                     schemas: json
@@ -70,7 +66,7 @@ class App extends Component {
     render() {
         if (null === this.state.schemas) return null;
 
-        return <AdminBuilder {...this.props} authClient={authClient} loginPage={Login} logoutButton={Logout} menu={Menu}
+        return <AdminBuilder {...this.props}  authClient={authClient} loginPage={Login} logoutButton={Logout} menu={Menu}
                              schemas={this.state.schemas} dashboard={Dashboard}
                              restClient={restRouter} locale='zh-cn' messages={messages}/>
     }
