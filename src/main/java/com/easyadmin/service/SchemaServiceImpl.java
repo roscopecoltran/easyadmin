@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by gongxinyi on 2017-08-10.
  */
 @org.springframework.stereotype.Component
-public class SchemaQueryService {
+public class SchemaServiceImpl implements SchemaService {
 
     public List<Entity> findEntitys() {
         List<Entity> entities = new ArrayList<>();

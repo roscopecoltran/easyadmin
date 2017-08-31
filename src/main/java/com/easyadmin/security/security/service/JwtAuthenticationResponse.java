@@ -11,9 +11,10 @@ public class JwtAuthenticationResponse implements Serializable {
 
     private final String token;
     private final boolean isAdmin;
-    public JwtAuthenticationResponse(String token,Boolean isAdmin) {
+
+    public JwtAuthenticationResponse(String token, Boolean isAdmin) {
         this.token = token;
-        this.isAdmin=isAdmin;
+        this.isAdmin = isAdmin;
     }
 
     public String getToken() {

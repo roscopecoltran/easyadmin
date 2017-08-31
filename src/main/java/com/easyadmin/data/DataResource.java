@@ -1,17 +1,13 @@
 package com.easyadmin.data;
 
 import com.easyadmin.consts.Constants;
-import com.easyadmin.service.DataQueryService;
+import com.easyadmin.service.DataService;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -37,16 +33,16 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-public class DataQueryResource {
+public class DataResource {
     @Autowired
-    DataQueryService dataQueryService;
+    DataService dataService;
 
     @GetMapping(value = "/api/{entity}")
 //    @PreAuthorize("@securityService.hasProtectedAccess()")
     public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Constants.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
-        List data = dataQueryService.list(entity, allRequestParams);
-        long count = dataQueryService.count(entity, allRequestParams);
+        List data = dataService.list(entity, allRequestParams);
+        long count = dataService.count(entity, allRequestParams);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", count + "")
@@ -57,10 +53,32 @@ public class DataQueryResource {
     @GetMapping(value = "/api/{entity}/{id}")
     public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.KEY) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
-        Map<String, Object> object = dataQueryService.findOne(entity, id);
+        Map<String, Object> object = dataService.findOne(entity, id);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(object);
+    }
+
+    @PostMapping(value = "/api/{entity}")
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
+        log.info("params:{}", JSON.serialize(allRequestParams));
+
+        Map<String, Object> document = dataService.save(entity, allRequestParams);
+        return ResponseEntity.status(HttpStatus.CREATED).body(document);
+    }
+
+    @PutMapping(value = "/api/{entity}/{id}")
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
+        log.info("params:{}", JSON.serialize(allRequestParams));
+
+        Map<String, Object> document = dataService.update(entity, id, allRequestParams);
+        return ResponseEntity.status(HttpStatus.OK).body(document);
+    }
+
+    @DeleteMapping(value = "/api/{entity}/{id}")
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
+        Map<String, Object> document = dataService.deleteLogic(entity, id);
+        return ResponseEntity.status(HttpStatus.OK).body(document);
     }
 
 

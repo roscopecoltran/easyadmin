@@ -31,10 +31,10 @@ import static com.mongodb.client.model.Sorts.descending;
  */
 @Slf4j
 @Component
-public class DataQueryService {
+public class DataServiceImpl implements DataService {
 
     @Autowired
-    SchemaQueryService schemaQueryService;
+    SchemaService schemaService;
 
     /**
      * get data json
@@ -118,7 +118,7 @@ public class DataQueryService {
                 .filter(map ->
                         (!map.getKey().equals(Constants.Q) && !map.getKey().startsWith("_"))
                 )
-                .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaQueryService.findFields(entity)).get()));
+                .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaService.findFields(entity)).get()));
         // logic del flag
         query.and(QueryBuilder.start(Constants.DEL_FLAG).notEquals(true).get());
         return query.get();
@@ -171,5 +171,34 @@ public class DataQueryService {
         }
 
         return qb;
+    }
+
+    public Document save(String entity, Map<String, Object> data) {
+        MongoCollection collection = DbUtil.getCollection(entity);
+        if (!data.containsKey(Constants.id)) {
+            String id = SequenceUtil.getNextSequence(entity + Constants._id).toString();
+            data.put(Constants.id, id);
+        }
+        data.put(Constants._id, data.get(Constants.id));
+        data.remove(Constants.id);
+        Document document = new Document(data);
+        document.put(Constants.DEL_FLAG, false);
+        collection.insertOne(document);
+        return document;
+    }
+
+    public Document update(String entity, String id, Map<String, Object> data) {
+        MongoCollection collection = DbUtil.getCollection(entity);
+        Document document = new Document(data);
+        BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
+        collection.replaceOne(searchQuery, document);
+        return document;
+    }
+
+    public Document deleteLogic(String entity, String id) {
+        MongoCollection<Document> collection = DbUtil.getCollection(entity);
+        BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
+        Document document = collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Constants.DEL_FLAG, true)));
+        return document;
     }
 }
