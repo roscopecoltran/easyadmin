@@ -35,7 +35,6 @@ public class SchemaQueryResource {
     }
 
     @GetMapping("/schemas/_entitys/{eid}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> findOne(@PathVariable("eid") String eid) {
         Entity entity = schemaQueryService.findOne(eid);
         return ResponseEntity

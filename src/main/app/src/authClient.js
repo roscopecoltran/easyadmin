@@ -22,6 +22,7 @@ export default (type, params) => {
                 const decoded = jwtDecode(token);
                 localStorage.setItem('token', token);
                 localStorage.setItem('permissions', admin);
+                window.location.reload()
             });
     }
     if (type === AUTH_LOGOUT) {
@@ -29,7 +30,7 @@ export default (type, params) => {
         return Promise.resolve();
     }
     if (type === AUTH_ERROR) {
-        const { status } = params;
+        const {status} = params;
         if (status === 401 || status === 403) {
             localStorage.removeItem('token');
             return Promise.reject();

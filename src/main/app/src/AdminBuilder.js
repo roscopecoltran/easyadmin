@@ -8,7 +8,7 @@ export default class extends Component {
     render() {
         let props = {...this.props};
 
-        return (
+        return props.isLogin?(
             <Admin {...props}>
                 {this.props.schemas.map(resource =>
                     <Resource key={resource.id} label={resource.label} name={resource.id} options={resource}
@@ -20,6 +20,6 @@ export default class extends Component {
                 <Resource name="_entitys" list={EntityList} create={EntityCreate} edit={EntityEdit}/>
                 <Resource name="_fields" list={FieldList} create={FieldCreate} edit={FieldEdit}/>
             </Admin>
-        );
+        ): <Admin {...props}></Admin>;
     }
 }
