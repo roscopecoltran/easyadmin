@@ -15,6 +15,10 @@ public class Constants {
 
     public static final String SYS_COL_USER = "_user";
 
+    public static final String SYS_COL_ROLE = "_role";
+
+    public static final String SYS_COL_USER_ROLE = "_user_role";
+
     public static final String ENTITY_NAME_PREFIX = "e";
     public static final String FIELD_NAME_PREFIX = "f";
 

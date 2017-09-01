@@ -10,7 +10,10 @@ import {
     ReferenceManyField,
     SimpleForm,
     TextField,
-    TextInput
+    TextInput,
+    ReferenceArrayInput,
+    SelectArrayInput,
+    BooleanInput
 } from "admin-on-rest";
 
 export const UserList = (props) => (
@@ -21,4 +24,28 @@ export const UserList = (props) => (
             <EditButton/>
         </Datagrid>
     </List>
+);
+
+export const UserCreate = (props) => (
+    <Create {...props} title='新建用户'>
+        <SimpleForm>
+            <TextInput source="username" label="用户名"/>
+            <TextInput type="password" source="password" label="密码"/>
+            <ReferenceArrayInput source="roles" reference="_roles" label="角色" allowEmpty>
+                <SelectArrayInput optionText="name"/>
+            </ReferenceArrayInput>
+            <BooleanInput source="enabled" label="是否有效" defaultValue={true}/>
+        </SimpleForm>
+    </Create>
+);
+
+export const UserEdit = (props) => (
+    <Create {...props} title='修改用户'>
+        <SimpleForm>
+            <TextField source="username" label="用户名"/>
+            <ReferenceArrayInput source="authorities" reference="_roles" label="角色">
+                <SelectArrayInput optionText="name"/>
+            </ReferenceArrayInput>
+        </SimpleForm>
+    </Create>
 );

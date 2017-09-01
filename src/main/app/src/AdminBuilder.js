@@ -3,7 +3,8 @@ import {Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
 import {EntityCreate, EntityEdit, EntityList} from "./schema/entitys";
 import {FieldCreate, FieldEdit, FieldList} from "./schema/fields";
-import {UserList} from './user/user';
+import {UserList,UserCreate,UserEdit} from './user/user';
+import {RoleList,RoleCreate,RoleEdit} from './user/role';
 export default class extends Component {
 
     render() {
@@ -20,7 +21,8 @@ export default class extends Component {
                 )}
                 <Resource name="_entitys" list={EntityList} create={EntityCreate} edit={EntityEdit}/>
                 <Resource name="_fields" list={FieldList} create={FieldCreate} edit={FieldEdit}/>
-                <Resource name="_users" list={UserList}/>
+                <Resource name="_users" list={UserList} create={UserCreate} edit={UserEdit}/>
+                <Resource name="_roles" list={RoleList} create={RoleCreate} edit={RoleEdit}/>
             </Admin>
         ): <Admin {...props}></Admin>;
     }

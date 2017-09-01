@@ -175,7 +175,7 @@ public class DataServiceImpl implements DataService {
 
     public Document save(String entity, Map<String, Object> data) {
         MongoCollection collection = DbUtil.getCollection(entity);
-        if (!data.containsKey(Constants.id)) {
+        if (!data.containsKey(Constants.id) || StringUtils.isEmpty(data.get(Constants.id))) {
             String id = SequenceUtil.getNextSequence(entity + Constants._id).toString();
             data.put(Constants.id, id);
         }
