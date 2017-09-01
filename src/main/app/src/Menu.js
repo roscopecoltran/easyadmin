@@ -27,6 +27,12 @@ const Menu = ({resources, onMenuTap, logout}) => (
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />
+            <MenuItem
+                containerElement={<Link to="/_users"/>}
+                primaryText='User'
+                leftIcon={<SettingsIcon/>}
+                onTouchTap={onMenuTap}
+            />
         </WithPermission>
         {logout}
     </div>

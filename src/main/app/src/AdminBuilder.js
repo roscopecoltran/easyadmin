@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
-import {EntityCreate, EntityEdit, EntityList} from "./system/entitys";
-import {FieldCreate, FieldEdit, FieldList} from "./system/fields";
+import {EntityCreate, EntityEdit, EntityList} from "./schema/entitys";
+import {FieldCreate, FieldEdit, FieldList} from "./schema/fields";
+import {UserList} from './user/user';
 export default class extends Component {
 
     render() {
@@ -19,6 +20,7 @@ export default class extends Component {
                 )}
                 <Resource name="_entitys" list={EntityList} create={EntityCreate} edit={EntityEdit}/>
                 <Resource name="_fields" list={FieldList} create={FieldCreate} edit={FieldEdit}/>
+                <Resource name="_users" list={UserList}/>
             </Admin>
         ): <Admin {...props}></Admin>;
     }

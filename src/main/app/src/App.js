@@ -36,10 +36,12 @@ const restRouter = restClientRouter({
     rules: [
         ['_entitys', 'schema'],
         ['_fields', 'schema'],
+        ['_users', 'user'],
         ['*', 'data']
     ],
     services: {
         schema: jsonServerRestClient(url + '/schemas', httpClient),
+        user : jsonServerRestClient(url + '/user', httpClient),
         data: jsonServerRestClient(url + '/api', httpClient),
     }
 });

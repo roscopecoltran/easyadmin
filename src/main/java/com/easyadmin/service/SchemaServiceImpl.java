@@ -22,6 +22,7 @@ import java.util.Map;
  */
 @org.springframework.stereotype.Component
 public class SchemaServiceImpl implements SchemaService {
+    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public List<Entity> findEntitys() {
         List<Entity> entities = new ArrayList<>();
@@ -58,7 +59,6 @@ public class SchemaServiceImpl implements SchemaService {
     }
 
     private Field doc2Field(Document doc) {
-        final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         doc.put(Constants.id, doc.get(Constants._id));
         Field field = mapper.convertValue(doc, Field.class);
         field.setShowInList(true);
@@ -73,7 +73,6 @@ public class SchemaServiceImpl implements SchemaService {
 
     public List<Field> findFields(String eid) {
         List<Field> fields = new ArrayList<>();
-        final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Block<Document> wrapBlock = doc -> {
             doc.put(Constants.id, doc.get(Constants._id));
             fields.add(mapper.convertValue(doc, Field.class));
@@ -84,7 +83,6 @@ public class SchemaServiceImpl implements SchemaService {
 
     public Field findOneField(String fieldId) {
         List<Field> fields = new ArrayList<>();
-        final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Block<Document> wrapBlock = doc -> {
             doc.put(Constants.id, doc.get(Constants._id));
             fields.add(mapper.convertValue(doc, Field.class));
