@@ -43,7 +43,7 @@ export const UserEdit = (props) => (
     <Create {...props} title='修改用户'>
         <SimpleForm>
             <TextField source="username" label="用户名"/>
-            <ReferenceArrayInput source="authorities" reference="_roles" label="角色">
+            <ReferenceArrayInput source="roles" reference="_roles" label="角色">
                 <SelectArrayInput optionText="name"/>
             </ReferenceArrayInput>
         </SimpleForm>

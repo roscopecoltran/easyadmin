@@ -10,7 +10,9 @@ import com.easyadmin.service.DataService;
 import com.easyadmin.service.DbUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
 import com.mongodb.Block;
+import com.mongodb.DB;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -58,6 +57,7 @@ public class UserResource {
         List<User> users = new ArrayList<>();
         Block<Document> wrapUsersBlock = doc -> {
             User user = mapper.convertValue(doc, User.class);
+            user.setId(doc.getLong(Constants._id));
             user.setPassword("");
             users.add(user);
         };
@@ -68,6 +68,21 @@ public class UserResource {
                 .header("X-Total-Count", users.size() + "")
                 .header("Access-Control-Expose-Headers", "X-Total-Count")
                 .body(users);
+    }
+
+    @GetMapping("/user/_users/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Map<String, Object>> findUser(@PathVariable("userId") String userId) {
+
+        Map userMap = dataService.findOne(Constants.SYS_COL_USER, userId);
+        List roles = new ArrayList<>();
+        Block<Document> wrapBlock = doc -> roles.add(doc.get("role_id"));
+
+        DbUtil.getCollection(Constants.SYS_COL_USER_ROLE).find(new BasicDBObject("user_id", userId)).forEach(wrapBlock);
+        userMap.put("roles", roles);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(userMap);
     }
 
     @PostMapping("/user/_users")
