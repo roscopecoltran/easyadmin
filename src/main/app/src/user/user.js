@@ -40,12 +40,12 @@ export const UserCreate = (props) => (
 );
 
 export const UserEdit = (props) => (
-    <Create {...props} title='修改用户'>
+    <Edit {...props} title='修改用户'>
         <SimpleForm>
             <TextField source="username" label="用户名"/>
             <ReferenceArrayInput source="roles" reference="_roles" label="角色">
                 <SelectArrayInput optionText="name"/>
             </ReferenceArrayInput>
         </SimpleForm>
-    </Create>
+    </Edit>
 );

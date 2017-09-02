@@ -5,12 +5,16 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 
 /**
  *
  */
 public class DbUtil {
     private static MongoClient mongoClient;
+
+    static final Morphia morphia = new Morphia();
 
     public static MongoCollection getCollection(String url, String dbName, String entity) {
         if (mongoClient == null) {
@@ -19,6 +23,18 @@ public class DbUtil {
         }
         MongoDatabase database = mongoClient.getDatabase(dbName);
         return database.getCollection(entity);
+    }
+
+    public static Datastore getDataStore(String url, String dbName) {
+        if (mongoClient == null) {
+            MongoClientURI uri = new MongoClientURI(url);
+            mongoClient = new MongoClient(uri);
+        }
+        return morphia.createDatastore(mongoClient, dbName);
+    }
+
+    public static Datastore getDataStore() {
+        return getDataStore("mongodb://localhost:27017", "easyadmin");
     }
 
     public static MongoCollection getCollection(String entity) {

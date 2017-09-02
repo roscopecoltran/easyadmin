@@ -1,20 +1,15 @@
 package com.easyadmin.user;
 
 import com.easyadmin.consts.Constants;
-import com.easyadmin.schema.domain.Entity;
-import com.easyadmin.security.security.Authority;
 import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
 import com.easyadmin.security.security.User;
 import com.easyadmin.service.DataService;
 import com.easyadmin.service.DbUtil;
+import com.easyadmin.service.SequenceUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
-import com.mongodb.Block;
-import com.mongodb.DB;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -25,10 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by gongxinyi on 2017-09-01.
@@ -54,15 +46,7 @@ public class UserResource {
     @GetMapping("/user/_users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> list() {
-        List<User> users = new ArrayList<>();
-        Block<Document> wrapUsersBlock = doc -> {
-            User user = mapper.convertValue(doc, User.class);
-            user.setId(doc.getLong(Constants._id));
-            user.setPassword("");
-            users.add(user);
-        };
-
-        DbUtil.getCollection(Constants.SYS_COL_USER).find().forEach(wrapUsersBlock);
+        List<User> users = DbUtil.getDataStore().createQuery(User.class).asList();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", users.size() + "")
@@ -72,32 +56,20 @@ public class UserResource {
 
     @GetMapping("/user/_users/{userId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Map<String, Object>> findUser(@PathVariable("userId") String userId) {
+    public ResponseEntity<User> findUser(@PathVariable("userId") String userId) {
 
-        Map userMap = dataService.findOne(Constants.SYS_COL_USER, userId);
-        List roles = new ArrayList<>();
-        Block<Document> wrapBlock = doc -> roles.add(doc.get("role_id"));
-
-        DbUtil.getCollection(Constants.SYS_COL_USER_ROLE).find(new BasicDBObject("user_id", userId)).forEach(wrapBlock);
-        userMap.put("roles", roles);
+        User user = DbUtil.getDataStore().get(User.class, userId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(userMap);
+                .body(user);
     }
 
     @PostMapping("/user/_users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<User> addUser(@RequestBody final Map<String, Object> allRequestParams) {
-        User user = mapper.convertValue(allRequestParams, User.class);
+    public ResponseEntity<User> addUser(@RequestBody final User user) {
+        user.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_USER+Constants._id).toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Map<String, Object> userMap = dataService.save(Constants.SYS_COL_USER, mapper.convertValue(user, Map.class));
-        List role_ids = (List) allRequestParams.get("roles");
-        Map<String, Object> userRoleMap = new HashMap<>();
-        userRoleMap.put("user_id", userMap.get(Constants._id).toString());
-        for (Object role_id : role_ids) {
-            userRoleMap.put("role_id", role_id.toString());
-            dataService.save(Constants.SYS_COL_USER_ROLE, userRoleMap);
-        }
+        DbUtil.getDataStore().save(user);
 
         return ResponseEntity.ok(user);
     }
