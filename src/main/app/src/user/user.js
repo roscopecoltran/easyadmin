@@ -13,7 +13,10 @@ import {
     TextInput,
     ReferenceArrayInput,
     SelectArrayInput,
-    BooleanInput
+    BooleanInput,
+    ReferenceArrayField,
+    SingleFieldList,
+    ChipField
 } from "admin-on-rest";
 
 export const UserList = (props) => (
@@ -21,6 +24,11 @@ export const UserList = (props) => (
         <Datagrid>
             <TextField source="username" label="用户名"/>
             <BooleanField source="enabled" label="是否有效"/>
+            <ReferenceArrayField label="角色" reference="_roles" source="roles">
+                <SingleFieldList>
+                    <ChipField source="name"/>
+                </SingleFieldList>
+            </ReferenceArrayField>
             <EditButton/>
         </Datagrid>
     </List>
@@ -46,6 +54,7 @@ export const UserEdit = (props) => (
             <ReferenceArrayInput source="roles" reference="_roles" label="角色">
                 <SelectArrayInput optionText="name"/>
             </ReferenceArrayInput>
+            <BooleanInput source="enabled" label="是否有效"/>
         </SimpleForm>
     </Edit>
 );

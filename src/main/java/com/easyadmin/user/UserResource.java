@@ -1,6 +1,7 @@
 package com.easyadmin.user;
 
 import com.easyadmin.consts.Constants;
+import com.easyadmin.schema.domain.Field;
 import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
 import com.easyadmin.security.security.User;
@@ -10,6 +11,8 @@ import com.easyadmin.service.SequenceUtil;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gongxinyi on 2017-09-01.
@@ -80,6 +84,18 @@ public class UserResource {
         String username = jwtTokenUtil.getUsernameFromToken(token);
         JwtUser user = (JwtUser) userDetailsService.loadUserByUsername(username);
         return user;
+    }
+
+    @PutMapping(value = "/user/_users/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<User> editField(@PathVariable("id") String id, @RequestBody User user) {
+        final Query<User> userQuery=DbUtil.getDataStore().createQuery(User.class).field("id").equal(id);
+        final UpdateOperations<User> updateOperations = DbUtil.getDataStore().createUpdateOperations(User.class)
+                .set("roles", user.getRoles())
+                .set("enabled",user.getEnabled());
+
+        DbUtil.getDataStore().update(userQuery,updateOperations);
+        return ResponseEntity.ok(user);
     }
 
 }

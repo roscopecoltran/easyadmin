@@ -6,6 +6,8 @@ import com.easyadmin.security.security.User;
 import com.easyadmin.service.DbUtil;
 import com.easyadmin.service.SequenceUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,6 +46,17 @@ public class RoleResource {
         role.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_ROLE+Constants._id).toString());
         DbUtil.getDataStore().save(role);
 
+        return ResponseEntity.ok(role);
+    }
+
+    @PutMapping(value = "/roles/_roles/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Role> editField(@PathVariable("id") String id, @RequestBody Role role) {
+        final Query<Role> roleQuery=DbUtil.getDataStore().createQuery(Role.class).field("id").equal(id);
+        final UpdateOperations<Role> updateOperations = DbUtil.getDataStore().createUpdateOperations(Role.class)
+                .set("name", role.getName());
+
+        DbUtil.getDataStore().update(roleQuery,updateOperations);
         return ResponseEntity.ok(role);
     }
 }

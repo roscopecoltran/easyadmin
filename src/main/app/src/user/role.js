@@ -32,9 +32,9 @@ export const RoleCreate = (props) => (
 );
 
 export const RoleEdit = (props) => (
-    <Create {...props} title='新建角色'>
+    <Edit {...props} title='新建角色'>
         <SimpleForm>
-            <TextField source="name" label="角色名"/>
+            <TextInput source="name" label="角色名"/>
         </SimpleForm>
-    </Create>
+    </Edit>
 );
