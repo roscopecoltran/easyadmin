@@ -4,6 +4,7 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.service.DataService;
+import com.easyadmin.service.DbUtil;
 import com.easyadmin.service.SchemaService;
 import com.easyadmin.service.SequenceUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,7 +70,7 @@ public class SchemaResource {
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
-        dataService.save(Constants.SYS_COL_Entity, new ObjectMapper().convertValue(entity, Map.class));
+        DbUtil.getDataStore().save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
@@ -85,7 +86,7 @@ public class SchemaResource {
     public ResponseEntity<Field> addField(@RequestBody Field field) {
         String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
-        dataService.save(Constants.SYS_COL_Field, new ObjectMapper().convertValue(field, Map.class));
+        DbUtil.getDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 

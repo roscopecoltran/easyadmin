@@ -3,6 +3,7 @@ package com.easyadmin.schema.domain;
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
 import lombok.*;
+import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
 
@@ -13,17 +14,13 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode()
 @NoArgsConstructor
+@org.mongodb.morphia.annotations.Entity(value = "_entitys",noClassnameStored = true)
 public final class Entity {
+    @Id
     private String id;
     private String label;
     private List<Field> fields;
 
     private CRUDPermission[] crud;
     private Redirect redirect;// 新增记录后跳转到哪个页面 edit,show,list
-
-    @Builder
-    public Entity(String id, String label) {
-        this.id = id;
-        this.label = label;
-    }
 }

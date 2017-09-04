@@ -6,7 +6,7 @@ import AdminBuilder from './AdminBuilder';
 import {url} from './constants';
 import restClientRouter from 'aor-rest-client-router';
 import Menu from './Menu';
-import authClient from './authClient';
+import {authClient,httpClient} from './authClient';
 /**
  * i18n
  * @type {{zh-cn}}
@@ -15,20 +15,6 @@ const messages = {
     'zh-cn': zhcnMsg,
 };
 
-/**
- * add token before request
- * @param url
- * @param options
- * @returns {*}
- */
-const httpClient = (url, options = {}) => {
-    if (!options.headers) {
-        options.headers = new Headers({Accept: 'application/json'});
-    }
-    const token = localStorage.getItem('token');
-    options.headers.set('Authorization', `Bearer ${token}`);
-    return fetchUtils.fetchJson(url, options);
-}
 /**
  * rest client
  */

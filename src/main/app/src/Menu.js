@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import compose from "recompose/compose";
 import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 import { WithPermission } from 'aor-permissions';
-import authClient from './authClient';
+import {authClient} from './authClient';
 const Menu = ({resources, onMenuTap, logout}) => (
     <div>
         <DashboardMenuItem onTouchTap={onMenuTap}/>
@@ -23,19 +23,19 @@ const Menu = ({resources, onMenuTap, logout}) => (
         <WithPermission authClient={authClient} value="true">
             <MenuItem
                 containerElement={<Link to="/_entitys"/>}
-                primaryText='Settings'
+                primaryText='系统设置'
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />
             <MenuItem
                 containerElement={<Link to="/_users"/>}
-                primaryText='User'
+                primaryText='用户'
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />
             <MenuItem
                 containerElement={<Link to="/_roles"/>}
-                primaryText='Role'
+                primaryText='角色'
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />

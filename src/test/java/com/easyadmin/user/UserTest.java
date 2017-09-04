@@ -43,8 +43,8 @@ public class UserTest {
 
         User user = new User();
         user.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_USER + "_id").toString());
-        user.setUsername("foo");
-        user.setPassword(passwordEncoder.encode("bar"));
+        user.setUsername("admin");
+        user.setPassword(passwordEncoder.encode("admin"));
         user.setEnabled(true);
         List<Role> roles = new ArrayList<Role>();
         roles.add(role);

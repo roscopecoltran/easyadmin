@@ -8,7 +8,7 @@ import org.mongodb.morphia.annotations.Reference;
 
 import java.util.List;
 
-@Entity("_role")
+@Entity(value = "_role", noClassnameStored = true)
 @Data
 @NoArgsConstructor
 public class Role {

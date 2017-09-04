@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.mongodb.morphia.annotations.Id;
 
 import java.io.Serializable;
 
@@ -22,12 +23,13 @@ import java.io.Serializable;
  * Created by gongxinyi on 2017-08-10.
  */
 @Data
-@AllArgsConstructor
 @ToString
 @EqualsAndHashCode
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@org.mongodb.morphia.annotations.Entity(value = "_fields",noClassnameStored = true)
 public class Field implements Serializable {
     protected String eid;
+    @Id
     protected String id;
     protected String name;
     protected Component component;
@@ -59,14 +61,6 @@ public class Field implements Serializable {
     private String maxValue;
 
     private Boolean showInList;
-
-    public Field(String name, Component component, String label, Object defaultValue, Boolean required) {
-        this.name = name;
-        this.component = component;
-        this.label = label;
-        this.defaultValue = defaultValue;
-        this.required = required;
-    }
 
     public boolean isReference() {
         return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);

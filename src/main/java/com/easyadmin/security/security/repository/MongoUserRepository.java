@@ -18,7 +18,6 @@ public class MongoUserRepository implements UserRepository {
                 .field("username").equal(username)
                 .asList();
 
-
         return CollectionUtils.isEmpty(users) ? null : users.get(0);
     }
 }

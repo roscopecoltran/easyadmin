@@ -1,9 +1,24 @@
 // in authClient.js
 import {AUTH_LOGIN, AUTH_LOGOUT, AUTH_CHECK, AUTH_ERROR} from 'admin-on-rest';
+import {fetchUtils} from 'admin-on-rest';
 import {AUTH_GET_PERMISSIONS} from 'aor-permissions';
-import jwtDecode from 'jwt-decode';
 import {url} from './constants';
-export default (type, params) => {
+/**
+ * add token before request
+ * @param url
+ * @param options
+ * @returns {*}
+ */
+export const httpClient = (url, options = {}) => {
+    if (!options.headers) {
+        options.headers = new Headers({Accept: 'application/json'});
+    }
+    const token = localStorage.getItem('token');
+    options.headers.set('Authorization', `Bearer ${token}`);
+    return fetchUtils.fetchJson(url, options);
+}
+
+export const authClient = (type, params) => {
     if (type === AUTH_LOGIN) {
         const {username, password} = params;
         const request = new Request(url + "/auth", {
@@ -19,10 +34,9 @@ export default (type, params) => {
                 return response.json();
             })
             .then(({token, admin}) => {
-                const decoded = jwtDecode(token);
                 localStorage.setItem('token', token);
                 localStorage.setItem('permissions', admin);
-                window.location.reload()
+                window.location.reload() // after logged in , the admin page need to refresh to load schemas ,ugly , hope for awsome
             });
     }
     if (type === AUTH_LOGOUT) {

@@ -2,7 +2,6 @@ package com.easyadmin.user;
 
 import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.Role;
-import com.easyadmin.security.security.User;
 import com.easyadmin.service.DbUtil;
 import com.easyadmin.service.SequenceUtil;
 import lombok.extern.slf4j.Slf4j;

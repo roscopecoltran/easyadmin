@@ -64,7 +64,6 @@ const checkDate = (value) => value === 'Date';
 const checkReference = (value) => ['Reference', 'ReferenceArray'].includes(value);
 const checkArray = (value) => arrayField.includes(value);
 const checkReferenceEntity = (value) => {
-    console.log(value)
     return value!=null;
 }
 export const FieldCreate = (props) => {

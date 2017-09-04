@@ -9,7 +9,6 @@
     "aor-permissions": "^1.1.2",
     "aor-rest-client-router": "^0.1.0",
     "aor-rich-text-input": "^1.0.1",
-    "jwt-decode": "^2.2.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.11"

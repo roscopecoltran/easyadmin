@@ -11,9 +11,8 @@ import org.mongodb.morphia.annotations.Reference;
 import java.util.Date;
 import java.util.List;
 
-@Entity("_user")
+@Entity(value = "_user", noClassnameStored = true)
 @Data
-
 public class User {
     @Id
     private String id;
