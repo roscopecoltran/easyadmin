@@ -24,12 +24,14 @@ const restRouter = restClientRouter({
         ['_fields', 'schema'],
         ['_users', 'user'],
         ['_roles', 'role'],
+        ['_permission', 'permission'],
         ['*', 'data']
     ],
     services: {
         schema: jsonServerRestClient(url + '/schemas', httpClient),
         user : jsonServerRestClient(url + '/user', httpClient),
         role : jsonServerRestClient(url + '/role', httpClient),
+        permission:  jsonServerRestClient(url + '/permission', httpClient),
         data: jsonServerRestClient(url + '/api', httpClient),
     }
 });
