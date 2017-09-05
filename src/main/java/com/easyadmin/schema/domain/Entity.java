@@ -24,6 +24,6 @@ public final class Entity {
     private String label;
     private List<Field> fields;
 
-    private CRUDPermission[] crud;
+    private List<CRUDPermission> crud;
     private Redirect redirect;// 新增记录后跳转到哪个页面 edit,show,list
 }

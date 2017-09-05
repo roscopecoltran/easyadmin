@@ -1,6 +1,7 @@
 package com.easyadmin.user;
 
 import com.easyadmin.consts.Constants;
+import com.easyadmin.security.security.AuthorityName;
 import com.easyadmin.security.security.Role;
 import com.easyadmin.service.DbUtil;
 import com.easyadmin.service.SequenceUtil;
@@ -48,9 +49,11 @@ public class RoleResource {
         return ResponseEntity.ok(role);
     }
 
-    @PutMapping(value = "/roles/_roles/{id}")
+    @PutMapping(value = "/role/_roles/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Role> editRole(@PathVariable("id") String id, @RequestBody Role role) {
+        // ROLE_ADMIN cannot to modify
+        if (AuthorityName.ROLE_ADMIN.equals(role.getId())) return ResponseEntity.ok(role);
         final Query<Role> roleQuery = DbUtil.getDataStore().createQuery(Role.class).field("id").equal(id);
         final UpdateOperations<Role> updateOperations = DbUtil.getDataStore().createUpdateOperations(Role.class)
                 .set("name", role.getName());
