@@ -62,7 +62,7 @@ class App extends Component {
 
     render() {
         if (isLogin && null === this.state.schemas) return <div>Loading...</div>;
-        return <AdminBuilder {...this.props} isLogin={isLogin} authClient={authClient} loginPage={Login}
+        return <AdminBuilder {...this.props} title="DataCloud" isLogin={isLogin} authClient={authClient} loginPage={Login}
                              logoutButton={Logout} menu={Menu}
                              schemas={this.state.schemas} dashboard={Dashboard}
                              restClient={restRouter} locale='zh-cn' messages={messages}/>

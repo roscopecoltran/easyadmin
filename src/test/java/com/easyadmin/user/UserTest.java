@@ -46,7 +46,7 @@ public class UserTest {
     @Test
     public void saveUser() {
         Role role = new Role();
-        role.setId(sequenceService.getNextSequence(Constants.SYS_COL_ROLE + "_id").toString());
+        role.setId("ROLE_ADMIN");
         role.setName("ROLE_ADMIN");
         dbService.getDataStore().save(role);
 
