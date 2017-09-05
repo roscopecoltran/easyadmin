@@ -36,7 +36,7 @@ export const authClient = (type, params) => {
             .then(({token, admin}) => {
                 localStorage.setItem('token', token);
                 localStorage.setItem('permissions', admin);
-                window.location.reload() // after logged in , the admin page need to refresh to load schemas ,ugly , hope for awsome
+                window.location.href = "http://" + window.location.host // after logged in , the admin page need to refresh to load schemas ,ugly , hope for awsome
             });
     }
     if (type === AUTH_LOGOUT) {

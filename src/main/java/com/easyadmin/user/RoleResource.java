@@ -50,7 +50,7 @@ public class RoleResource {
 
     @PutMapping(value = "/roles/_roles/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Role> editField(@PathVariable("id") String id, @RequestBody Role role) {
+    public ResponseEntity<Role> editRole(@PathVariable("id") String id, @RequestBody Role role) {
         final Query<Role> roleQuery = DbUtil.getDataStore().createQuery(Role.class).field("id").equal(id);
         final UpdateOperations<Role> updateOperations = DbUtil.getDataStore().createUpdateOperations(Role.class)
                 .set("name", role.getName());
