@@ -3,15 +3,15 @@ import {Admin, Resource} from 'admin-on-rest';
 import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
 import {EntityCreate, EntityEdit, EntityList} from "./schema/entitys";
 import {FieldCreate, FieldEdit, FieldList} from "./schema/fields";
-import {UserList,UserCreate,UserEdit} from './user/user';
-import {RoleList,RoleCreate,RoleEdit} from './user/role';
-import {PermissionCreate,PermissionEdit} from './user/permission';
+import {UserList, UserCreate, UserEdit} from './user/user';
+import {RoleList, RoleCreate, RoleEdit} from './user/role';
+import {PermissionCreate, PermissionEdit} from './user/permission';
 export default class extends Component {
 
     render() {
         let props = {...this.props};
 
-        return props.isLogin?(
+        return props.isLogin ? (
             <Admin {...props}>
                 {this.props.schemas.map(resource =>
                     <Resource key={resource.id} label={resource.label} name={resource.id} options={resource}
@@ -26,6 +26,6 @@ export default class extends Component {
                 <Resource name="_roles" list={RoleList} create={RoleCreate} edit={RoleEdit}/>
                 <Resource name="_permission" create={PermissionCreate} edit={PermissionEdit}/>
             </Admin>
-        ): <Admin {...props}></Admin>;
+        ) : <Admin {...props}></Admin>;
     }
 }

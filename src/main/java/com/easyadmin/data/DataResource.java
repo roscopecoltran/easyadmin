@@ -51,7 +51,7 @@ public class DataResource {
     }
 
     @GetMapping(value = "/api/{entity}/{id}")
-    public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.KEY) String id, @RequestParam final Map<String, Object> allRequestParams) {
+    public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.id) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         Map<String, Object> object = dataService.findOne(entity, id);
         return ResponseEntity

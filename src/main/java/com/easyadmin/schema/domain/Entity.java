@@ -2,7 +2,10 @@ package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.mongodb.morphia.annotations.Id;
 
 import java.util.List;
@@ -14,7 +17,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode()
 @NoArgsConstructor
-@org.mongodb.morphia.annotations.Entity(value = "_entitys",noClassnameStored = true)
+@org.mongodb.morphia.annotations.Entity(value = "_entitys", noClassnameStored = true)
 public final class Entity {
     @Id
     private String id;

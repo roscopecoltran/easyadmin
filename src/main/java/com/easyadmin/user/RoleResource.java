@@ -42,7 +42,7 @@ public class RoleResource {
     @PostMapping("/role/_roles")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Role> addRole(@RequestBody final Role role) {
-        role.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_ROLE+Constants._id).toString());
+        role.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_ROLE + Constants._id).toString());
         DbUtil.getDataStore().save(role);
 
         return ResponseEntity.ok(role);
@@ -51,11 +51,11 @@ public class RoleResource {
     @PutMapping(value = "/roles/_roles/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Role> editField(@PathVariable("id") String id, @RequestBody Role role) {
-        final Query<Role> roleQuery=DbUtil.getDataStore().createQuery(Role.class).field("id").equal(id);
+        final Query<Role> roleQuery = DbUtil.getDataStore().createQuery(Role.class).field("id").equal(id);
         final UpdateOperations<Role> updateOperations = DbUtil.getDataStore().createUpdateOperations(Role.class)
                 .set("name", role.getName());
 
-        DbUtil.getDataStore().update(roleQuery,updateOperations);
+        DbUtil.getDataStore().update(roleQuery, updateOperations);
         return ResponseEntity.ok(role);
     }
 }
