@@ -1,7 +1,8 @@
 package com.easyadmin.security.security.repository;
 
 import com.easyadmin.security.security.User;
-import com.easyadmin.service.DbUtil;
+import com.easyadmin.service.DbService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -13,8 +14,11 @@ import java.util.List;
 @Component
 public class MongoUserRepository implements UserRepository {
 
+    @Autowired
+    DbService dbService;
+
     public User findByUsername(String username) {
-        List<User> users = DbUtil.getDataStore().createQuery(User.class)
+        List<User> users = dbService.getDataStore().createQuery(User.class)
                 .field("username").equal(username)
                 .asList();
 

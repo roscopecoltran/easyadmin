@@ -5,8 +5,8 @@ import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
 import com.easyadmin.security.security.User;
 import com.easyadmin.service.DataService;
-import com.easyadmin.service.DbUtil;
-import com.easyadmin.service.SequenceUtil;
+import com.easyadmin.service.DbService;
+import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -44,11 +44,15 @@ public class UserResource {
 
     @Autowired
     DataService dataService;
+    @Autowired
+    DbService dbService;
+    @Autowired
+    SequenceService sequenceService;
 
     @GetMapping("/user/_users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> list() {
-        List<User> users = DbUtil.getDataStore().createQuery(User.class).asList();
+        List<User> users = dbService.getDataStore().createQuery(User.class).asList();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", users.size() + "")
@@ -60,7 +64,7 @@ public class UserResource {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> findUser(@PathVariable("userId") String userId) {
 
-        User user = DbUtil.getDataStore().get(User.class, userId);
+        User user = dbService.getDataStore().get(User.class, userId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(user);
@@ -69,9 +73,9 @@ public class UserResource {
     @PostMapping("/user/_users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> addUser(@RequestBody final User user) {
-        user.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_USER + Constants._id).toString());
+        user.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + Constants._id).toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        DbUtil.getDataStore().save(user);
+        dbService.getDataStore().save(user);
 
         return ResponseEntity.ok(user);
     }
@@ -87,12 +91,12 @@ public class UserResource {
     @PutMapping(value = "/user/_users/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> editField(@PathVariable("id") String id, @RequestBody User user) {
-        final Query<User> userQuery = DbUtil.getDataStore().createQuery(User.class).field("id").equal(id);
-        final UpdateOperations<User> updateOperations = DbUtil.getDataStore().createUpdateOperations(User.class)
+        final Query<User> userQuery = dbService.getDataStore().createQuery(User.class).field("id").equal(id);
+        final UpdateOperations<User> updateOperations = dbService.getDataStore().createUpdateOperations(User.class)
                 .set("roles", user.getRoles())
                 .set("enabled", user.getEnabled());
 
-        DbUtil.getDataStore().update(userQuery, updateOperations);
+        dbService.getDataStore().update(userQuery, updateOperations);
         return ResponseEntity.ok(user);
     }
 

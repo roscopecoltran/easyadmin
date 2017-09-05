@@ -3,8 +3,8 @@ package com.easyadmin.user;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.Permission;
 import com.easyadmin.service.DataService;
-import com.easyadmin.service.DbUtil;
-import com.easyadmin.service.SequenceUtil;
+import com.easyadmin.service.DbService;
+import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,16 @@ import java.util.Map;
 public class PermissionResource {
     @Autowired
     DataService dataService;
+    @Autowired
+    DbService dbService;
+    @Autowired
+    SequenceService sequenceService;
 
     @PostMapping("/permission/_permission")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Permission> addPermission(@RequestBody final Permission permission) {
-        permission.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_USER + Constants._id).toString());
-        DbUtil.getDataStore().save(permission);
+        permission.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + Constants._id).toString());
+        dbService.getDataStore().save(permission);
 
         return ResponseEntity.ok(permission);
     }
@@ -38,7 +42,7 @@ public class PermissionResource {
     @GetMapping("/permission/_permission")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Permission>> list(@RequestParam("roleId") String roleId) {
-        List<Permission> permissions = StringUtils.isEmpty(roleId) ? DbUtil.getDataStore().createQuery(Permission.class).asList() : DbUtil.getDataStore().find(Permission.class).field("roleId").equal(roleId).asList();
+        List<Permission> permissions = StringUtils.isEmpty(roleId) ? dbService.getDataStore().createQuery(Permission.class).asList() : dbService.getDataStore().find(Permission.class).field("roleId").equal(roleId).asList();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", permissions.size() + "")
@@ -50,7 +54,7 @@ public class PermissionResource {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Permission> findUser(@PathVariable("id") String id) {
 
-        Permission permission = DbUtil.getDataStore().get(Permission.class, id);
+        Permission permission = dbService.getDataStore().get(Permission.class, id);
         return ResponseEntity.ok(permission);
     }
 

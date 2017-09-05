@@ -6,16 +6,17 @@ import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
 import com.easyadmin.security.security.AuthorityName;
 import com.easyadmin.security.security.Permission;
-import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,11 +25,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @org.springframework.stereotype.Component
 public class SchemaServiceImpl implements SchemaService {
+    @Autowired
+    DbService dbService;
 
     public List<Entity> findEntitys() {
-        List<Entity> entities = DbUtil.getDataStore().find(Entity.class).asList();
+        List<Entity> entities = dbService.getDataStore().find(Entity.class).asList();
 
-        List<Field> fields = DbUtil.getDataStore().find(Field.class).asList();
+        List<Field> fields = dbService.getDataStore().find(Field.class).asList();
         fields.forEach(field -> {
             entities.forEach(entity -> {
                 if (field.getEid().equals(entity.getId())) {
@@ -50,7 +53,7 @@ public class SchemaServiceImpl implements SchemaService {
             });
             return entities;
         }
-        List<Permission> permissions = DbUtil.getDataStore().createQuery(Permission.class).field("roleId").in(roles).asList();
+        List<Permission> permissions = dbService.getDataStore().createQuery(Permission.class).field("roleId").in(roles).asList();
 
         List<Entity> entityList = entities.stream()
                 .filter(entity -> permissions.stream().anyMatch(t -> t.getEid().equals(entity.getId()) && t.containsPermission()))
@@ -69,14 +72,14 @@ public class SchemaServiceImpl implements SchemaService {
     }
 
     public Entity findOne(String eid) {
-        return DbUtil.getDataStore().get(Entity.class, eid);
+        return dbService.getDataStore().get(Entity.class, eid);
     }
 
     public List<Field> findFields(String eid) {
-        return DbUtil.getDataStore().find(Field.class).field("eid").equal(eid).asList();
+        return dbService.getDataStore().find(Field.class).field("eid").equal(eid).asList();
     }
 
     public Field findOneField(String fid) {
-        return DbUtil.getDataStore().get(Field.class, fid);
+        return dbService.getDataStore().get(Field.class, fid);
     }
 }

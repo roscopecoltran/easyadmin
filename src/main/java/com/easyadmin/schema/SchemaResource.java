@@ -4,9 +4,9 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.service.DataService;
-import com.easyadmin.service.DbUtil;
+import com.easyadmin.service.DbService;
 import com.easyadmin.service.SchemaService;
-import com.easyadmin.service.SequenceUtil;
+import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +28,10 @@ public class SchemaResource {
     SchemaService schemaService;
     @Autowired
     DataService dataService;
+    @Autowired
+    DbService dbService;
+    @Autowired
+    SequenceService sequenceService;
 
     @GetMapping("/schemas/_entitys")
     public ResponseEntity<List<Entity>> list() {
@@ -68,9 +72,9 @@ public class SchemaResource {
     @PostMapping(value = "/schemas/_entitys")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
-        String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
+        String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
-        DbUtil.getDataStore().save(entity);
+        dbService.getDataStore().save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
@@ -84,9 +88,9 @@ public class SchemaResource {
     @PostMapping(value = "/schemas/_fields")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Field> addField(@RequestBody Field field) {
-        String id = SequenceUtil.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
+        String id = sequenceService.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
-        DbUtil.getDataStore().save(field);
+        dbService.getDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 

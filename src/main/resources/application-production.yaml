@@ -13,5 +13,5 @@ jwt:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017
+      uri: mongodb://admin:admin@ds161443.mlab.com:61443/easyadmin
       database: easyadmin

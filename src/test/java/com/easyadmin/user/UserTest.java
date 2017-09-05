@@ -4,8 +4,9 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.Role;
 import com.easyadmin.security.security.User;
 import com.easyadmin.security.security.repository.UserRepository;
-import com.easyadmin.service.DbUtil;
-import com.easyadmin.service.SequenceUtil;
+import com.easyadmin.service.DbService;
+import com.easyadmin.service.MorphiaFactory;
+import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -34,22 +35,30 @@ public class UserTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    MorphiaFactory morphiaFactory;
+
+    @Autowired
+    SequenceService sequenceService;
+
+    @Autowired
+    DbService dbService;
     @Test
     public void saveUser() {
         Role role = new Role();
-        role.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_ROLE + "_id").toString());
+        role.setId(sequenceService.getNextSequence(Constants.SYS_COL_ROLE + "_id").toString());
         role.setName("ROLE_ADMIN");
-        DbUtil.getDataStore().save(role);
+        dbService.getDataStore().save(role);
 
         User user = new User();
-        user.setId(SequenceUtil.getNextSequence(Constants.SYS_COL_USER + "_id").toString());
+        user.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + "_id").toString());
         user.setUsername("admin");
         user.setPassword(passwordEncoder.encode("admin"));
         user.setEnabled(true);
         List<Role> roles = new ArrayList<Role>();
         roles.add(role);
         user.setRoles(roles);
-        DbUtil.getDataStore().save(user);
+        dbService.getDataStore().save(user);
     }
 
     @Test
@@ -60,19 +69,25 @@ public class UserTest {
 
     @Test
     public void updateUserRole() throws JsonProcessingException {
-        final Query<User> underPaidQuery = DbUtil.getDataStore().createQuery(User.class)
+        final Query<User> underPaidQuery = dbService.getDataStore().createQuery(User.class)
                 .filter("username =", "user");
 
         List<Role> roles = new ArrayList<>();
         Role role = new Role();
         role.setId("2");
         roles.add(role);
-        final UpdateOperations<User> updateOperations = DbUtil.getDataStore().createUpdateOperations(User.class)
+        final UpdateOperations<User> updateOperations = dbService.getDataStore().createUpdateOperations(User.class)
                 .set("roles", roles);
 
-        final UpdateResults results = DbUtil.getDataStore().update(underPaidQuery, updateOperations);
+        final UpdateResults results = dbService.getDataStore().update(underPaidQuery, updateOperations);
 
         log.info("results:{}", new ObjectMapper().writeValueAsString(results));
 
+    }
+
+    @Test
+    public void findUsers() throws JsonProcessingException {
+
+        log.info("user:{}", new ObjectMapper().writeValueAsString(morphiaFactory.get().find(User.class).asList()));
     }
 }
