@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {translate, SelectInput, ReferenceInput, required} from 'admin-on-rest';
 import {url} from '../constants';
-
+import {httpClient} from './../authClient';
 class ReferenceDependentInput extends Component {
     constructor(props) {
         super(props);
@@ -15,10 +15,10 @@ class ReferenceDependentInput extends Component {
         this.getFields(this.props.dependsOnValue);
     }
 
-    getFields(entity){
-        fetch(url + `/schemas/_fields?eid=`+entity)
+    getFields(entity) {
+        httpClient(url + `/schemas/_fields?eid=` + entity)
             .then((response) => {
-                return response.json()
+                return response.json
             })
             .then((json) => {
                 this.setState({
@@ -28,7 +28,7 @@ class ReferenceDependentInput extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.dependsOnValue!=this.props.dependsOnValue)
+        if (nextProps.dependsOnValue != this.props.dependsOnValue)
             this.getFields(nextProps.dependsOnValue)
     }
 

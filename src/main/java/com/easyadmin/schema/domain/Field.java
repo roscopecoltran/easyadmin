@@ -33,7 +33,7 @@ public class Field implements Serializable {
     protected String name;
     protected Component component;
     protected String label;
-    protected Object defaultValue;
+    protected String defaultValue;
     protected Boolean required;
 
     /**

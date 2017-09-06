@@ -3,12 +3,10 @@ package com.easyadmin.user;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
+import com.easyadmin.security.security.Role;
 import com.easyadmin.security.security.User;
-import com.easyadmin.service.DataService;
 import com.easyadmin.service.DbService;
 import com.easyadmin.service.SequenceService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -21,7 +19,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +30,6 @@ import java.util.List;
 @Slf4j
 @RestController
 public class UserResource {
-    final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     @Value("${jwt.header}")
     private String tokenHeader;
 
@@ -42,8 +41,6 @@ public class UserResource {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    DataService dataService;
     @Autowired
     DbService dbService;
     @Autowired
@@ -98,6 +95,26 @@ public class UserResource {
 
         dbService.getDataStore().update(userQuery, updateOperations);
         return ResponseEntity.ok(user);
+    }
+
+    @PostConstruct
+    public void initUserAndRole() {
+        if (dbService.getDataStore().get(Role.class, "ROLE_ADMIN") == null) {
+            Role role = new Role();
+            role.setId("ROLE_ADMIN");
+            role.setName("ROLE_ADMIN");
+            dbService.getDataStore().save(role);
+
+            User user = new User();
+            user.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + "_id").toString());
+            user.setUsername("admin");
+            user.setPassword(passwordEncoder.encode("admin"));
+            user.setEnabled(true);
+            List<Role> roles = new ArrayList<Role>();
+            roles.add(role);
+            user.setRoles(roles);
+            dbService.getDataStore().save(user);
+        }
     }
 
 }

@@ -14,7 +14,7 @@ const Menu = ({resources, onMenuTap, logout}) => (
         {resources.filter(resource => !resource.name.startsWith('_')).map((resource)=>(
             <MenuItem
                 key={resource.name}
-                containerElement={<Link to={resource.name}/>}
+                containerElement={<Link to={'/'+resource.name}/>}
                 primaryText={resource.label}
                 leftIcon={<DashboardIcon/>}
                 onTouchTap={onMenuTap}
