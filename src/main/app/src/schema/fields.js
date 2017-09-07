@@ -4,20 +4,20 @@ import {
     BooleanInput,
     Create,
     Datagrid,
+    DateInput,
     Edit,
     EditButton,
     FilterButton,
     List,
     NumberInput,
+    ReferenceField,
     ReferenceInput,
     required,
     SelectField,
     SelectInput,
     SimpleForm,
     TextField,
-    TextInput,
-    DateInput,
-    ReferenceField
+    TextInput
 } from "admin-on-rest";
 import ComponentType from "./ComponentType";
 import {CardActions} from "material-ui/Card";
@@ -25,7 +25,7 @@ import FlatButton from "material-ui/FlatButton";
 import NavigationRefresh from "material-ui/svg-icons/navigation/refresh";
 import EmbeddedManyInput from "./EmbeddedManyInput";
 import {DependentInput} from "aor-dependent-input";
-import ReferenceDependentInput from './ReferenceDependentInput';
+import ReferenceDependentInput from "./ReferenceDependentInput";
 const keys = Object.keys(ComponentType);
 const arr = [];
 keys.forEach(v => {
@@ -64,7 +64,7 @@ const checkDate = (value) => value === 'Date';
 const checkReference = (value) => ['Reference', 'ReferenceArray'].includes(value);
 const checkArray = (value) => arrayField.includes(value);
 const checkReferenceEntity = (value) => {
-    return value!=null;
+    return value != null;
 }
 export const FieldCreate = (props) => {
     const record = props.location.data;
@@ -77,7 +77,8 @@ export const FieldCreate = (props) => {
                 <SelectInput optionText="label"/>
             </ReferenceInput>
             <TextInput source="label" label="标签" validate={[required]}/>
-            <SelectInput source="component" label="组件类型"  choices={arr} defaultValue={record ? record.component : 'Text'}/>
+            <SelectInput source="component" label="组件类型" choices={arr}
+                         defaultValue={record ? record.component : 'Text'}/>
             <BooleanInput label="是否必填" source="required"/>
             <DependentInput dependsOn="component" resolve={checkNumber}>
                 <NumberInput source="minValue" label="最小值"/>
@@ -100,8 +101,8 @@ export const FieldCreate = (props) => {
                 </ReferenceInput>
             </DependentInput>
 
-            <DependentInput  dependsOn="reference" resolve={checkReferenceEntity}>
-                <ReferenceDependentInput label="引用对象字段" source="referenceOptionText"  allowEmpty validate={required}>
+            <DependentInput dependsOn="reference" resolve={checkReferenceEntity}>
+                <ReferenceDependentInput label="引用对象字段" source="referenceOptionText" allowEmpty validate={required}>
                 </ReferenceDependentInput>
             </DependentInput>
 
@@ -149,7 +150,8 @@ export const FieldEdit = (props) => {
                 </ReferenceInput>
             </DependentInput>
             <DependentInput dependsOn="reference" resolve={checkReferenceEntity}>
-                <ReferenceDependentInput  label="引用对象字段" source="referenceOptionText" reference="_fields" allowEmpty validate={required}/>
+                <ReferenceDependentInput label="引用对象字段" source="referenceOptionText" reference="_fields" allowEmpty
+                                         validate={required}/>
             </DependentInput>
 
             <DependentInput dependsOn="component" resolve={checkArray}>

@@ -1,12 +1,12 @@
-import React, {Component} from 'react';
-import {jsonServerRestClient, fetchUtils, Login, Logout} from 'admin-on-rest';
-import zhcnMsg from 'aor-language-chinese';
-import Dashboard from './Dashboard';
-import AdminBuilder from './AdminBuilder';
-import {url} from './constants';
-import restClientRouter from 'aor-rest-client-router';
-import Menu from './Menu';
-import {authClient,httpClient} from './authClient';
+import React, {Component} from "react";
+import {jsonServerRestClient, Login, Logout} from "admin-on-rest";
+import zhcnMsg from "aor-language-chinese";
+import Dashboard from "./Dashboard";
+import AdminBuilder from "./AdminBuilder";
+import {url} from "./constants";
+import restClientRouter from "aor-rest-client-router";
+import Menu from "./Menu";
+import {authClient, httpClient} from "./authClient";
 /**
  * i18n
  * @type {{zh-cn}}
@@ -29,9 +29,9 @@ const restRouter = restClientRouter({
     ],
     services: {
         schema: jsonServerRestClient(url + '/schemas', httpClient),
-        user : jsonServerRestClient(url + '/user', httpClient),
-        role : jsonServerRestClient(url + '/role', httpClient),
-        permission:  jsonServerRestClient(url + '/permission', httpClient),
+        user: jsonServerRestClient(url + '/user', httpClient),
+        role: jsonServerRestClient(url + '/role', httpClient),
+        permission: jsonServerRestClient(url + '/permission', httpClient),
         data: jsonServerRestClient(url + '/api', httpClient),
     }
 });
@@ -62,7 +62,8 @@ class App extends Component {
 
     render() {
         if (isLogin && null === this.state.schemas) return <div>Loading...</div>;
-        return <AdminBuilder {...this.props} title="DataCloud" isLogin={isLogin} authClient={authClient} loginPage={Login}
+        return <AdminBuilder {...this.props} title="DataCloud" isLogin={isLogin} authClient={authClient}
+                             loginPage={Login}
                              logoutButton={Logout} menu={Menu}
                              schemas={this.state.schemas} dashboard={Dashboard}
                              restClient={restRouter} locale='zh-cn' messages={messages}/>

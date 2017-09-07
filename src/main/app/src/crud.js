@@ -1,51 +1,61 @@
-import React from 'react';
+import React from "react";
 import {
-    List,
-    Datagrid,
-    Create,
-    Edit,
-    SimpleForm,
     AutocompleteInput,
-    TextInput,
-    DateInput,
-    LongTextInput,
-    EditButton,
+    BooleanField,
     BooleanInput,
     CheckboxGroupInput,
+    ChipField,
+    Create,
+    Datagrid,
+    DateField,
+    DateInput,
+    Delete,
+    DeleteButton,
+    Edit,
+    EditButton,
+    email,
+    EmailField,
+    FileField,
     FileInput,
-    ReferenceInput,
-    SelectInput,
-    ReferenceArrayInput,
-    SelectArrayInput,
+    Filter,
+    ImageField,
+    ImageInput,
+    List,
+    ListButton,
+    LongTextInput,
+    maxLength,
+    maxValue,
+    minLength,
+    minValue,
+    NullableBooleanInput,
+    number,
+    NumberField,
     NumberInput,
     RadioButtonGroupInput,
-    ImageInput,
-    NullableBooleanInput,
-    Show,
-    SimpleShowLayout,
-    TextField,
-    FileField,
-    DateField,
-    ImageField,
-    BooleanField,
-    EmailField,
-    UrlField,
-    NumberField,
-    ReferenceField,
-    SingleFieldList,
-    ChipField,
-    ReferenceManyField,
     ReferenceArrayField,
+    ReferenceArrayInput,
+    ReferenceField,
+    ReferenceInput,
+    ReferenceManyField,
+    required,
     RichTextField,
+    SelectArrayInput,
     SelectField,
-} from 'admin-on-rest';
-import RichTextInput from 'aor-rich-text-input';
-import {required, minLength, maxLength, minValue, maxValue, number, email} from 'admin-on-rest';
-import {CardActions} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import {ListButton, ShowButton, DeleteButton, Delete, Filter} from 'admin-on-rest';
-import SelectArrayField from './SelectArrayField';
+    SelectInput,
+    Show,
+    ShowButton,
+    SimpleForm,
+    SimpleShowLayout,
+    SingleFieldList,
+    TextField,
+    TextInput,
+    UrlField
+} from "admin-on-rest";
+import RichTextInput from "aor-rich-text-input";
+import {CardActions} from "material-ui/Card";
+import FlatButton from "material-ui/FlatButton";
+import NavigationRefresh from "material-ui/svg-icons/navigation/refresh";
+import SelectArrayField from "./SelectArrayField";
 
 const cardActionStyle = {
     zIndex: 2,
@@ -163,7 +173,7 @@ export const CRUDEdit = (props) => (
  * @constructor
  */
 export const CRUDShow = (props) => (
-    <Show {...props}  title={props.options.label}>
+    <Show {...props} title={props.options.label}>
         <SimpleShowLayout>
             {props.options.fields.map(renderField)}
         </SimpleShowLayout>
@@ -216,7 +226,7 @@ const renderField = (field) => (
 );
 
 const renderBooleanField = (field) => (
-    <BooleanField key={field.id} elStyle={{ margin: 0 }} label={field.label} source={field.id}/>
+    <BooleanField key={field.id} elStyle={{margin: 0}} label={field.label} source={field.id}/>
 )
 const renderReferenceField = (field) => (
     <ReferenceField key={field.id} label={field.label} source={field.id} reference={field.reference}>
@@ -289,7 +299,8 @@ const renderInput = (field) => (
 );
 
 const renderAutoCompleteInput = (field) => (
-    <AutocompleteInput key={field.id} label={field.label}  source={field.id} choices={field.choices} defaultValue={field.defaultValue}
+    <AutocompleteInput key={field.id} label={field.label} source={field.id} choices={field.choices}
+                       defaultValue={field.defaultValue}
                        validate={generateValidators(field)}/>
 );
 
@@ -358,7 +369,8 @@ const renderRichTextInput = (field) => (
                    validate={generateValidators(field)}/>
 )
 const renderSelectInput = (field) => (
-    <SelectInput key={field.id} label={field.label} source={field.id} choices={field.choices} defaultValue={field.defaultValue}
+    <SelectInput key={field.id} label={field.label} source={field.id} choices={field.choices}
+                 defaultValue={field.defaultValue}
                  validate={generateValidators(field)}/>
 )
 

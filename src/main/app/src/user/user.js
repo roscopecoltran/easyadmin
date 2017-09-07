@@ -1,22 +1,22 @@
 import React from "react";
 import {
+    BooleanField,
+    BooleanInput,
+    ChipField,
     Create,
     Datagrid,
     DisabledInput,
-    BooleanField,
     Edit,
     EditButton,
     List,
-    ReferenceManyField,
-    SimpleForm,
-    TextField,
-    TextInput,
-    ReferenceArrayInput,
-    SelectArrayInput,
-    BooleanInput,
     ReferenceArrayField,
+    ReferenceArrayInput,
+    ReferenceManyField,
+    SelectArrayInput,
+    SimpleForm,
     SingleFieldList,
-    ChipField
+    TextField,
+    TextInput
 } from "admin-on-rest";
 
 export const UserList = (props) => (

@@ -4,27 +4,27 @@ import {
     BooleanInput,
     Create,
     Datagrid,
+    DateInput,
     Edit,
     EditButton,
     FilterButton,
     List,
     NumberInput,
+    ReferenceField,
     ReferenceInput,
     required,
     SelectField,
     SelectInput,
     SimpleForm,
     TextField,
-    TextInput,
-    DateInput,
-    ReferenceField
+    TextInput
 } from "admin-on-rest";
 
 export const PermissionCreate = (props) => {
     const record = props.location.data;
 
     return <Create {...props} actions={null} title="新增授权">
-        <SimpleForm redirect={'/_roles'+ (record ? '/' + record.roleId : '')}>
+        <SimpleForm redirect={'/_roles' + (record ? '/' + record.roleId : '')}>
 
             <ReferenceInput label="角色" source="roleId" reference="_roles" allowEmpty
                             defaultValue={record ? record.roleId : ''} validate={required}>
@@ -34,19 +34,19 @@ export const PermissionCreate = (props) => {
                             defaultValue={record ? record.eid : ''} validate={required}>
                 <SelectInput optionText="label"/>
             </ReferenceInput>
-            <BooleanInput label="创建" source="c" />
-            <BooleanInput label="读取" source="r" />
-            <BooleanInput label="编辑" source="u" />
-            <BooleanInput label="删除" source="d" />
+            <BooleanInput label="创建" source="c"/>
+            <BooleanInput label="读取" source="r"/>
+            <BooleanInput label="编辑" source="u"/>
+            <BooleanInput label="删除" source="d"/>
         </SimpleForm>
     </Create>
 };
 
-export const PermissionEdit= (props) => {
+export const PermissionEdit = (props) => {
     const record = props.location.data;
 
     return <Edit {...props} actions={null} title="编辑授权">
-        <SimpleForm redirect={'/_roles'+ (record ? '/' + record.roleId : '')}>
+        <SimpleForm redirect={'/_roles' + (record ? '/' + record.roleId : '')}>
 
             <ReferenceField label="角色" source="roleId" reference="_roles" allowEmpty
                             defaultValue={record ? record.roleId : ''} validate={required}>
@@ -56,10 +56,10 @@ export const PermissionEdit= (props) => {
                 <TextField source="label"/>
             </ReferenceField>
 
-            <BooleanInput label="创建" source="c" />
-            <BooleanInput label="读取" source="r" />
-            <BooleanInput label="编辑" source="u" />
-            <BooleanInput label="删除" source="d" />
+            <BooleanInput label="创建" source="c"/>
+            <BooleanInput label="读取" source="r"/>
+            <BooleanInput label="编辑" source="u"/>
+            <BooleanInput label="删除" source="d"/>
 
         </SimpleForm>
     </Edit>

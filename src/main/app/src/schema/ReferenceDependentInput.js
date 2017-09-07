@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {translate, SelectInput, ReferenceInput, required} from 'admin-on-rest';
-import {url} from '../constants';
-import {httpClient} from './../authClient';
+import React, {Component} from "react";
+import {ReferenceInput, required, SelectInput, translate} from "admin-on-rest";
+import {url} from "../constants";
+import {httpClient} from "./../authClient";
 class ReferenceDependentInput extends Component {
     constructor(props) {
         super(props);

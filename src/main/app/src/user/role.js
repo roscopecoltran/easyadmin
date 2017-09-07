@@ -1,21 +1,21 @@
 import React from "react";
 import {
+    BooleanField,
     Create,
     Datagrid,
     DisabledInput,
-    BooleanField,
     Edit,
     EditButton,
     List,
+    ReferenceField,
+    ReferenceManyField,
+    SelectArrayInput,
     SimpleForm,
     TextField,
-    TextInput,
-    SelectArrayInput,
-    ReferenceManyField,
-    ReferenceField
+    TextInput
 } from "admin-on-rest";
-import HardwareSecurity from 'material-ui/svg-icons/hardware/security';
-import LinkButton  from './LinkButton';
+import HardwareSecurity from "material-ui/svg-icons/hardware/security";
+import LinkButton from "./LinkButton";
 export const RoleList = (props) => (
     <List {...props} pagination={null} perPage={9999} title='角色'>
         <Datagrid>

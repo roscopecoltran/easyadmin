@@ -6,7 +6,6 @@
     <groupId>com.clouddata</groupId>
     <artifactId>easyadmin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <!--<packaging>war</packaging>-->
     <packaging>jar</packaging>
 
     <name>clouddata</name>
@@ -31,12 +30,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!-- package war -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -111,44 +104,44 @@
                 </executions>
             </plugin>
             <!--<plugin>-->
-                <!--<groupId>com.github.eirslett</groupId>-->
-                <!--<artifactId>frontend-maven-plugin</artifactId>-->
-                <!--<version>0.0.22</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>install node and npm</id>-->
-                        <!--<goals>-->
-                            <!--<goal>install-node-and-npm</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<nodeVersion>v7.2.0</nodeVersion>-->
-                            <!--<npmVersion>3.9.2</npmVersion>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>npm install</id>-->
-                        <!--<goals>-->
-                            <!--<goal>npm</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<arguments>install</arguments>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>npm run build</id>-->
-                        <!--<goals>-->
-                            <!--<goal>npm</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<arguments>run build</arguments>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<nodeVersion>v7.2.0</nodeVersion>-->
-                    <!--<npmVersion>3.9.2</npmVersion>-->
-                    <!--<workingDirectory>src/main/app</workingDirectory>-->
-                <!--</configuration>-->
+            <!--<groupId>com.github.eirslett</groupId>-->
+            <!--<artifactId>frontend-maven-plugin</artifactId>-->
+            <!--<version>0.0.22</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>install node and npm</id>-->
+            <!--<goals>-->
+            <!--<goal>install-node-and-npm</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<nodeVersion>v7.2.0</nodeVersion>-->
+            <!--<npmVersion>3.9.2</npmVersion>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>npm install</id>-->
+            <!--<goals>-->
+            <!--<goal>npm</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<arguments>install</arguments>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--<execution>-->
+            <!--<id>npm run build</id>-->
+            <!--<goals>-->
+            <!--<goal>npm</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+            <!--<arguments>run build</arguments>-->
+            <!--</configuration>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--<configuration>-->
+            <!--<nodeVersion>v7.2.0</nodeVersion>-->
+            <!--<npmVersion>3.9.2</npmVersion>-->
+            <!--<workingDirectory>src/main/app</workingDirectory>-->
+            <!--</configuration>-->
             <!--</plugin>-->
         </plugins>
 

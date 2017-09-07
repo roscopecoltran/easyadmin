@@ -1,8 +1,7 @@
 // in authClient.js
-import {AUTH_LOGIN, AUTH_LOGOUT, AUTH_CHECK, AUTH_ERROR} from 'admin-on-rest';
-import {fetchUtils} from 'admin-on-rest';
-import {AUTH_GET_PERMISSIONS} from 'aor-permissions';
-import {url} from './constants';
+import {AUTH_CHECK, AUTH_ERROR, AUTH_LOGIN, AUTH_LOGOUT, fetchUtils} from "admin-on-rest";
+import {AUTH_GET_PERMISSIONS} from "aor-permissions";
+import {url} from "./constants";
 /**
  * add token before request
  * @param url

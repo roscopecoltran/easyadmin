@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {Admin, Resource} from 'admin-on-rest';
-import {CRUDList, CRUDCreate, CRUDEdit, CRUDShow, CRUDDelete} from './crud';
+import React, {Component} from "react";
+import {Admin, Resource} from "admin-on-rest";
+import {CRUDCreate, CRUDDelete, CRUDEdit, CRUDList, CRUDShow} from "./crud";
 import {EntityCreate, EntityEdit, EntityList} from "./schema/entitys";
 import {FieldCreate, FieldEdit, FieldList} from "./schema/fields";
-import {UserList, UserCreate, UserEdit} from './user/user';
-import {RoleList, RoleCreate, RoleEdit} from './user/role';
-import {PermissionCreate, PermissionEdit} from './user/permission';
+import {UserCreate, UserEdit, UserList} from "./user/user";
+import {RoleCreate, RoleEdit, RoleList} from "./user/role";
+import {PermissionCreate, PermissionEdit} from "./user/permission";
 export default class extends Component {
 
     render() {

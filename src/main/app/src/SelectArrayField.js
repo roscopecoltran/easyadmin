@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import Chip from 'material-ui/Chip';
+import React from "react";
+import PropTypes from "prop-types";
+import Chip from "material-ui/Chip";
 
 const styles = {
     chip: {
