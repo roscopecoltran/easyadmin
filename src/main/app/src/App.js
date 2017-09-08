@@ -1,20 +1,12 @@
 import React, {Component} from "react";
-import {jsonServerRestClient, Login, Logout} from "admin-on-rest";
-import zhcnMsg from "aor-language-chinese";
+import {jsonServerRestClient, Login, Logout, resolveBrowserLocale} from "admin-on-rest";
 import Dashboard from "./Dashboard";
 import AdminBuilder from "./AdminBuilder";
 import {url} from "./constants";
 import restClientRouter from "aor-rest-client-router";
 import Menu from "./Menu";
 import {authClient, httpClient} from "./authClient";
-/**
- * i18n
- * @type {{zh-cn}}
- */
-const messages = {
-    'zh-cn': zhcnMsg,
-};
-
+import translations from "./i18n";
 /**
  * rest client
  */
@@ -66,7 +58,7 @@ class App extends Component {
                              loginPage={Login}
                              logoutButton={Logout} menu={Menu}
                              schemas={this.state.schemas} dashboard={Dashboard}
-                             restClient={restRouter} locale='zh-cn' messages={messages}/>
+                             restClient={restRouter} locale={resolveBrowserLocale()} messages={translations}/>
     }
 }
 ;

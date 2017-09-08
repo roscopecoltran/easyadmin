@@ -12,45 +12,45 @@ import {
     SelectArrayInput,
     SimpleForm,
     TextField,
-    TextInput
+    TextInput,
+    translate
 } from "admin-on-rest";
 import HardwareSecurity from "material-ui/svg-icons/hardware/security";
 import LinkButton from "./LinkButton";
 export const RoleList = (props) => (
-    <List {...props} pagination={null} perPage={9999} title='角色'>
+    <List {...props} pagination={null} perPage={9999}>
         <Datagrid>
-            <TextField source="name" label="角色名"/>
+            <TextField source="name"/>
             <EditButton/>
         </Datagrid>
     </List>
 );
 
 export const RoleCreate = (props) => (
-    <Create {...props} title='新建角色'>
+    <Create {...props}>
         <SimpleForm>
-            <TextInput source="name" label="角色名"/>
+            <TextInput source="name"/>
         </SimpleForm>
     </Create>
 );
-
 export const RoleEdit = (props) => (
-    <Edit {...props} title='编辑角色'>
+    <Edit {...props}>
         <SimpleForm>
-            <TextInput source="name" label="角色名"/>
+            <TextInput source="name"/>
             <LinkButton
-                label="新建授权"
+                label={'新增授权'}
                 icon={<HardwareSecurity />}
                 style={{overflow: 'inherit'}}
             />
-            <ReferenceManyField label="权限列表" reference="_permission" target="roleId">
+            <ReferenceManyField label={'resources._roles.authlist'} reference="_permission" target="roleId">
                 <Datagrid>
-                    <ReferenceField label="对象" source="eid" reference="_entitys">
+                    <ReferenceField label={'resources._entitys.name'} source="eid" reference="_entitys">
                         <TextField source="label"/>
                     </ReferenceField>
-                    <BooleanField source="c" label="创建"/>
-                    <BooleanField source="r" label="读取"/>
-                    <BooleanField source="u" label="编辑"/>
-                    <BooleanField source="d" label="删除"/>
+                    <BooleanField source="c"/>
+                    <BooleanField source="r"/>
+                    <BooleanField source="u"/>
+                    <BooleanField source="d"/>
                     <EditButton/>
                 </Datagrid>
             </ReferenceManyField>

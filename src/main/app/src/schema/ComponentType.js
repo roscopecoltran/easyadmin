@@ -16,5 +16,4 @@ export default {
     RichText: '富文本',
     SelectArray: '多选',
     // Select:'选择',
-
 }

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Admin, Resource} from "admin-on-rest";
-import {CRUDCreate, CRUDDelete, CRUDEdit, CRUDList, CRUDShow} from "./crud";
+import {CRUDCreate, CRUDDelete, CRUDEdit, CRUDList, CRUDShow} from "./crud/crud";
 import {EntityCreate, EntityEdit, EntityList} from "./schema/entitys";
 import {FieldCreate, FieldEdit, FieldList} from "./schema/fields";
 import {UserCreate, UserEdit, UserList} from "./user/user";

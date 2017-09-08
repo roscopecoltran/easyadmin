@@ -23,21 +23,21 @@ import {
 export const PermissionCreate = (props) => {
     const record = props.location.data;
 
-    return <Create {...props} actions={null} title="新增授权">
+    return <Create {...props} actions={null}>
         <SimpleForm redirect={'/_roles' + (record ? '/' + record.roleId : '')}>
 
-            <ReferenceInput label="角色" source="roleId" reference="_roles" allowEmpty
+            <ReferenceInput source="roleId" reference="_roles" allowEmpty
                             defaultValue={record ? record.roleId : ''} validate={required}>
                 <SelectInput optionText="name"/>
             </ReferenceInput>
-            <ReferenceInput label="对象" source="eid" reference="_entitys" allowEmpty
+            <ReferenceInput source="eid" reference="_entitys" allowEmpty
                             defaultValue={record ? record.eid : ''} validate={required}>
                 <SelectInput optionText="label"/>
             </ReferenceInput>
-            <BooleanInput label="创建" source="c"/>
-            <BooleanInput label="读取" source="r"/>
-            <BooleanInput label="编辑" source="u"/>
-            <BooleanInput label="删除" source="d"/>
+            <BooleanInput source="c"/>
+            <BooleanInput source="r"/>
+            <BooleanInput source="u"/>
+            <BooleanInput source="d"/>
         </SimpleForm>
     </Create>
 };
@@ -45,21 +45,21 @@ export const PermissionCreate = (props) => {
 export const PermissionEdit = (props) => {
     const record = props.location.data;
 
-    return <Edit {...props} actions={null} title="编辑授权">
+    return <Edit {...props} actions={null}>
         <SimpleForm redirect={'/_roles' + (record ? '/' + record.roleId : '')}>
 
-            <ReferenceField label="角色" source="roleId" reference="_roles" allowEmpty
+            <ReferenceField source="roleId" reference="_roles" allowEmpty
                             defaultValue={record ? record.roleId : ''} validate={required}>
                 <TextField source="name"/>
             </ReferenceField>
-            <ReferenceField label="对象" source="eid" reference="_entitys" allowEmpty>
+            <ReferenceField source="eid" reference="_entitys" allowEmpty>
                 <TextField source="label"/>
             </ReferenceField>
 
-            <BooleanInput label="创建" source="c"/>
-            <BooleanInput label="读取" source="r"/>
-            <BooleanInput label="编辑" source="u"/>
-            <BooleanInput label="删除" source="d"/>
+            <BooleanInput source="c"/>
+            <BooleanInput source="r"/>
+            <BooleanInput source="u"/>
+            <BooleanInput source="d"/>
 
         </SimpleForm>
     </Edit>

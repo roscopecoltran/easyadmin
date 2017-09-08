@@ -8,7 +8,7 @@ import compose from "recompose/compose";
 import DashboardIcon from "material-ui/svg-icons/action/dashboard";
 import {WithPermission} from "aor-permissions";
 import {authClient} from "./authClient";
-const Menu = ({resources, onMenuTap, logout}) => (
+const Menu = ({resources, onMenuTap, translate, logout}) => (
     <div>
         <DashboardMenuItem onTouchTap={onMenuTap}/>
         {resources.filter(resource => !resource.name.startsWith('_')).map((resource) => (
@@ -23,19 +23,19 @@ const Menu = ({resources, onMenuTap, logout}) => (
         <WithPermission authClient={authClient} value="true">
             <MenuItem
                 containerElement={<Link to="/_entitys"/>}
-                primaryText='系统设置'
+                primaryText={translate('easyadmin.settings')}
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />
             <MenuItem
                 containerElement={<Link to="/_users"/>}
-                primaryText='用户'
+                primaryText={translate('resources._users.name')}
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />
             <MenuItem
                 containerElement={<Link to="/_roles"/>}
-                primaryText='角色'
+                primaryText={translate('resources._roles.name')}
                 leftIcon={<SettingsIcon/>}
                 onTouchTap={onMenuTap}
             />
