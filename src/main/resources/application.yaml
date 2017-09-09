@@ -16,5 +16,8 @@ jwt:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/easyadmin
-      database: easyadmin
+      uri: mongodb://localhost:27017
+      database: easyadmin-sys
+
+easyadmin:
+  checkforapply: false

@@ -1,11 +1,16 @@
 package com.easyadmin.service;
 
+import com.easyadmin.cloud.Tenant;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -13,17 +18,34 @@ import org.springframework.stereotype.Component;
 @Component
 public class DbService {
     @Autowired
-    MongoProperties mongoProperties;
-    @Autowired
     MorphiaFactory morphiaFactory;
-    @Autowired
-    MongoClient mongo;
 
-    public Datastore getDataStore() {
+    /**
+     * all the tenant cache the mongoClient
+     */
+    static Map<String, MongoClient> tenantMongoMap = new HashMap<>();
+
+    public Datastore getSysDataStore() {
         return morphiaFactory.get();
     }
 
+    public Datastore getDataStore() {
+        String connectionStr = Tenant.get().getConnectionStr();
+        initMongoClient(connectionStr);
+        return new Morphia().createDatastore(tenantMongoMap.get(connectionStr), Tenant.get().getDbName());
+    }
+
     public MongoCollection getCollection(String entity) {
-        return mongo.getDatabase(mongoProperties.getDatabase()).getCollection(entity);
+        String connectionStr = Tenant.get().getConnectionStr();
+        initMongoClient(connectionStr);
+        return tenantMongoMap.get(connectionStr).getDatabase(Tenant.get().getDbName()).getCollection(entity);
+    }
+
+    private void initMongoClient(String connectionStr) {
+        if (!tenantMongoMap.containsKey(connectionStr)) {
+            MongoClientURI uri = new MongoClientURI(connectionStr);
+            MongoClient client = new MongoClient(uri);
+            tenantMongoMap.put(connectionStr, client);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.easyadmin.user;
 
+import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
@@ -74,6 +75,15 @@ public class UserResource {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         dbService.getDataStore().save(user);
 
+
+        // add user to the tenant , important !!! need keep transaction.
+        final Query<Tenant> tenantQuery = dbService.getSysDataStore().createQuery(Tenant.class)
+                .filter("id =", Tenant.get().getId());
+        final UpdateOperations<Tenant> userUpdate = dbService.getSysDataStore().createUpdateOperations(Tenant.class)
+                .push("users", user.getUsername());
+
+        dbService.getSysDataStore().update(tenantQuery, userUpdate);
+
         return ResponseEntity.ok(user);
     }
 
@@ -97,24 +107,7 @@ public class UserResource {
         return ResponseEntity.ok(user);
     }
 
-    @PostConstruct
-    public void initUserAndRole() {
-        if (dbService.getDataStore().get(Role.class, "ROLE_ADMIN") == null) {
-            Role role = new Role();
-            role.setId("ROLE_ADMIN");
-            role.setName("ROLE_ADMIN");
-            dbService.getDataStore().save(role);
+//    @PostConstruct
 
-            User user = new User();
-            user.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + "_id").toString());
-            user.setUsername("admin");
-            user.setPassword(passwordEncoder.encode("admin"));
-            user.setEnabled(true);
-            List<Role> roles = new ArrayList<Role>();
-            roles.add(role);
-            user.setRoles(roles);
-            dbService.getDataStore().save(user);
-        }
-    }
 
 }

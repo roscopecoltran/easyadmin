@@ -1,5 +1,6 @@
 package com.easyadmin.security.security;
 
+import com.easyadmin.cloud.Tenant;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
