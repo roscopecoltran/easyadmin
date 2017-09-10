@@ -38,17 +38,17 @@ public class TenantService {
         tenant.setDbName(tenantId);
 
         // create user
-        String[] user = {apply.getUserName()};
+        String[] user = {apply.getUsername()};
         tenant.setUsers(user);
 
         dbService.getSysDataStore().save(tenant);
 
         // init db and users , roles
-        initUserAndRole(tenant, apply.getUserName());
+        initUserAndRole(tenant, apply);
         return tenant;
     }
 
-    public void initUserAndRole(Tenant tenant, String userName) {
+    public void initUserAndRole(Tenant tenant, Apply apply) {
         MongoClientURI uri = new MongoClientURI(tenant.getConnectionStr());
         MongoClient client = new MongoClient(uri);
         Datastore datastore = new Morphia().createDatastore(client, tenant.getDbName());
@@ -59,8 +59,8 @@ public class TenantService {
 
         User user = new User();
         user.setId("1");
-        user.setUsername(userName);
-        user.setPassword(passwordEncoder.encode("88888888"));
+        user.setUsername(apply.getUsername());
+        user.setPassword(passwordEncoder.encode(apply.getPassword()));
         user.setEnabled(true);
         List<Role> roles = new ArrayList<Role>();
         roles.add(role);

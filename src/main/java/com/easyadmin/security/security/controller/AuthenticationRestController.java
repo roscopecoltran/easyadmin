@@ -54,9 +54,9 @@ public class AuthenticationRestController {
         // Reload password post-security so we can generate token
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String token = jwtTokenUtil.generateToken(userDetails, device);
-        final boolean isAdmin = userDetails.getAuthorities().contains(new SimpleGrantedAuthority(AuthorityName.ROLE_ADMIN.toString()));
+        final AuthorityName authorityName = userDetails.getAuthorities().contains(new SimpleGrantedAuthority(AuthorityName.ROLE_ADMIN.toString())) ? AuthorityName.ROLE_ADMIN : AuthorityName.ROLE_USER;
         // Return the token
-        return ResponseEntity.ok(new JwtAuthenticationResponse(token, isAdmin));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token, authorityName));
     }
 
     @RequestMapping(value = "${jwt.route.authentication.refresh}", method = RequestMethod.GET)
@@ -67,7 +67,8 @@ public class AuthenticationRestController {
 
         if (jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
             String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken, user.getAuthorities().contains(AuthorityName.ROLE_ADMIN)));
+            final AuthorityName authorityName = user.getAuthorities().contains(new SimpleGrantedAuthority(AuthorityName.ROLE_ADMIN.toString())) ? AuthorityName.ROLE_ADMIN : AuthorityName.ROLE_USER;
+            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken, authorityName));
         } else {
             return ResponseEntity.badRequest().body(null);
         }

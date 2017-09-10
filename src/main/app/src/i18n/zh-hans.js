@@ -52,6 +52,15 @@ export default {
                 u: '编辑',
                 d: '删除',
             }
+        },
+        apply:{
+            name:'账号',
+            fields:{
+                username:'用户名（例如：手机、邮箱）',
+                password:'密码',
+                mobile:'手机',
+                email:'邮箱'
+            }
         }
     }
 };

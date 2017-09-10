@@ -6,21 +6,23 @@ import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import compose from "recompose/compose";
 import DashboardIcon from "material-ui/svg-icons/action/dashboard";
-import {WithPermission} from "aor-permissions";
 import {authClient} from "./authClient";
+import {WithPermission} from "aor-permissions";
 const Menu = ({resources, onMenuTap, translate, logout}) => (
     <div>
-        <DashboardMenuItem onTouchTap={onMenuTap}/>
-        {resources.filter(resource => !resource.name.startsWith('_')).map((resource) => (
-            <MenuItem
-                key={resource.name}
-                containerElement={<Link to={'/' + resource.name}/>}
-                primaryText={resource.label}
-                leftIcon={<DashboardIcon/>}
-                onTouchTap={onMenuTap}
-            />
-        ))}
-        <WithPermission authClient={authClient} value="true">
+        <WithPermission authClient={authClient} value={['ROLE_USER', 'ROLE_ADMIN']}>
+            <DashboardMenuItem onTouchTap={onMenuTap}/>
+            {resources.filter(resource => !resource.name.startsWith('_') && resource.name !== 'apply').map((resource) => (
+                <MenuItem
+                    key={resource.name}
+                    containerElement={<Link to={'/' + resource.name}/>}
+                    primaryText={resource.label}
+                    leftIcon={<DashboardIcon/>}
+                    onTouchTap={onMenuTap}
+                />
+            ))}
+        </WithPermission>
+        <WithPermission authClient={authClient} value={['ROLE_ADMIN']}>
             <MenuItem
                 containerElement={<Link to="/_entitys"/>}
                 primaryText={translate('easyadmin.settings')}
@@ -40,7 +42,9 @@ const Menu = ({resources, onMenuTap, translate, logout}) => (
                 onTouchTap={onMenuTap}
             />
         </WithPermission>
-        {logout}
+        <WithPermission authClient={authClient} value={['ROLE_USER', 'ROLE_ADMIN']}>
+            {logout}
+        </WithPermission>
     </div>
 );
 

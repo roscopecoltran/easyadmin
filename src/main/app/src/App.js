@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {jsonServerRestClient, Login, Logout, resolveBrowserLocale} from "admin-on-rest";
+import {jsonServerRestClient,  Logout, resolveBrowserLocale} from "admin-on-rest";
 import Dashboard from "./Dashboard";
 import AdminBuilder from "./AdminBuilder";
 import {url} from "./constants";
@@ -7,6 +7,8 @@ import restClientRouter from "aor-rest-client-router";
 import Menu from "./Menu";
 import {authClient, httpClient} from "./authClient";
 import translations from "./i18n";
+import customRoutes from "./customRoutes";
+import Login from './user/login';
 /**
  * rest client
  */
@@ -17,6 +19,7 @@ const restRouter = restClientRouter({
         ['_users', 'user'],
         ['_roles', 'role'],
         ['_permission', 'permission'],
+        ['apply','apply'],
         ['*', 'data']
     ],
     services: {
@@ -24,6 +27,7 @@ const restRouter = restClientRouter({
         user: jsonServerRestClient(url + '/user', httpClient),
         role: jsonServerRestClient(url + '/role', httpClient),
         permission: jsonServerRestClient(url + '/permission', httpClient),
+        apply: jsonServerRestClient(url),
         data: jsonServerRestClient(url + '/api', httpClient),
     }
 });
@@ -54,7 +58,8 @@ class App extends Component {
 
     render() {
         if (isLogin && null === this.state.schemas) return <div>Loading...</div>;
-        return <AdminBuilder {...this.props} title="DataCloud" isLogin={isLogin} authClient={authClient}
+        return <AdminBuilder {...this.props} title="DataCloud" customRoutes={customRoutes} isLogin={isLogin}
+                             authClient={authClient}
                              loginPage={Login}
                              logoutButton={Logout} menu={Menu}
                              schemas={this.state.schemas} dashboard={Dashboard}

@@ -32,14 +32,15 @@ export const authClient = (type, params) => {
                 }
                 return response.json();
             })
-            .then(({token, admin}) => {
+            .then(({token, authorityName}) => {
                 localStorage.setItem('token', token);
-                localStorage.setItem('permissions', admin);
+                localStorage.setItem('permissions', authorityName);
                 window.location.reload(); // after logged in , the admin page need to refresh to load schemas ,ugly , hope for awsome
             });
     }
     if (type === AUTH_LOGOUT) {
         localStorage.removeItem('token');
+        localStorage.removeItem('permissions');
         return Promise.resolve();
     }
     if (type === AUTH_ERROR) {

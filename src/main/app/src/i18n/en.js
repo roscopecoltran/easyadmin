@@ -52,6 +52,15 @@ export default {
                 u: 'edit',
                 d: 'delete',
             }
+        },
+        apply: {
+            name: 'apply for test',
+            fields: {
+                username: 'username',
+                password: 'password',
+                mobile: 'mobile',
+                email: 'email'
+            }
         }
     }
 };
