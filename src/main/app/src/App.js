@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {jsonServerRestClient,  Logout, resolveBrowserLocale} from "admin-on-rest";
-import Dashboard from "./Dashboard";
+import Dashboard from "./dashboard/Dashboard";
 import AdminBuilder from "./AdminBuilder";
 import {url} from "./constants";
 import restClientRouter from "aor-rest-client-router";
