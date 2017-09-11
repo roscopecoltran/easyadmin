@@ -1,4 +1,4 @@
-package com.easyadmin.schema;
+package com.easyadmin.schema.controller;
 
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
@@ -8,8 +8,11 @@ import com.easyadmin.service.DbService;
 import com.easyadmin.service.SchemaService;
 import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import java.util.Map;
  * <p>
  * Created by gongxinyi on 2017-08-10.
  */
+@Api(value = "元数据查询", description = "获取、修改元数据，需要admin权限", tags = "SchemaApi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 public class SchemaResource {
     @Autowired
@@ -33,8 +37,9 @@ public class SchemaResource {
     @Autowired
     SequenceService sequenceService;
 
+    @ApiOperation(value="getSchemas", notes="获取元数据列表")
     @GetMapping("/schemas/_entitys")
-    public ResponseEntity<List<Entity>> list() {
+    public ResponseEntity<List<Entity>> getSchemas() {
         List<Entity> entities = schemaService.findEntitys();
         return ResponseEntity
                 .status(HttpStatus.OK)
