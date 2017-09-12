@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-public class UserResource {
+public class UserController {
     @Value("${jwt.header}")
     private String tokenHeader;
 

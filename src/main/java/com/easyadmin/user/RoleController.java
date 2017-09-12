@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-public class RoleResource {
+public class RoleController {
     @Autowired
     DbService dbService;
     @Autowired

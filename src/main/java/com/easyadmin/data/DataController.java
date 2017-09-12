@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-public class DataResource {
+public class DataController {
     @Autowired
     DataService dataService;
 

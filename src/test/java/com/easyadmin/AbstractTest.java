@@ -14,8 +14,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.http.HttpResponseSnippet;
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -25,7 +23,6 @@ import springfox.documentation.staticdocs.SwaggerResultHandler;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import static org.springframework.http.converter.json.Jackson2ObjectMapperBuilder.json;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -37,16 +34,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs(outputDir = "target/generated-snippets")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class Documentation {
+public class AbstractTest {
     private String snippetDir = "target/generated-snippets";
     private String outputDir = "target/asciidoc";
     //private String indexDoc = "docs/asciidoc/index.adoc";
     private ObjectMapper mapper = new ObjectMapper();
     @Autowired
-    private MockMvc mockMvc;
+    protected MockMvc mockMvc;
 
     @After
-    public void Test() throws Exception{
+    public void Test() throws Exception {
         // 得到swagger.json,写入outputDir目录中
         mockMvc.perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
                 .andDo(SwaggerResultHandler.outputDirectory(outputDir).build())
@@ -63,15 +60,6 @@ public class Documentation {
                 .intoFolder(outputDir);// 输出
     }
 
-    @Test
-    public void TestApi() throws Exception{
-        final String token = extractToken(login("18510336317", "88888888").andReturn());
-        mockMvc.perform(get("/schemas/_entitys")
-                .header("Authorization", "Bearer " + token)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(document("getSchemas", preprocessResponse(prettyPrint())));
-    }
 
     protected ResultActions login(String username, String password) throws Exception {
         final JwtAuthenticationRequest auth = new JwtAuthenticationRequest();

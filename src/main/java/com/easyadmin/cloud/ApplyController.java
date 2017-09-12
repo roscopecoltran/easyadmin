@@ -16,7 +16,7 @@ import java.util.List;
  * Created by gongxinyi on 2017-09-09.
  */
 @RestController
-public class ApplyResource {
+public class ApplyController {
     @Autowired
     DbService dbService;
     @Autowired

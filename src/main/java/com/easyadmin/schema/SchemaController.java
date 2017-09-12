@@ -1,4 +1,4 @@
-package com.easyadmin.schema.controller;
+package com.easyadmin.schema;
 
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
@@ -25,9 +25,8 @@ import java.util.Map;
  * <p>
  * Created by gongxinyi on 2017-08-10.
  */
-@Api(value = "元数据查询", description = "获取、修改元数据，需要admin权限", tags = "SchemaApi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
-public class SchemaResource {
+public class SchemaController {
     @Autowired
     SchemaService schemaService;
     @Autowired
@@ -37,7 +36,6 @@ public class SchemaResource {
     @Autowired
     SequenceService sequenceService;
 
-    @ApiOperation(value="getSchemas", notes="获取元数据列表")
     @GetMapping("/schemas/_entitys")
     public ResponseEntity<List<Entity>> getSchemas() {
         List<Entity> entities = schemaService.findEntitys();
@@ -57,7 +55,7 @@ public class SchemaResource {
     }
 
     @GetMapping("/schemas/_fields")
-    public ResponseEntity<List<Field>> list(@RequestParam("eid") String eid) {
+    public ResponseEntity<List<Field>> findAllFields(@RequestParam("eid") String eid) {
         List<Field> fields = schemaService.findFields(eid);
         return ResponseEntity
                 .status(HttpStatus.OK)

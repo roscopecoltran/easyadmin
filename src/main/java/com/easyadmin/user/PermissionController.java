@@ -22,7 +22,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-public class PermissionResource {
+public class PermissionController {
     @Autowired
     DataService dataService;
     @Autowired
