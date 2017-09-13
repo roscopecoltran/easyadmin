@@ -36,7 +36,6 @@ import {
     ReferenceArrayInput,
     ReferenceField,
     ReferenceInput,
-    ReferenceManyField,
     required,
     RichTextField,
     SelectArrayInput,

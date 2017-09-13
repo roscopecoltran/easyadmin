@@ -2,7 +2,6 @@ import React from "react";
 import {
     Create,
     Datagrid,
-    DisabledInput,
     Edit,
     EditButton,
     List,

@@ -4,7 +4,6 @@ import {
     BooleanInput,
     Create,
     Datagrid,
-    DateInput,
     Edit,
     EditButton,
     FilterButton,
@@ -60,7 +59,6 @@ export const FieldList = (props) => (
 const arrayField = ['Autocomplete', 'CheckboxGroup', 'RadioButtonGroup', 'SelectArray', 'Select'];
 const checkNumber = (value) => value === 'Number';
 const checkText = (value) => value === 'Text';
-const checkDate = (value) => value === 'Date';
 const checkReference = (value) => ['Reference', 'ReferenceArray'].includes(value);
 const checkArray = (value) => arrayField.includes(value);
 const checkReferenceEntity = (value) => {

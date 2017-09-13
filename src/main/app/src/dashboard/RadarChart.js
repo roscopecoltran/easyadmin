@@ -1,8 +1,7 @@
 import React from "react";
 import {Card, CardHeader} from "material-ui/Card";
 import {translate} from "admin-on-rest";
-import {Radar, RadarChart, PolarGrid, Legend,
-    PolarAngleAxis, PolarRadiusAxis} from "recharts";
+import {Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis} from "recharts";
 const data = [
     { subject: 'Math', A: 120, B: 110, fullMark: 150 },
     { subject: 'Chinese', A: 98, B: 130, fullMark: 150 },

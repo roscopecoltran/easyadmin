@@ -1,12 +1,8 @@
 import React, {Component} from "react";
-import {ReferenceInput, required, SelectInput, translate} from "admin-on-rest";
+import {ReferenceInput, SelectInput} from "admin-on-rest";
 import {url} from "../constants";
 import {httpClient} from "./../authClient";
 class ReferenceDependentInput extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     state = {
         fields: null,
     }
@@ -28,7 +24,7 @@ class ReferenceDependentInput extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.dependsOnValue != this.props.dependsOnValue)
+        if (nextProps.dependsOnValue !== this.props.dependsOnValue)
             this.getFields(nextProps.dependsOnValue)
     }
 

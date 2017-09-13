@@ -3,17 +3,14 @@ import {
     BooleanField,
     Create,
     Datagrid,
-    DisabledInput,
     Edit,
     EditButton,
     List,
     ReferenceField,
     ReferenceManyField,
-    SelectArrayInput,
     SimpleForm,
     TextField,
     TextInput,
-    translate
 } from "admin-on-rest";
 import HardwareSecurity from "material-ui/svg-icons/hardware/security";
 import LinkButton from "./LinkButton";

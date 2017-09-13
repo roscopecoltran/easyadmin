@@ -1,24 +1,12 @@
 import React from "react";
 import {
-    BooleanField,
     Create,
-    Datagrid,
-    DisabledInput,
-    Edit,
-    EditButton,
     email,
-    List,
-    ReferenceField,
-    ReferenceManyField,
     required,
     SelectArrayInput,
     SimpleForm,
-    TextField,
     TextInput,
-    translate,
-    password,
     minLength,
-    SelectInput
 } from "admin-on-rest";
 const location = {pathname: '/'};
 export const ApplyCreate = (props) => (

@@ -1,6 +1,6 @@
 const api_url = function () {
     let api_url = "http://" + window.location.host;
-    if (process.env.NODE_ENV == 'development') {
+    if (process.env.NODE_ENV === 'development') {
         api_url = "http://" + window.location.hostname + ":8080"
     }
     return api_url;

@@ -28,8 +28,6 @@ class Dashboard extends Component {
     }
 
     render() {
-        const {
-        } = this.state;
         const { width } = this.props;
         return (
             <div>

@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 class LinkButton extends Component {
 
     render() {
-        const {label, icon, push, record, showNotification} = this.props;
+        const {label, icon, record} = this.props;
         return <FlatButton
             primary
             label={label}

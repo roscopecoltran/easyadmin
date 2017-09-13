@@ -5,19 +5,16 @@ import {
     ChipField,
     Create,
     Datagrid,
-    DisabledInput,
     Edit,
     EditButton,
     List,
     ReferenceArrayField,
     ReferenceArrayInput,
-    ReferenceManyField,
     SelectArrayInput,
     SimpleForm,
     SingleFieldList,
     TextField,
     TextInput,
-    translate
 } from "admin-on-rest";
 
 export const UserList = (props) => (

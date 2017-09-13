@@ -1,23 +1,14 @@
 import React from "react";
 import {
-    BooleanField,
     BooleanInput,
     Create,
-    Datagrid,
-    DateInput,
     Edit,
-    EditButton,
-    FilterButton,
-    List,
-    NumberInput,
     ReferenceField,
     ReferenceInput,
     required,
-    SelectField,
     SelectInput,
     SimpleForm,
     TextField,
-    TextInput
 } from "admin-on-rest";
 
 export const PermissionCreate = (props) => {

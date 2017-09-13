@@ -7,10 +7,6 @@ import ContentCreateIcon from "material-ui/svg-icons/content/create";
 import ActionDeleteIcon from "material-ui/svg-icons/action/delete";
 
 export class EmbeddedManyInput extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     renderList = ({fields}) => {
         const {children} = this.props;
         return (
