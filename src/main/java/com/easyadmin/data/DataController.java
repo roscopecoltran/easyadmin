@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class DataController {
     DataService dataService;
 
     @GetMapping(value = "/api/{entity}")
-//    @PreAuthorize("@securityService.hasProtectedAccess()")
+    @PreAuthorize("@securityService.hasProtectedAccess(#entity,'r')")
     public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Constants.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         List data = dataService.list(entity, allRequestParams);
@@ -51,6 +52,7 @@ public class DataController {
     }
 
     @GetMapping(value = "/api/{entity}/{id}")
+    @PreAuthorize("@securityService.hasProtectedAccess(#entity,'r')")
     public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.id) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         Map<String, Object> object = dataService.findOne(entity, id);
@@ -60,6 +62,7 @@ public class DataController {
     }
 
     @PostMapping(value = "/api/{entity}")
+    @PreAuthorize("@securityService.hasProtectedAccess(#entity,'c')")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
@@ -68,6 +71,7 @@ public class DataController {
     }
 
     @PutMapping(value = "/api/{entity}/{id}")
+    @PreAuthorize("@securityService.hasProtectedAccess(#entity,'u')")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id, @RequestBody final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
 
@@ -76,6 +80,7 @@ public class DataController {
     }
 
     @DeleteMapping(value = "/api/{entity}/{id}")
+    @PreAuthorize("@securityService.hasProtectedAccess(#entity,'d')")
     public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
         Map<String, Object> document = dataService.deleteLogic(entity, id);
         return ResponseEntity.status(HttpStatus.OK).body(document);
