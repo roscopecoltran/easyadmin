@@ -15,6 +15,10 @@ npm install & npm start
 Application -> run
 ```
 
+## demo
+
+http://101.132.97.131
+
 1. pc端访问
 
 ![pc端访问](https://git.oschina.net/uploads/images/2017/0811/171519_08364ad5_73411.png "easyform-pc.png")
