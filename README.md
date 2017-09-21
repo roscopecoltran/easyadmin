@@ -42,16 +42,15 @@ BasePath: /
 ### Tags
 
 #### data-controller: Data Controller
-
-* https://github.com/data-server/easyadmin/wiki/paths#datamutation[create record]
-* https://github.com/data-server/easyadmin/wiki/paths#dataquery[query records with filter,page,sort]
-* https://github.com/data-server/easyadmin/wiki/paths#datamutation-1[edit record]
-* https://github.com/data-server/easyadmin/wiki/paths#findone[find one]
+* ![create record](https://github.com/data-server/easyadmin/wiki/paths#datamutation)
+* ![query records with filter,page,sort](https://github.com/data-server/easyadmin/wiki/paths#dataquery)
+* ![edit record](https://github.com/data-server/easyadmin/wiki/paths#datamutation-1)
+* ![find one](https://github.com/data-server/easyadmin/wiki/paths#findone)
 
 
 #### authentication-rest-controller: Authentication Rest Controller
-* https://github.com/data-server/easyadmin/wiki/paths#createauthenticationtoken[login and return token]
-* https://github.com/data-server/easyadmin/wiki/paths#refreshandgetauthenticationtoken[refresh token]
+* ![login and return token](https://github.com/data-server/easyadmin/wiki/paths#createauthenticationtoken)
+* ![refresh token](https://github.com/data-server/easyadmin/wiki/paths#refreshandgetauthenticationtoken)
 
 
 #### user-controller: User Controller
@@ -61,13 +60,13 @@ BasePath: /
 #### role-controller: Role Controller
 
 #### schema-controller: Schema Controller(for all the login user)
-* https://github.com/data-server/easyadmin/wiki/paths#editentity[edit entity]
-* https://github.com/data-server/easyadmin/wiki/paths#addfield[add field]
-* https://github.com/data-server/easyadmin/wiki/paths#findallfields[find all fields]
-* https://github.com/data-server/easyadmin/wiki/paths#findone-1[find one entity]
-* https://github.com/data-server/easyadmin/wiki/paths#editfield-1[edit one field]
-* https://github.com/data-server/easyadmin/wiki/paths#addentity[add entity]
-* * ![addpermission](https://github.com/data-server/easyadmin/wiki/paths#addpermission)https://github.com/data-server/easyadmin/wiki/paths#getschemas[get schemas for current login user]
+* ![edit entity](https://github.com/data-server/easyadmin/wiki/paths#editentity)
+* ![add field](https://github.com/data-server/easyadmin/wiki/paths#addfield)
+* ![find all fields](https://github.com/data-server/easyadmin/wiki/paths#findallfields)
+* ![find one entity](https://github.com/data-server/easyadmin/wiki/paths#findone-1)
+* ![edit one field](https://github.com/data-server/easyadmin/wiki/paths#editfield-1)
+* ![add entity](https://github.com/data-server/easyadmin/wiki/paths#addentity)
+* ![get schemas for current login user](https://github.com/data-server/easyadmin/wiki/paths#getschemas)
 
 
 #### permission-controller: Permission Controller (only for ROLE_ADMIN users)
