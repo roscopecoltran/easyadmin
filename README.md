@@ -17,7 +17,7 @@ Application -> run
 
 ## demo
 
-http://101.132.97.131
+http://101.132.97.131 admin admin
 
 ## architecture
 ![architecture](https://github.com/data-server/easyadmin/blob/master/screenshots/architecture.png?raw=true)
