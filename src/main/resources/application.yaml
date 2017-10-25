@@ -16,8 +16,15 @@ jwt:
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017
-      database: easyadmin-sys
+      uri: mongodb://admin:admin@ds161443.mlab.com:61443/easyadmin
+#      uri: mongodb://localhost:27017
+#      database: easyadmin-sys
+      database: easyadmin
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.24.7.29:3306/financial_cf_credit_icr
+    username : root
+    password : 123456
 
 easyadmin:
   checkforapply: false
