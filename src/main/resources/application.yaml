@@ -22,7 +22,7 @@ spring:
       database: easyadmin
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.24.7.29:3306/financial_cf_credit_icr
+    url: jdbc:mysql://172.24.7.29:3306/test_easyadmin
     username : root
     password : 123456
 
