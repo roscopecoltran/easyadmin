@@ -5,10 +5,11 @@ import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import schemacrawler.schema.Catalog;
@@ -20,7 +21,6 @@ import schemacrawler.schemacrawler.SchemaCrawlerException;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 import schemacrawler.utility.SchemaCrawlerUtility;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.sql.SQLException;
@@ -33,10 +33,18 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DbSchemaTest {
-    @Autowired
-    DataSource ds;
+    HikariDataSource ds;
     final ObjectMapper objectMapper = new ObjectMapper();
     static Map<JDBCType, Component> fieldTypeMap = new HashMap<JDBCType, Component>();
+
+    @Before
+    public void setUp(){
+        ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:mysql://172.24.7.29:3306/test_easyadmin");
+        ds.setDriverClassName(com.mysql.jdbc.Driver.class.getName());
+        ds.setUsername("root");
+        ds.setPassword("123456");
+    }
 
     static {
         fieldTypeMap.put(JDBCType.CHAR, Component.Text);

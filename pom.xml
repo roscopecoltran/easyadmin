@@ -98,10 +98,16 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Spring Boot JDBC -->
+        <!--Spring Boot JDBC-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.tomcat</groupId>
+                    <artifactId>tomcat-jdbc</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>us.fatehi</groupId>
@@ -116,6 +122,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!--光 HikariCP・A solid high-performance JDBC connection pool at last-->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.7.2</version>
         </dependency>
     </dependencies>
 

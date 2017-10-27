@@ -10,15 +10,14 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.sql.DataSource;
 
 /**
  * Created by gongxinyi on 2017-10-25.
@@ -28,9 +27,16 @@ import javax.sql.DataSource;
 @SpringBootTest
 public class DbDataServiceTest {
 
-    @Autowired
-    DataSource ds;
+    HikariDataSource ds;
     final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Before
+    public void setUp(){
+        ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:mysql://172.24.7.29:3306/test_easyadmin");
+        ds.setUsername("root");
+        ds.setPassword("123456");
+    }
 
     @Test
     public void listAll() throws JsonProcessingException {
