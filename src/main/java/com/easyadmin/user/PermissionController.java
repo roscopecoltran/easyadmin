@@ -3,7 +3,7 @@ package com.easyadmin.user;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.Permission;
 import com.easyadmin.service.DataService;
-import com.easyadmin.service.DbService;
+import com.easyadmin.service.MongoDbService;
 import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -23,10 +24,10 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class PermissionController {
-    @Autowired
+    @Resource(name="dataDbService")
     DataService dataService;
     @Autowired
-    DbService dbService;
+    MongoDbService mongoDbService;
     @Autowired
     SequenceService sequenceService;
 
@@ -34,7 +35,7 @@ public class PermissionController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Permission> addPermission(@RequestBody final Permission permission) {
         permission.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + Constants._id).toString());
-        dbService.getDataStore().save(permission);
+        mongoDbService.getDataStore().save(permission);
 
         return ResponseEntity.ok(permission);
     }
@@ -42,7 +43,7 @@ public class PermissionController {
     @GetMapping("/permission/_permission")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Permission>> list(@RequestParam("roleId") String roleId) {
-        List<Permission> permissions = StringUtils.isEmpty(roleId) ? dbService.getDataStore().createQuery(Permission.class).asList() : dbService.getDataStore().find(Permission.class).field("roleId").equal(roleId).asList();
+        List<Permission> permissions = StringUtils.isEmpty(roleId) ? mongoDbService.getDataStore().createQuery(Permission.class).asList() : mongoDbService.getDataStore().find(Permission.class).field("roleId").equal(roleId).asList();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", permissions.size() + "")
@@ -54,7 +55,7 @@ public class PermissionController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Permission> findUser(@PathVariable("id") String id) {
 
-        Permission permission = dbService.getDataStore().get(Permission.class, id);
+        Permission permission = mongoDbService.getDataStore().get(Permission.class, id);
         return ResponseEntity.ok(permission);
     }
 

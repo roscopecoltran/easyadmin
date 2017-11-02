@@ -7,7 +7,9 @@ import java.util.Map;
  * dataservice for /api/*, include c,r,u,d
  * <p>
  * <p>
- * Created by gongxinyi on 2017-08-31.
+ *
+ * @author gongxinyi
+ * @date 2017-08-31
  */
 public interface DataService {
     /**
@@ -55,11 +57,11 @@ public interface DataService {
     Map<String, Object> update(String entity, String id, Map<String, Object> data);
 
     /**
-     * delete logic
+     * delete
      *
      * @param entity
      * @param id
      * @return
      */
-    Map<String, Object> deleteLogic(String entity, String id);
+    void delete(String entity, String id);
 }

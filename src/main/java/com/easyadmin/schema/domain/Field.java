@@ -19,7 +19,9 @@ import java.io.Serializable;
  * <p>
  * the props of fields in list page will define in inherit class
  * <p>
- * Created by gongxinyi on 2017-08-10.
+ *
+ * @author gongxinyi
+ * @date 2017-08-10
  */
 @Data
 @ToString
