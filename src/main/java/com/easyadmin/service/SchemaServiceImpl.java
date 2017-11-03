@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author gongxinyi
  * @date 2017-08-10
  */
@@ -85,7 +84,7 @@ public class SchemaServiceImpl implements SchemaService {
     }
 
     @Override
-    public Field findOneField(String eid, String fieldId) {
-        return findFields(eid).stream().filter(field -> field.getId().equals(fieldId)).findFirst().get();
+    public Field findOneField(String fid) {
+        return mongoDbService.getDataStore().get(Field.class, fid);
     }
 }

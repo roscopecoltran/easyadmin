@@ -43,5 +43,5 @@ public interface SchemaService {
      * @param fieldId
      * @return
      */
-    Field findOneField(String eid,String fieldId);
+    Field findOneField(String fieldId);
 }

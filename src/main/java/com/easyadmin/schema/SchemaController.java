@@ -62,8 +62,8 @@ public class SchemaController {
     }
 
     @GetMapping("/schemas/_fields/{fid}")
-    public ResponseEntity<Field> findOneField(@PathVariable("fid") String fid,@RequestParam("eid") String eid) {
-        Field field = schemaService.findOneField(eid,fid);
+    public ResponseEntity<Field> findOneField(@PathVariable("fid") String fid) {
+        Field field = schemaService.findOneField(fid);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(field);
