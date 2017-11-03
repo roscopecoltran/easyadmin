@@ -10,6 +10,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
@@ -59,6 +60,11 @@ public class RdbService {
         return ds;
     }
 
+    public JdbcTemplate getJdbcTemplate() {
+        DataSource dataSource = getDataSource();
+        return new JdbcTemplate(dataSource);
+    }
+
     public Collection<Table> getDbSchemas(String schema) throws Exception {
         Connection connection = getDataSource().getConnection();
 
@@ -75,14 +81,14 @@ public class RdbService {
         return findTable.getColumns();
     }
 
-    public DbTable getDbTable(String schema, String tableName) {
-        DbSpec spec = new DbSpec(schema);
-        DbSchema dbSchema = new DbSchema(spec, schema);
+    public DbTable getDbTable(String tableName) {
+        DbSpec spec = new DbSpec(getSchema());
+        DbSchema dbSchema = new DbSchema(spec, getSchema());
         return new DbTable(dbSchema, tableName);
     }
 
-    public DbColumn getDbColumn(String schema, String tableName, String fieldId) throws Exception {
-        DbTable dbTable = getDbTable(schema, tableName);
+    public DbColumn getDbColumn(String tableName, String fieldId) throws Exception {
+        DbTable dbTable = getDbTable(tableName);
         List<Field> fields = schemaService.findFields(tableName);
         Field findField = fields.stream().filter(field -> field.getName().equals(fieldId)).findFirst().get();
         return new DbColumn(dbTable, fieldId, componentStringMap.get(findField.getComponent()));
@@ -100,6 +106,7 @@ public class RdbService {
                     continue;
                 }
                 Field field = new Field();
+                field.setId(column.getName());
                 field.setName(column.getName());
                 field.setLabel(StringUtils.isEmpty(column.getRemarks()) ? column.getName() : column.getRemarks());
                 field.setEid(entity.getId());
@@ -114,4 +121,10 @@ public class RdbService {
             }
         }
     }
+
+    public DbColumn getIdColumn(String entity) {
+        DbTable table = getDbTable(entity);
+        return new DbColumn(table, "id", "int");
+    }
+
 }

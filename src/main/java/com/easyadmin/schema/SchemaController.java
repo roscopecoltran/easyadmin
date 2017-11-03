@@ -24,7 +24,7 @@ import java.util.Map;
 public class SchemaController {
     @Resource
     SchemaService schemaService;
-    @Resource(name="dataDbService")
+    @Resource(name = "dataMongoDbService")
     DataService dataService;
     @Autowired
     RdbService rdbService;

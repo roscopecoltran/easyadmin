@@ -31,7 +31,7 @@ import static com.mongodb.client.model.Sorts.descending;
  * Created by gongxinyi on 2017-08-11.
  */
 @Slf4j
-@Component
+@Component("dataMongoDbService")
 public class DataMongoDbServiceImpl implements DataService {
 
     @Resource
