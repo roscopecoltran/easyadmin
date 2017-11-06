@@ -81,6 +81,7 @@ public class SchemaController {
     @PutMapping(value = "/schemas/_entitys/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> editEntity(@PathVariable("id") String id, @RequestBody Entity entity) {
+        entity.setFields(null);
         dataService.update(Constants.SYS_COL_Entity, id, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
