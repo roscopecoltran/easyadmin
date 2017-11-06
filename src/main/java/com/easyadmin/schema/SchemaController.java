@@ -90,6 +90,7 @@ public class SchemaController {
     public ResponseEntity<Field> addField(@RequestBody Field field) {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
+        field.setName(field.getId());
         mongoDbService.getDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }

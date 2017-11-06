@@ -4,6 +4,7 @@ import {
     BooleanInput,
     Create,
     Datagrid,
+    DisabledInput,
     Edit,
     EditButton,
     FilterButton,
@@ -127,6 +128,7 @@ export const FieldEdit = (props) => {
                             defaultValue={record ? record.entity : ''} validate={required}>
                 <TextField source="label"/>
             </ReferenceField>
+            <DisabledInput source="name"/>
             <TextInput source="label" validate={[required]}/>
             <SelectInput source="component" choices={arr}/>
             <BooleanInput source="required"/>
