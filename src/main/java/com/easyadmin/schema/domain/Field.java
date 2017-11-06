@@ -63,6 +63,16 @@ public class Field implements Serializable {
 
     private Boolean showInList;
 
+    /**
+     * 是否是主键
+     */
+    private Boolean isPartOfPrimaryKey;
+
+    /**
+     * 是否自增字段
+     */
+    private Boolean isAutoIncremented;
+
     public boolean isReference() {
         return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);
     }

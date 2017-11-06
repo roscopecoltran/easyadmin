@@ -24,7 +24,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,11 +38,7 @@ public class RdbService {
     @Autowired
     SequenceService sequenceService;
     @Autowired
-    SchemaService schemaService;
-    @Autowired
     Map<JDBCType, Component> fieldTypeMap;
-    @Autowired
-    Map<Component, String> componentStringMap;
 
     public String getSchema() {
         return "test_easyadmin";
@@ -75,23 +70,11 @@ public class RdbService {
         return catalog.getTables();
     }
 
-    public List<Column> getColumns(String schema, String tableName) throws Exception {
-        Collection<Table> tables = getDbSchemas(schema);
-        Table findTable = tables.stream().filter(table -> table.getName().equals(tableName)).findFirst().get();
-        return findTable.getColumns();
-    }
 
     public DbTable getDbTable(String tableName) {
         DbSpec spec = new DbSpec(getSchema());
         DbSchema dbSchema = new DbSchema(spec, getSchema());
         return new DbTable(dbSchema, tableName);
-    }
-
-    public DbColumn getDbColumn(String tableName, String fieldId) throws Exception {
-        DbTable dbTable = getDbTable(tableName);
-        List<Field> fields = schemaService.findFields(tableName);
-        Field findField = fields.stream().filter(field -> field.getName().equals(fieldId)).findFirst().get();
-        return new DbColumn(dbTable, fieldId, componentStringMap.get(findField.getComponent()));
     }
 
     public void syncSchemas(String schema) throws Exception {
@@ -102,11 +85,9 @@ public class RdbService {
             entity.setLabel(table.getName());
             mongoDbService.getDataStore().save(entity);
             for (Column column : table.getColumns()) {
-                if ("id".equals(column.getName())) {
-                    continue;
-                }
                 Field field = new Field();
-                field.setId(column.getName());
+                field.setIsAutoIncremented(column.isAutoIncremented());
+                field.setIsPartOfPrimaryKey(column.isPartOfPrimaryKey());
                 field.setName(column.getName());
                 field.setLabel(StringUtils.isEmpty(column.getRemarks()) ? column.getName() : column.getRemarks());
                 field.setEid(entity.getId());
@@ -120,11 +101,6 @@ public class RdbService {
                 mongoDbService.getDataStore().save(field);
             }
         }
-    }
-
-    public DbColumn getIdColumn(String entity) {
-        DbTable table = getDbTable(entity);
-        return new DbColumn(table, "id", "int");
     }
 
 }
