@@ -4,6 +4,7 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.Component;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
@@ -14,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
-import schemacrawler.schema.ColumnDataType;
 import schemacrawler.schema.Table;
 import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
@@ -47,13 +47,13 @@ public class RdbService {
     SchemaService schemaService;
 
     public String getSchema() {
-        return "test_easyadmin";
+        return "financial_cf_credit_icr";
     }
 
     public DataSource getDataSource() {
         if (ds == null) {
             ds = new HikariDataSource();
-            ds.setJdbcUrl("jdbc:mysql://172.24.7.29:3306/test_easyadmin");
+            ds.setJdbcUrl("jdbc:mysql://172.24.7.29:3306/financial_cf_credit_icr");
             ds.setDriverClassName(com.mysql.jdbc.Driver.class.getName());
             ds.setUsername("root");
             ds.setPassword("123456");
@@ -96,8 +96,8 @@ public class RdbService {
                 log.error("table : {} hasn't primary key", table.getName());
                 continue;
             }
-            Entity findEntity = entityList.stream().filter(entity -> entity.getId().equals(table.getName())).findAny().get();
-            if (findEntity == null) {
+            Optional<Entity> optionalEntity = entityList.stream().filter(entity -> entity.getId().equals(table.getName())).findAny();
+            if (!optionalEntity.isPresent()) {
                 Entity entity = new Entity();
                 entity.setId(table.getName());
                 entity.setLabel(table.getName());
@@ -107,6 +107,7 @@ public class RdbService {
                     mongoDbService.getDataStore().save(field);
                 }
             } else {
+                Entity findEntity = optionalEntity.get();
                 for (Column column : table.getColumns()) {
                     Optional<Field> findField = findEntity.getFields().stream().filter(field -> field.getName().equals(column.getName())).findAny();
                     if (!findField.isPresent()) {
@@ -131,9 +132,10 @@ public class RdbService {
      * @param eid
      * @return
      */
-    private Field column2Field(Column column, String eid) {
+    private Field column2Field(Column column, String eid) throws JsonProcessingException {
+        log.info("column : {},{},{}", column, column.isGenerated(), column.isAutoIncremented());
         Field field = new Field();
-        field.setIsAutoIncremented(column.isAutoIncremented());
+        field.setIsAutoIncremented(isAutoField(column));
         field.setIsPartOfPrimaryKey(column.isPartOfPrimaryKey());
         field.setName(column.getName());
         field.setLabel(StringUtils.isEmpty(column.getRemarks()) ? column.getName() : column.getRemarks());
@@ -141,10 +143,22 @@ public class RdbService {
         field.setMaxLength(column.getSize());
         field.setRequired(!column.isNullable());
         field.setDefaultValue(column.getDefaultValue());
-        ColumnDataType columnDataType = column.getColumnDataType();
-        field.setComponent(fieldTypeMap.get(JDBCType.valueOf(columnDataType.getJavaSqlType().getJavaSqlType())));
+        field.setComponent(getComponent(column));
         String fid = sequenceService.getNextSequence(Constants.SYS_COL_Field + Constants._id).toString();
         field.setId(Constants.FIELD_NAME_PREFIX + fid);
         return field;
+    }
+
+    private boolean isAutoField(Column column) {
+        return (Component.Date.equals(getComponent(column)) &&
+                "CURRENT_TIMESTAMP".equals(column.getDefaultValue())) || column.isAutoIncremented();
+    }
+
+    private Component getComponent(Column column) {
+        Component component = fieldTypeMap.get(JDBCType.valueOf(column.getColumnDataType().getJavaSqlType().getJavaSqlType()));
+        if (component == null) {
+            component = Component.Text;
+        }
+        return component;
     }
 }

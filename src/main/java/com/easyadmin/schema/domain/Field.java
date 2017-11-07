@@ -76,4 +76,5 @@ public class Field implements Serializable {
     public boolean isReference() {
         return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);
     }
+
 }

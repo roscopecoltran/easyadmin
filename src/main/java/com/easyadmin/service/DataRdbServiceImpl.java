@@ -205,13 +205,16 @@ public class DataRdbServiceImpl implements DataService {
     }
 
     private void wrapData(Map<String, Field> fieldIdMap, Map<String, Object> data) {
+        data.entrySet().removeIf(entry -> !fieldIdMap.containsKey(entry.getKey()) || fieldIdMap.get(entry.getKey()).getIsAutoIncremented());
         data.forEach((k, v) -> {
             Field field = fieldIdMap.get(k);
             switch (field.getComponent()) {
                 case Date:
                     DateTimeFormatter f = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     DateTime dateTime = f.parseDateTime(v.toString());
-                    data.put(k, JdbcEscape.timestamp(dateTime.toDate()));
+                    data.put(k, dateTime == null ? null : JdbcEscape.timestamp(dateTime.toDate()));
+                    break;
+                default:
                     break;
             }
         });

@@ -51,6 +51,8 @@ public class SysConfig {
         fieldTypeMap.put(JDBCType.BINARY, Component.Text);
         fieldTypeMap.put(JDBCType.VARBINARY, Component.Text);
         fieldTypeMap.put(JDBCType.LONGVARBINARY, Component.Text);
+        fieldTypeMap.put(JDBCType.LONGVARCHAR, Component.Text);
+        fieldTypeMap.put(JDBCType.LONGNVARCHAR, Component.Text);
 
         fieldTypeMap.put(JDBCType.DATE, Component.Date);
         fieldTypeMap.put(JDBCType.TIME, Component.Date);

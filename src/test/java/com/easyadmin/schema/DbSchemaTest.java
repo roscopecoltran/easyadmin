@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import schemacrawler.schema.Column;
 import schemacrawler.schema.Table;
 
 import java.util.Collection;
@@ -23,9 +24,15 @@ public class DbSchemaTest {
 
     @Test
     public void testSchema() throws Exception {
-        Collection<Table> dbTable = rdbService.getDbSchemas("financial_cf_dev");
+        Collection<Table> dbTable = rdbService.getDbSchemas("financial_cf_credit_icr");
         dbTable.stream().forEach(table -> {
-            log.info("table:{},dbTable:{}", table.getName(), table.getPrimaryKey());
+            if("cf_credit_log".equals(table.getName())){
+                Collection<Column> columns=table.getColumns();
+                for(Column column:columns){
+                    log.info("table:{},column:{}", table.getName(), column);
+                }
+            }
+
         });
     }
 }
