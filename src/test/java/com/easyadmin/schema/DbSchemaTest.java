@@ -1,7 +1,6 @@
 package com.easyadmin.schema;
 
 import com.easyadmin.service.RdbService;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,9 +23,9 @@ public class DbSchemaTest {
 
     @Test
     public void testSchema() throws Exception {
-        Collection<Table> dbTable = rdbService.getDbSchemas("test_easyadmin");
+        Collection<Table> dbTable = rdbService.getDbSchemas("financial_cf_dev");
         dbTable.stream().forEach(table -> {
-            log.info("dbTable:{}",table.getPrimaryKey());
+            log.info("table:{},dbTable:{}", table.getName(), table.getPrimaryKey());
         });
     }
 }

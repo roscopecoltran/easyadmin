@@ -56,6 +56,7 @@ import {CardActions} from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import NavigationRefresh from "material-ui/svg-icons/navigation/refresh";
 import SelectArrayField from "./SelectArrayField";
+import DateTimeInput from 'aor-datetime-input';
 
 const cardActionStyle = {
     zIndex: 2,
@@ -260,6 +261,7 @@ const renderTextField = (field) => (
 const renderRichTextField = (field) => (
     <RichTextField key={field.id} label={field.label} source={field.name} stripTags/>
 )
+
 const renderImageField = (field) => (
     <ImageField key={field.id} label={field.label} source={field.name} title="title"/>
 )
@@ -287,7 +289,7 @@ const renderInput = (field) => (
             field.component === 'NullableBoolean' ? renderNullableBooleanInput(field) :
                 field.component === 'Autocomplete' ? renderAutoCompleteInput(field) :
                     field.component === 'CheckboxGroup' ? renderCheckboxGroupInput(field) :
-                        field.component === 'Date' ? renderDateInput(field) :
+                        field.component === 'Date' ? renderDateTimeInput(field) :
                             field.component === 'File' ? renderFileInput(field) :
                                 field.component === 'LongText' ? renderLongTextInput(field) :
                                     field.component === 'Number' ? renderNumberInput(field) :
@@ -302,7 +304,11 @@ const renderInput = (field) => (
 );
 
 const renderDisabledInput = (field) => (
-    <DisabledInput source={field.name}/>
+    <DisabledInput key={field.id} source={field.name} label={field.label}/>
+);
+
+const renderDateTimeInput = (field) => (
+    <DateTimeInput key={field.id} label={field.label} source={field.name} validate={generateValidators(field)}/>
 );
 
 const renderAutoCompleteInput = (field) => (

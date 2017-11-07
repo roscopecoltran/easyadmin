@@ -9,6 +9,9 @@ import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -186,6 +189,7 @@ public class DataRdbServiceImpl implements DataService {
     @Override
     public Map<String, Object> save(String entity, Map<String, Object> data) {
         Map<String, Field> fieldIdMap = getFieldIdMap(entity);
+        wrapData(fieldIdMap, data);
         DbTable table = rdbService.getDbTable(entity);
         InsertQuery insertCustomerQuery =
                 new InsertQuery(table);
@@ -200,9 +204,23 @@ public class DataRdbServiceImpl implements DataService {
         return data;
     }
 
+    private void wrapData(Map<String, Field> fieldIdMap, Map<String, Object> data) {
+        data.forEach((k, v) -> {
+            Field field = fieldIdMap.get(k);
+            switch (field.getComponent()) {
+                case Date:
+                    DateTimeFormatter f = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                    DateTime dateTime = f.parseDateTime(v.toString());
+                    data.put(k, JdbcEscape.timestamp(dateTime.toDate()));
+                    break;
+            }
+        });
+    }
+
     @Override
     public Map<String, Object> update(String entity, String id, Map<String, Object> data) {
         Map<String, Field> fieldIdMap = getFieldIdMap(entity);
+        wrapData(fieldIdMap, data);
         DbTable table = rdbService.getDbTable(entity);
         UpdateQuery updateQuery = new UpdateQuery(table);
         data.entrySet()
@@ -264,5 +282,4 @@ public class DataRdbServiceImpl implements DataService {
     private DbColumn getDbColumn(DbTable table, Field field) {
         return new DbColumn(table, field.getName(), componentStringMap.get(field.getComponent()));
     }
-
 }

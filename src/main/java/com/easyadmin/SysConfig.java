@@ -55,7 +55,6 @@ public class SysConfig {
         fieldTypeMap.put(JDBCType.DATE, Component.Date);
         fieldTypeMap.put(JDBCType.TIME, Component.Date);
         fieldTypeMap.put(JDBCType.TIMESTAMP, Component.Date);
-
         return fieldTypeMap;
     }
 
@@ -64,7 +63,7 @@ public class SysConfig {
         Map<Component, String> componentStringMap = new HashMap<Component, String>();
         componentStringMap.put(Component.Text, "varchar");
         componentStringMap.put(Component.Number, "number");
-
+        componentStringMap.put(Component.Date, "datetime");
         return componentStringMap;
     }
 }
