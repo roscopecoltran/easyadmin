@@ -17,6 +17,7 @@ public class Tenant {
 
     private String[] users;
 
+    private String currentDataSourceId;
     private static InheritableThreadLocal<Tenant> threadLocal = new InheritableThreadLocal<Tenant>() {
         @Override
         protected Tenant initialValue() {

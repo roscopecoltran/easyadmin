@@ -14,7 +14,7 @@ import {
     SimpleForm,
     SingleFieldList,
     TextField,
-    TextInput,
+    TextInput
 } from "admin-on-rest";
 
 export const UserList = (props) => (

@@ -19,6 +19,7 @@ const restRouter = restClientRouter({
         ['_users', 'user'],
         ['_roles', 'role'],
         ['_permission', 'permission'],
+        ['_datasource', 'datasource'],
         ['apply','apply'],
         ['*', 'data']
     ],
@@ -27,6 +28,7 @@ const restRouter = restClientRouter({
         user: jsonServerRestClient(url + '/user', httpClient),
         role: jsonServerRestClient(url + '/role', httpClient),
         permission: jsonServerRestClient(url + '/permission', httpClient),
+        datasource: jsonServerRestClient(url + '/datasource', httpClient),
         apply: jsonServerRestClient(url),
         data: jsonServerRestClient(url + '/api', httpClient),
     }

@@ -1,5 +1,6 @@
 package com.easyadmin.service;
 
+import com.easyadmin.cloud.Tenant;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.CRUDPermission;
@@ -31,9 +32,10 @@ public class SchemaServiceImpl implements SchemaService {
 
     @Override
     public List<Entity> findEntities() {
-        List<Entity> entities = mongoDbService.getDataStore().find(Entity.class).asList();
+        List<Entity> entities = mongoDbService.getDataStore().createQuery(Entity.class).field("dataSourceId").equal(Tenant.get().getCurrentDataSourceId()).asList();
 
-        List<Field> fields = mongoDbService.getDataStore().find(Field.class).asList();
+        List<Field> fields = mongoDbService.getDataStore().createQuery(Field.class).field("dataSourceId").equal(Tenant.get().getCurrentDataSourceId()).asList();
+
         fields.forEach(field -> {
             entities.forEach(entity -> {
                 if (field.getEid().equals(entity.getId())) {

@@ -5,6 +5,7 @@ import {EntityCreate, EntityEdit, EntityList} from "./schema/entitys";
 import {FieldCreate, FieldEdit, FieldList} from "./schema/fields";
 import {UserCreate, UserEdit, UserList} from "./user/user";
 import {RoleCreate, RoleEdit, RoleList} from "./user/role";
+import {DataSourceCreate, DataSourceEdit,DataSourceList} from "./user/datasource";
 import {PermissionCreate, PermissionEdit} from "./user/permission";
 import {ApplyCreate} from './user/apply';
 export default class extends Component {
@@ -26,6 +27,7 @@ export default class extends Component {
                 <Resource name="_users" list={UserList} create={UserCreate} edit={UserEdit}/>
                 <Resource name="_roles" list={RoleList} create={RoleCreate} edit={RoleEdit}/>
                 <Resource name="_permission" create={PermissionCreate} edit={PermissionEdit}/>
+                <Resource name="_datasource" list={DataSourceList} create={DataSourceCreate} edit={DataSourceEdit}/>
                 <Resource name="_apply" create={ApplyCreate}/>
             </Admin>
         ) : <Admin {...props}></Admin>;

@@ -2,6 +2,7 @@ package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.InputType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +30,8 @@ import java.io.Serializable;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @org.mongodb.morphia.annotations.Entity(value = "_fields", noClassnameStored = true)
 public class Field implements Serializable {
+    @JsonIgnore
+    protected String datasourceId;
     protected String eid;
     @Id
     protected String id;

@@ -222,20 +222,23 @@ public class DataRdbServiceImpl implements DataService {
 
     @Override
     public Map<String, Object> update(String entity, String id, Map<String, Object> data) {
-        Map<String, Field> fieldIdMap = getFieldIdMap(entity);
-        wrapData(fieldIdMap, data);
         DbTable table = rdbService.getDbTable(entity);
         UpdateQuery updateQuery = new UpdateQuery(table);
-        data.entrySet()
-                .stream().filter(a -> !Constants.id.equals(a.getKey()))
-                .forEach(k -> {
-                    updateQuery.addSetClause(getDbColumn(table, fieldIdMap.get(k.getKey())), k.getValue());
-                });
+        Map<String, Field> fieldIdMap = getFieldIdMap(entity);
         fieldIdMap.forEach((k, v) -> {
             if (v.getIsPartOfPrimaryKey()) {
                 updateQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, v), data.get(v.getName())));
             }
         });
+
+        wrapData(fieldIdMap, data);
+
+        data.entrySet()
+                .stream().filter(a -> !Constants.id.equals(a.getKey()))
+                .forEach(k -> {
+                    updateQuery.addSetClause(getDbColumn(table, fieldIdMap.get(k.getKey())), k.getValue());
+                });
+
         log.info("update record , entity:{},data:{},sql:{}", entity, data, updateQuery);
         rdbService.getJdbcTemplate().execute(updateQuery.toString());
         return data;

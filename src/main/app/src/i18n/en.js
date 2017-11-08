@@ -53,6 +53,9 @@ export default {
                 d: 'delete',
             }
         },
+        _datasource: {
+            name: 'DataSource'
+        },
         apply: {
             name: 'apply for test',
             fields: {

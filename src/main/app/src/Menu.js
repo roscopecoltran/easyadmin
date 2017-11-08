@@ -24,6 +24,12 @@ const Menu = ({resources, onMenuTap, translate, logout}) => (
         </WithPermission>
         <WithPermission authClient={authClient} value={['ROLE_ADMIN']}>
             <MenuItem
+                containerElement={<Link to="/_datasource"/>}
+                primaryText={translate('resources._datasource.name')}
+                leftIcon={<SettingsIcon/>}
+                onTouchTap={onMenuTap}
+            />
+            <MenuItem
                 containerElement={<Link to="/_entitys"/>}
                 primaryText={translate('easyadmin.settings')}
                 leftIcon={<SettingsIcon/>}

@@ -1,10 +1,14 @@
 package com.easyadmin.schema;
 
+import com.easyadmin.cloud.DataSource;
+import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -103,14 +107,25 @@ public class SchemaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 
-    @GetMapping(value = "/schemas/sync")
+    @PutMapping(value = "/schemas/sync/{dataSourceId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity syncSchemas() {
+    public ResponseEntity syncSchemas(@PathVariable("dataSourceId") String dataSourceId) {
         try {
-            rdbService.syncSchemas(rdbService.getSchema());
+            rdbService.syncSchemas(dataSourceId);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(value = "/schemas/resetCurrentDs/{dataSourceId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity resetCurrentDs(@PathVariable("dataSourceId") String dataSourceId) {
+        final Query<Tenant> tenantQuery = mongoDbService.getSysDataStore().createQuery(Tenant.class).field("id").equal(Tenant.get().getId());
+        final UpdateOperations<Tenant> updateOperations = mongoDbService.getSysDataStore().createUpdateOperations(Tenant.class)
+                .set("currentDataSourceId", dataSourceId);
+
+        mongoDbService.getSysDataStore().update(tenantQuery, updateOperations);
         return ResponseEntity.ok().build();
     }
 }

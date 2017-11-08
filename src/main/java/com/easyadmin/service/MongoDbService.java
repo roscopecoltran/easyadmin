@@ -1,30 +1,15 @@
 package com.easyadmin.service;
 
 import com.easyadmin.cloud.Tenant;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
-import com.zaxxer.hikari.HikariDataSource;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import schemacrawler.schema.Catalog;
-import schemacrawler.schema.Column;
-import schemacrawler.schema.Table;
-import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
-import schemacrawler.schemacrawler.SchemaCrawlerOptions;
-import schemacrawler.utility.SchemaCrawlerUtility;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,22 +31,22 @@ public class MongoDbService {
     }
 
     public Datastore getDataStore() {
-        String connectionStr = Tenant.get().getConnectionStr();
-        initMongoClient(connectionStr);
-        return new Morphia().createDatastore(tenantMongoMap.get(connectionStr), Tenant.get().getDbName());
+        Tenant tenant = Tenant.get();
+        initMongoClient(tenant);
+        return new Morphia().createDatastore(tenantMongoMap.get(tenant.getId()), Tenant.get().getDbName());
     }
 
     public MongoCollection getCollection(String entity) {
-        String connectionStr = Tenant.get().getConnectionStr();
-        initMongoClient(connectionStr);
-        return tenantMongoMap.get(connectionStr).getDatabase(Tenant.get().getDbName()).getCollection(entity);
+        Tenant tenant = Tenant.get();
+        initMongoClient(tenant);
+        return tenantMongoMap.get(tenant.getId()).getDatabase(Tenant.get().getDbName()).getCollection(entity);
     }
 
-    private void initMongoClient(String connectionStr) {
-        if (!tenantMongoMap.containsKey(connectionStr)) {
-            MongoClientURI uri = new MongoClientURI(connectionStr);
+    private void initMongoClient(Tenant tenant) {
+        if (!tenantMongoMap.containsKey(tenant.getId())) {
+            MongoClientURI uri = new MongoClientURI(tenant.getConnectionStr());
             MongoClient client = new MongoClient(uri);
-            tenantMongoMap.put(connectionStr, client);
+            tenantMongoMap.put(tenant.getId(), client);
         }
     }
 }

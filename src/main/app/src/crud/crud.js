@@ -8,7 +8,6 @@ import {
     Create,
     Datagrid,
     DateField,
-    DateInput,
     Delete,
     DeleteButton,
     DisabledInput,
@@ -335,11 +334,6 @@ const renderFileInput = (field) => (
     <FileInput key={field.id} source={field.name} label={field.label} accept={'application/' + field.type}>
         <FileField source="src" title="title"/>
     </FileInput>
-)
-
-const renderDateInput = (field) => (
-    <DateInput key={field.id} source={field.name} label={field.label} defaultValue={field.defaultValue}
-               validate={generateValidators(field)}/>
 )
 
 const renderLongTextInput = (field) => (

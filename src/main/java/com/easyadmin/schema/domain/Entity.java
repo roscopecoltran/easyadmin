@@ -2,6 +2,7 @@ package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,4 +29,7 @@ public final class Entity {
 
     private List<CRUDPermission> crud;
     private Redirect redirect;// 新增记录后跳转到哪个页面 edit,show,list
+
+    @JsonIgnore
+    private String dataSourceId;
 }

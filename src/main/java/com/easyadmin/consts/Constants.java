@@ -15,6 +15,8 @@ public class Constants {
 
     public static final String SYS_COL_ROLE = "_role";
 
+    public static final String SYS_COL_DS = "_ds";
+
     public static final String SYS_COL_PERMISSION = "_permission";
 
     public static final String ENTITY_NAME_PREFIX = "e";

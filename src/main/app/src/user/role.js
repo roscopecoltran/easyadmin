@@ -10,7 +10,7 @@ import {
     ReferenceManyField,
     SimpleForm,
     TextField,
-    TextInput,
+    TextInput
 } from "admin-on-rest";
 import HardwareSecurity from "material-ui/svg-icons/hardware/security";
 import LinkButton from "./LinkButton";
