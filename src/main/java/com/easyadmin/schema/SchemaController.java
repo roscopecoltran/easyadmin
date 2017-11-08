@@ -1,6 +1,5 @@
 package com.easyadmin.schema;
 
-import com.easyadmin.cloud.DataSource;
 import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;

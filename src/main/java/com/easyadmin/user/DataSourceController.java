@@ -1,8 +1,8 @@
 package com.easyadmin.user;
 
 import com.easyadmin.cloud.DataSource;
+import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
-import com.easyadmin.security.security.Role;
 import com.easyadmin.service.MongoDbService;
 import com.easyadmin.service.SequenceService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,7 @@ public class DataSourceController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DataSource>> list() {
         List<DataSource> dataSources = mongoDbService.getDataStore().createQuery(DataSource.class).asList();
+        dataSources.forEach(dataSource -> dataSource.setCurrent(dataSource.getId().equals(Tenant.get().getCurrentDataSourceId())));
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", dataSources.size() + "")
@@ -62,8 +63,7 @@ public class DataSourceController {
                 .set("jdbcUrl", dataSource.getJdbcUrl())
                 .set("username", dataSource.getUsername())
                 .set("password", dataSource.getPassword())
-                .set("type", dataSource.getType())
-                .set("enabled", dataSource.isEnabled());
+                .set("type", dataSource.getType());
 
         mongoDbService.getDataStore().update(dataSourceQuery, updateOperations);
         return ResponseEntity.ok(dataSource);

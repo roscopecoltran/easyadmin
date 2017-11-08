@@ -1,5 +1,6 @@
 package com.easyadmin.service;
 
+import com.easyadmin.cloud.DataSource;
 import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
@@ -21,11 +22,9 @@ import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 import schemacrawler.utility.SchemaCrawlerUtility;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.JDBCType;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author gongxinyi
@@ -49,39 +48,12 @@ public class RdbService {
      */
     static Map<String, HikariDataSource> urlDataSourceMap = new HashMap<>();
 
-    static Map<String, com.easyadmin.cloud.DataSource> tenantDataSourceMap = new HashMap<>();
-
     public String getCurrentSchema() {
         return getDataSource().getSchema();
     }
 
-    public com.easyadmin.cloud.DataSource getCurrentDataSource() {
-        Tenant tenant = Tenant.get();
-        if (!tenantDataSourceMap.containsKey(tenant.getId())) {
-            resetCurrentDataSource();
-        }
-        return tenantDataSourceMap.get(tenant.getId());
-    }
-
-    private void resetCurrentDataSource() {
-        List<com.easyadmin.cloud.DataSource> dataSources = mongoDbService.getDataStore().createQuery(com.easyadmin.cloud.DataSource.class).asList();
-        Optional<com.easyadmin.cloud.DataSource> optionalDataSource = dataSources.stream().filter(dataSource -> dataSource.isEnabled()).findFirst();
-        com.easyadmin.cloud.DataSource dataSource;
-        if (optionalDataSource.isPresent()) {
-            dataSource = optionalDataSource.get();
-        } else {
-            dataSource = dataSources.get(0);
-        }
-        tenantDataSourceMap.put(Tenant.get().getId(), dataSource);
-    }
-
-
     public HikariDataSource getDataSource() {
-        Tenant tenant = Tenant.get();
-        if (!tenantDataSourceMap.containsKey(tenant.getId())) {
-            resetCurrentDataSource();
-        }
-        com.easyadmin.cloud.DataSource dataSource = tenantDataSourceMap.get(tenant.getId());
+        DataSource dataSource = mongoDbService.getDataStore().get(DataSource.class, Tenant.get().getCurrentDataSourceId());
         if (!urlDataSourceMap.containsKey(dataSource.getJdbcUrl())) {
             urlDataSourceMap.put(dataSource.getJdbcUrl(), dataSource2Hikari(dataSource));
         }
@@ -89,11 +61,11 @@ public class RdbService {
     }
 
     private HikariDataSource getDataSource(String dataSourceId) {
-        com.easyadmin.cloud.DataSource dataSource = mongoDbService.getDataStore().get(com.easyadmin.cloud.DataSource.class, dataSourceId);
+        DataSource dataSource = mongoDbService.getDataStore().get(DataSource.class, dataSourceId);
         return dataSource2Hikari(dataSource);
     }
 
-    private HikariDataSource dataSource2Hikari(com.easyadmin.cloud.DataSource dataSource) {
+    private HikariDataSource dataSource2Hikari(DataSource dataSource) {
         HikariDataSource ds = new HikariDataSource();
         ds.setJdbcUrl(dataSource.getJdbcUrl());
         ds.setDriverClassName(com.mysql.jdbc.Driver.class.getName());
@@ -104,7 +76,7 @@ public class RdbService {
     }
 
     public JdbcTemplate getJdbcTemplate() {
-        DataSource dataSource = getDataSource();
+        HikariDataSource dataSource = getDataSource();
         return new JdbcTemplate(dataSource);
     }
 
@@ -132,7 +104,6 @@ public class RdbService {
      */
     public void syncSchemas(String dataSourceId) throws Exception {
         List<Entity> entities = schemaService.findEntities();
-        List<Entity> entityList = entities.stream().filter(entity -> dataSourceId.equals(entity.getDataSourceId())).collect(Collectors.toList());
         HikariDataSource hikariDataSource = getDataSource(dataSourceId);
 
         Collection<Table> tables = getDbSchemas(hikariDataSource.getSchema());
@@ -141,7 +112,7 @@ public class RdbService {
                 log.error("table : {} hasn't primary key", table.getName());
                 continue;
             }
-            Optional<Entity> optionalEntity = entityList.stream().filter(entity -> dataSourceId.equals(entity.getDataSourceId()) && entity.getId().equals(table.getName())).findAny();
+            Optional<Entity> optionalEntity = entities.stream().filter(entity -> dataSourceId.equals(entity.getDataSourceId()) && entity.getId().equals(table.getName())).findAny();
             if (!optionalEntity.isPresent()) {
                 Entity entity = new Entity();
                 entity.setDataSourceId(dataSourceId);
@@ -150,7 +121,7 @@ public class RdbService {
                 mongoDbService.getDataStore().save(entity);
                 for (Column column : table.getColumns()) {
                     Field field = column2Field(column, entity.getId());
-                    field.setDatasourceId(dataSourceId);
+                    field.setDataSourceId(dataSourceId);
                     mongoDbService.getDataStore().save(field);
                 }
             } else {
@@ -159,7 +130,7 @@ public class RdbService {
                     Optional<Field> findField = findEntity.getFields().stream().filter(field -> field.getName().equals(column.getName())).findAny();
                     if (!findField.isPresent()) {
                         Field field = column2Field(column, findEntity.getId());
-                        field.setDatasourceId(dataSourceId);
+                        field.setDataSourceId(dataSourceId);
                         mongoDbService.getDataStore().save(field);
                     }
                 }

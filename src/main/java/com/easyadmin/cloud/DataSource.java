@@ -18,5 +18,5 @@ public class DataSource {
     private String username;
     private String password;
     private String type;
-    private boolean enabled;
+    private boolean isCurrent;
 }

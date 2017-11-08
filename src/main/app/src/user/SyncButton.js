@@ -38,11 +38,12 @@ class SyncButton extends Component {
     }
 
     render() {
+        const { record} = this.props;
         return (
             <span>
                 <IconButton onClick={this.handleSync}><NotificationSync
                     color="#00bcd4"/></IconButton>
-                <IconButton onClick={this.handleSetCurrentDs}><ThumbUp
+                <IconButton onClick={this.handleSetCurrentDs} disabled={record.current}><ThumbUp
                     color="#00bcd4"/></IconButton>
             </span>
         );

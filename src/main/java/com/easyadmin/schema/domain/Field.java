@@ -31,7 +31,7 @@ import java.io.Serializable;
 @org.mongodb.morphia.annotations.Entity(value = "_fields", noClassnameStored = true)
 public class Field implements Serializable {
     @JsonIgnore
-    protected String datasourceId;
+    protected String dataSourceId;
     protected String eid;
     @Id
     protected String id;

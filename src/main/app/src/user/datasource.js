@@ -1,6 +1,5 @@
 import React from "react";
 import {
-    BooleanField,
     Create,
     Datagrid,
     Edit,
@@ -24,7 +23,6 @@ export const DataSourceList = (props) => (
             <SelectField source="type" label="数据库类型" choices={[
                 {id: 'mysql', name: 'MySql'}
             ]}/>
-            <BooleanField source="enabled"/>
             <SyncButton style={{padding: 0}}/>
             <EditButton/>
         </Datagrid>
@@ -40,7 +38,6 @@ export const DataSourceCreate = (props) => (
             <TextInput source="jdbcUrl" validate={required}/>
             <TextInput source="username" validate={required}/>
             <TextInput type="password" source="password" validate={required}/>
-            <BooleanField source="enabled" defaultValue={true}/>
         </SimpleForm>
     </Create>
 );
@@ -54,7 +51,6 @@ export const DataSourceEdit = (props) => (
             <TextInput source="jdbcUrl" validate={required}/>
             <TextInput source="username" validate={required}/>
             <TextInput type="password" source="password" validate={required}/>
-            <BooleanField source="enabled"/>
         </SimpleForm>
     </Edit>
 );
