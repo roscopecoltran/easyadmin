@@ -10,7 +10,6 @@ import {
     DateField,
     Delete,
     DeleteButton,
-    DisabledInput,
     Edit,
     EditButton,
     email,
@@ -55,8 +54,7 @@ import {CardActions} from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import NavigationRefresh from "material-ui/svg-icons/navigation/refresh";
 import SelectArrayField from "./SelectArrayField";
-import DateTimeInput from 'aor-datetime-input';
-
+import DateTimeInput from "aor-datetime-input";
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
@@ -74,9 +72,39 @@ const CRUDFilter = (props) => (
     <Filter {...props}>
         {/*全文搜索先注释掉，对于有全文索引的字段，才显示Search框 [TODO]*/}
         {/*<TextInput label="Search" source="q" alwaysOn/>*/}
-        {props.options.fields.filter(field => !filterComponent.includes(field.component) && !field.isAutoIncremented).map(renderInput)}
+        {props.options.fields.filter(field => !filterComponent.includes(field.component)).map(renderFilter)}
     </Filter>
 );
+
+const renderFilter = (field) => (
+    field.component === 'Boolean' ? renderBooleanInput(field) :
+        field.component === 'NullableBoolean' ? renderNullableBooleanInput(field) :
+            field.component === 'Autocomplete' ? renderAutoCompleteInput(field) :
+                field.component === 'CheckboxGroup' ? renderCheckboxGroupInput(field) :
+                    field.component === 'Date' ? renderDateTimeFilter(field) :
+                            field.component === 'LongText' ? renderLongTextInput(field) :
+                                field.component === 'Number' ? renderNumberFilter(field) :
+                                    field.component === 'RadioButtonGroup' ? renderRadioButtonGroupInput(field) :
+                                        field.component === 'Reference' ? renderReferenceInput(field) :
+                                            field.component === 'ReferenceArray' ? renderReferenceArrayInput(field) :
+                                                field.component === 'RichText' ? renderRichTextInput(field) :
+                                                    field.component === 'Select' ? renderSelectInput(field) :
+                                                        field.component === 'SelectArray' ? renderSelectArrayInput(field) :
+                                                                renderTextInput(field)
+);
+
+const renderDateTimeFilter = (field) => (
+    [<DateTimeInput key={field.id + '_gte'} label={field.label + " 开始"} source={field.name + '_gte'}/>,
+        <DateTimeInput key={field.id + '_lte'} label={field.label + " 截止"} source={field.name + '_lte'}/>]
+)
+
+
+const renderNumberFilter = (field) => (
+    [<NumberInput key={field.id + '_gte'} source={field.name + '_gte'} label={field.label+' 大于等于'} defaultValue={field.defaultValue}
+                  validate={[number]}/>,
+        <NumberInput key={field.id + '_lte'} source={field.name + '_lte'} label={field.label+' 小于等于'} defaultValue={field.defaultValue}
+                     validate={[number]}/>]
+)
 
 /**
  * render a record's enabled actions
@@ -110,7 +138,7 @@ export const CRUDList = (props) => (
         <Datagrid>
             {renderRecordAction(props)}
             <TextField source="id" sortable={false}/>
-            {props.options.fields.filter(field => field.showInList && "id"!==field.name).map(renderField)}
+            {props.options.fields.filter(field => field.showInList && "id" !== field.name).map(renderField)}
         </Datagrid>
     </List>
 );
@@ -206,23 +234,22 @@ export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/
  * @param index
  */
 const renderField = (field) => (
-    field.isAutoIncremented ? renderTextField(field) :
-        field.component === 'Boolean' ? renderBooleanField(field) :
-            field.component === 'NullableBoolean' ? renderBooleanField(field) :
-                field.component === 'Autocomplete' ? renderSelectField(field) :
-                    field.component === 'CheckboxGroup' ? renderSelectArrayField(field) :
-                        field.component === 'Date' ? renderDateField(field) :
-                            field.component === 'File' ? renderFileField(field) :
-                                field.component === 'LongText' ? renderTextField(field) :
-                                    field.component === 'Number' ? renderNumberField(field) :
-                                        field.component === 'RadioButtonGroup' ? renderSelectField(field) :
-                                            field.component === 'Reference' ? renderReferenceField(field) :
-                                                field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
-                                                    field.component === 'RichText' ? renderRichTextField(field) :
-                                                        field.component === 'Select' ? renderSelectField(field) :
-                                                            field.component === 'SelectArray' ? renderSelectArrayField(field) :
-                                                                field.component === 'Image' ? renderImageField(field) :
-                                                                    renderTextField(field)
+    field.component === 'Boolean' ? renderBooleanField(field) :
+        field.component === 'NullableBoolean' ? renderBooleanField(field) :
+            field.component === 'Autocomplete' ? renderSelectField(field) :
+                field.component === 'CheckboxGroup' ? renderSelectArrayField(field) :
+                    field.component === 'Date' ? renderDateField(field) :
+                        field.component === 'File' ? renderFileField(field) :
+                            field.component === 'LongText' ? renderTextField(field) :
+                                field.component === 'Number' ? renderNumberField(field) :
+                                    field.component === 'RadioButtonGroup' ? renderSelectField(field) :
+                                        field.component === 'Reference' ? renderReferenceField(field) :
+                                            field.component === 'ReferenceArray' ? renderReferenceArrayField(field) :
+                                                field.component === 'RichText' ? renderRichTextField(field) :
+                                                    field.component === 'Select' ? renderSelectField(field) :
+                                                        field.component === 'SelectArray' ? renderSelectArrayField(field) :
+                                                            field.component === 'Image' ? renderImageField(field) :
+                                                                renderTextField(field)
 
 );
 
@@ -283,7 +310,7 @@ const renderNumberField = (field) => (
  * @param index
  */
 const renderInput = (field) => (
-    field.isAutoIncremented ? renderDisabledInput(field) :
+    field.isAutoIncremented ? null :
         field.component === 'Boolean' ? renderBooleanInput(field) :
             field.component === 'NullableBoolean' ? renderNullableBooleanInput(field) :
                 field.component === 'Autocomplete' ? renderAutoCompleteInput(field) :
@@ -302,9 +329,6 @@ const renderInput = (field) => (
                                                                     renderTextInput(field)
 );
 
-const renderDisabledInput = (field) => (
-    <DisabledInput key={field.id} source={field.name} label={field.label}/>
-);
 
 const renderDateTimeInput = (field) => (
     <DateTimeInput key={field.id} label={field.label} source={field.name} validate={generateValidators(field)}/>
@@ -353,7 +377,8 @@ const renderRadioButtonGroupInput = (field) => (
 )
 
 const renderTextInput = (field) => (
-    <TextInput key={field.id} label={field.label} source={field.name} type={field.type} defaultValue={field.defaultValue}
+    <TextInput key={field.id} label={field.label} source={field.name} type={field.type}
+               defaultValue={field.defaultValue}
                validate={generateValidators(field)}/>
 )
 

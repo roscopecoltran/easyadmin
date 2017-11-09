@@ -3,7 +3,9 @@ package com.easyadmin.service;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.data.RequestScope;
 import com.easyadmin.schema.domain.Field;
+import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.OperatorEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
@@ -38,15 +40,15 @@ public class DataRdbServiceImpl implements DataService {
     Map<Component, String> componentStringMap;
 
     @Override
-    public List<Map<String, Object>> list(String entity, Map<String, Object> allRequestParams) {
+    public List<Map<String, Object>> list(String entity, Map<String, Object> filters) {
         /**
          * 过滤出系统字段
          */
-        Map<String, Object> collect = allRequestParams.entrySet()
+        Map<String, Object> pageAndSortFieldMap = filters.entrySet()
                 .stream()
                 .filter(map -> map.getKey().startsWith("_"))
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
-        RequestScope requestScope = new ObjectMapper().convertValue(collect, RequestScope.class);
+        RequestScope requestScope = new ObjectMapper().convertValue(pageAndSortFieldMap, RequestScope.class);
 
         /**
          * 构建rdb select query
@@ -56,7 +58,8 @@ public class DataRdbServiceImpl implements DataService {
                 .addAllColumns()
                 .addFromTable(table);
         Map<String, Field> fieldMap = getFieldIdMap(entity);
-        buildSelectQuery(selectQuery, entity, allRequestParams, fieldMap);
+
+        buildSelectQuery(selectQuery, entity, filters, fieldMap);
 
         /**
          * 排序
@@ -64,7 +67,7 @@ public class DataRdbServiceImpl implements DataService {
         sort(selectQuery, entity, requestScope, fieldMap);
 
         String sql = selectQuery.toString() + pagination(requestScope);
-        log.info("list record ,entity:{},data:{},sql:{}", entity, allRequestParams, sql);
+        log.info("list record ,entity:{},data:{},sql:{}", entity, filters, sql);
 
         /**
          * 查询结果
@@ -91,55 +94,63 @@ public class DataRdbServiceImpl implements DataService {
         return " limit " + requestScope.get_start() + "," + requestScope.getLimit();
     }
 
-    private void buildSelectQuery(SelectQuery selectQuery, String entity, Map<String, Object> allRequestParams, Map<String, Field> fieldMap) {
-
-        allRequestParams.entrySet()
+    private void buildSelectQuery(SelectQuery selectQuery, String entity, Map<String, Object> filters, Map<String, Field> fieldMap) {
+        filters.entrySet()
                 .stream()
-                .filter(map ->
-                        (!map.getKey().equals(Constants.Q) && !map.getKey().startsWith("_"))
+                .filter(filter ->
+                        (!filter.getKey().equals(Constants.Q) && !filter.getKey().startsWith("_"))
                 )
-                .forEach(request -> {
-                    buildQuery(selectQuery, entity, request, fieldMap.get(request.getKey()));
+                .forEach(entry -> {
+                    Filter filter = getFilter(entry, fieldMap);
+                    buildQuery(selectQuery, entity, filter, fieldMap.get(filter.getKey()));
                 });
     }
 
     /**
-     * 构建select query
+     * build filter object , contains key、operator 、value
+     *
+     * @param entry
+     * @param fieldMap
+     * @return
+     */
+    private Filter getFilter(Map.Entry<String, Object> entry, Map<String, Field> fieldMap) {
+        if (entry.getKey().endsWith("_gte") || entry.getKey().endsWith("_lte")) {
+            int idx = entry.getKey().lastIndexOf("_");
+            String key = entry.getKey().substring(0, idx);
+            String operator = entry.getKey().substring(idx + 1);
+            if (fieldMap.containsKey(key)) {
+                return new Filter(key, OperatorEnum.valueOf(operator), entry.getValue());
+            }
+        }
+        return new Filter(entry.getKey(), OperatorEnum.eq, entry.getValue());
+    }
+
+    /**
+     * build select query
      *
      * @param selectQuery
      * @param entity
-     * @param entry
+     * @param filter
      * @param field
      */
-    private void buildQuery(SelectQuery selectQuery, String entity, Map.Entry<String, Object> entry, Field field) {
-        log.info("entry:{}", entry);
+    private void buildQuery(SelectQuery selectQuery, String entity, Filter filter, Field field) {
+        log.info("filter:{}", filter);
         DbTable table = rdbService.getDbTable(entity);
         DbColumn dbColumn = getDbColumn(table, field);
-        switch (field.getComponent()) {
-            case Boolean:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
+        switch (filter.getOperatorEnum()) {
+            case eq:
+                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, filter.getValue()));
                 break;
-            case NullableBoolean:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
+            case gte:
+                selectQuery.addCondition(BinaryCondition.greaterThanOrEq(dbColumn, filter.getValue()));
                 break;
-            case CheckboxGroup:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
-                break;
-            case Number:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
-                break;
-            case ReferenceArray:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
-                break;
-            case SelectArray:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
+            case lte:
+                selectQuery.addCondition(BinaryCondition.lessThanOrEq(dbColumn, filter.getValue()));
                 break;
             default:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, entry.getValue()));
+                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, filter.getValue()));
                 break;
-
         }
-
     }
 
     @Override
