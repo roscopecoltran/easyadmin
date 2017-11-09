@@ -95,6 +95,7 @@ public class SchemaController {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
         field.setName(field.getId());
+        field.setDataSourceId(Tenant.get().getCurrentDataSourceId());
         mongoDbService.getDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
@@ -102,6 +103,7 @@ public class SchemaController {
     @PutMapping(value = "/schemas/_fields/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Field> editField(@PathVariable("id") String id, @RequestBody Field field) {
+        field.setDataSourceId(Tenant.get().getCurrentDataSourceId());
         dataService.update(Constants.SYS_COL_Field, id, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }

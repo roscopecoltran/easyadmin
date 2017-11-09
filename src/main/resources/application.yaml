@@ -17,7 +17,7 @@ spring:
   data:
     mongodb:
 #      uri: mongodb://admin:admin@ds161443.mlab.com:61443/easyadmin
-      uri: mongodb://localhost:27017
+      uri: mongodb://192.168.202.238:27017
       database: easyadmin-sys
 #      database: easyadmin
 
