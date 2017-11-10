@@ -76,6 +76,7 @@ public class SchemaController {
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
+        entity.setName(entity.getId());
         entity.setDataSourceId(Tenant.get().getCurrentDataSource().getId());
         sysService.getTenantDataStore().save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
