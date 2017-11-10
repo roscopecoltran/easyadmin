@@ -1,4 +1,4 @@
-package com.easyadmin.service;
+package com.easyadmin.schema;
 
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;

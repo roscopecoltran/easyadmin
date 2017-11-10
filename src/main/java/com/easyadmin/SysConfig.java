@@ -1,6 +1,8 @@
 package com.easyadmin;
 
 import com.easyadmin.schema.enums.Component;
+import com.mongodb.MongoClient;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -67,5 +69,15 @@ public class SysConfig {
         componentStringMap.put(Component.Number, "number");
         componentStringMap.put(Component.Date, "datetime");
         return componentStringMap;
+    }
+
+    @Bean
+    public Map<String, HikariDataSource> dataSourceMap(){
+        return new HashMap<>();
+    }
+
+    @Bean
+    public Map<String, MongoClient> uriMongoMap(){
+        return new HashMap<>();
     }
 }

@@ -41,7 +41,7 @@ class SyncButton extends Component {
         const { record} = this.props;
         return (
             <span>
-                <IconButton onClick={this.handleSync}><NotificationSync
+                <IconButton onClick={this.handleSync} disabled={!record.current || record.type==='mongo'}><NotificationSync
                     color="#00bcd4"/></IconButton>
                 <IconButton onClick={this.handleSetCurrentDs} disabled={record.current}><ThumbUp
                     color="#00bcd4"/></IconButton>

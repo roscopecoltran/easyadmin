@@ -3,6 +3,7 @@ package com.easyadmin.service;
 import com.easyadmin.cloud.DataSource;
 import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
+import com.easyadmin.schema.SchemaService;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.Component;
@@ -24,7 +25,10 @@ import schemacrawler.utility.SchemaCrawlerUtility;
 
 import java.sql.Connection;
 import java.sql.JDBCType;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author gongxinyi
@@ -34,7 +38,7 @@ import java.util.*;
 @org.springframework.stereotype.Component
 public class RdbService {
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
     @Autowired
     SequenceService sequenceService;
     @Autowired
@@ -46,14 +50,15 @@ public class RdbService {
     /**
      * all the tenant cache the datasource
      */
-    static Map<String, HikariDataSource> urlDataSourceMap = new HashMap<>();
+    @Autowired
+    Map<String, HikariDataSource> urlDataSourceMap;
 
     public String getCurrentSchema() {
         return getDataSource().getSchema();
     }
 
     public HikariDataSource getDataSource() {
-        DataSource dataSource = mongoDbService.getDataStore().get(DataSource.class, Tenant.get().getCurrentDataSourceId());
+        DataSource dataSource = sysService.getCurrentDataSource();
         if (!urlDataSourceMap.containsKey(dataSource.getJdbcUrl())) {
             urlDataSourceMap.put(dataSource.getJdbcUrl(), dataSource2Hikari(dataSource));
         }
@@ -61,7 +66,7 @@ public class RdbService {
     }
 
     private HikariDataSource getDataSource(String dataSourceId) {
-        DataSource dataSource = mongoDbService.getDataStore().get(DataSource.class, dataSourceId);
+        DataSource dataSource = sysService.getTenantDataStore().get(DataSource.class, dataSourceId);
         return dataSource2Hikari(dataSource);
     }
 
@@ -116,13 +121,14 @@ public class RdbService {
             if (!optionalEntity.isPresent()) {
                 Entity entity = new Entity();
                 entity.setDataSourceId(dataSourceId);
-                entity.setId(table.getName());
+                String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
+                entity.setId(Constants.ENTITY_NAME_PREFIX + id);
                 entity.setLabel(table.getName());
-                mongoDbService.getDataStore().save(entity);
+                sysService.getTenantDataStore().save(entity);
                 for (Column column : table.getColumns()) {
                     Field field = column2Field(column, entity.getId());
                     field.setDataSourceId(dataSourceId);
-                    mongoDbService.getDataStore().save(field);
+                    sysService.getTenantDataStore().save(field);
                 }
             } else {
                 Entity findEntity = optionalEntity.get();
@@ -131,13 +137,13 @@ public class RdbService {
                     if (!findField.isPresent()) {
                         Field field = column2Field(column, findEntity.getId());
                         field.setDataSourceId(dataSourceId);
-                        mongoDbService.getDataStore().save(field);
+                        sysService.getTenantDataStore().save(field);
                     }
                 }
                 findEntity.getFields().stream().forEach(field -> {
                     boolean exists = table.getColumns().stream().filter(column -> column.getName().equals(field.getName())).findAny().isPresent();
                     if (!exists) {
-                        mongoDbService.getDataStore().delete(field);
+                        sysService.getTenantDataStore().delete(field);
                     }
                 });
             }

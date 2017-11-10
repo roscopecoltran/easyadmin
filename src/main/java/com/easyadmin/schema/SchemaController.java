@@ -1,11 +1,13 @@
 package com.easyadmin.schema;
 
+import com.easyadmin.cloud.DataSource;
 import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
-import com.easyadmin.service.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.easyadmin.service.RdbService;
+import com.easyadmin.service.SequenceService;
+import com.easyadmin.service.SysService;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * schema query endpoints
@@ -27,12 +28,10 @@ import java.util.Map;
 public class SchemaController {
     @Resource
     SchemaService schemaService;
-    @Resource(name = "dataMongoDbService")
-    DataService dataService;
     @Autowired
     RdbService rdbService;
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
     @Autowired
     SequenceService sequenceService;
 
@@ -77,7 +76,8 @@ public class SchemaController {
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
-        mongoDbService.getDataStore().save(entity);
+        entity.setDataSourceId(sysService.getCurrentDataSource().getId());
+        sysService.getTenantDataStore().save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
@@ -85,7 +85,7 @@ public class SchemaController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> editEntity(@PathVariable("id") String id, @RequestBody Entity entity) {
         entity.setFields(null);
-        dataService.update(Constants.SYS_COL_Entity, id, new ObjectMapper().convertValue(entity, Map.class));
+        sysService.getTenantDataStore().merge(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
@@ -95,16 +95,15 @@ public class SchemaController {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
         field.setName(field.getId());
-        field.setDataSourceId(Tenant.get().getCurrentDataSourceId());
-        mongoDbService.getDataStore().save(field);
+        field.setDataSourceId(sysService.getCurrentDataSource().getId());
+        sysService.getTenantDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 
     @PutMapping(value = "/schemas/_fields/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Field> editField(@PathVariable("id") String id, @RequestBody Field field) {
-        field.setDataSourceId(Tenant.get().getCurrentDataSourceId());
-        dataService.update(Constants.SYS_COL_Field, id, new ObjectMapper().convertValue(field, Map.class));
+        sysService.getTenantDataStore().merge(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 
@@ -122,11 +121,14 @@ public class SchemaController {
     @PutMapping(value = "/schemas/resetCurrentDs/{dataSourceId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity resetCurrentDs(@PathVariable("dataSourceId") String dataSourceId) {
-        final Query<Tenant> tenantQuery = mongoDbService.getSysDataStore().createQuery(Tenant.class).field("id").equal(Tenant.get().getId());
-        final UpdateOperations<Tenant> updateOperations = mongoDbService.getSysDataStore().createUpdateOperations(Tenant.class)
-                .set("currentDataSourceId", dataSourceId);
-
-        mongoDbService.getSysDataStore().update(tenantQuery, updateOperations);
+        final Query<DataSource> dataSourceIdQuery = sysService.getTenantDataStore().createQuery(DataSource.class).field("id").equal(dataSourceId);
+        final UpdateOperations<DataSource> updateTrueOperations = sysService.getSysDataStore().createUpdateOperations(DataSource.class)
+                .set("isCurrent", true);
+        sysService.getTenantDataStore().update(dataSourceIdQuery, updateTrueOperations);
+        final Query<DataSource> dataSourceNIdQuery = sysService.getTenantDataStore().createQuery(DataSource.class).field("id").notEqual(dataSourceId);
+        final UpdateOperations<DataSource> updateFalseOperations = sysService.getSysDataStore().createUpdateOperations(DataSource.class)
+                .set("isCurrent", false);
+        sysService.getTenantDataStore().update(dataSourceNIdQuery, updateFalseOperations);
         return ResponseEntity.ok().build();
     }
 }

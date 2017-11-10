@@ -1,5 +1,6 @@
 package com.easyadmin.cloud;
 
+import com.easyadmin.schema.enums.DbTypeEnum;
 import lombok.Data;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
@@ -17,6 +18,7 @@ public class DataSource {
     private String jdbcUrl;
     private String username;
     private String password;
-    private String type;
+    private DbTypeEnum type;
+    private String dbName;
     private boolean isCurrent;
 }

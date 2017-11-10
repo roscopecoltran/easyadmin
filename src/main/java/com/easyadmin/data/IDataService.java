@@ -1,4 +1,4 @@
-package com.easyadmin.service;
+package com.easyadmin.data;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @author gongxinyi
  * @date 2017-08-31
  */
-public interface DataService {
+public interface IDataService {
     /**
      * query for an entity's data
      *

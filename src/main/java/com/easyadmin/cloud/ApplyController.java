@@ -1,7 +1,7 @@
 package com.easyadmin.cloud;
 
 import com.easyadmin.SysConfig;
-import com.easyadmin.service.MongoDbService;
+import com.easyadmin.service.SysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 public class ApplyController {
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
     @Autowired
     SysConfig config;
 
@@ -27,9 +27,9 @@ public class ApplyController {
 
     @PostMapping(value = "/apply")
     public ResponseEntity apply(@RequestBody @Validated Apply apply) {
-        List<Tenant> tenantList = mongoDbService.getSysDataStore().createQuery(Tenant.class).field("users").equal(apply.getUsername()).asList();
+        List<Tenant> tenantList = sysService.getSysDataStore().createQuery(Tenant.class).field("users").equal(apply.getUsername()).asList();
         if (!CollectionUtils.isEmpty(tenantList)) throw new IllegalStateException();
-        mongoDbService.getSysDataStore().save(apply);
+        sysService.getSysDataStore().save(apply);
         if (!config.isCheckforapply()) tenantService.createTenantFromApply(apply);
         return ResponseEntity.ok(apply);
     }

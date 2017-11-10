@@ -1,11 +1,10 @@
-package com.easyadmin.service;
+package com.easyadmin.data;
 
 import com.easyadmin.consts.Constants;
-import com.easyadmin.data.RequestScope;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.schema.enums.Component;
-import com.easyadmin.schema.enums.OperatorEnum;
+import com.easyadmin.service.RdbService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -28,13 +25,13 @@ import java.util.stream.Collectors;
  * @date 2017-11-02
  */
 @Slf4j
-@Service("dataDbService")
-public class DataRdbServiceImpl implements DataService {
+@Service
+public class DataRdbServiceImpl implements IDataService {
     @Autowired
     RdbService rdbService;
 
     @Autowired
-    SchemaService schemaService;
+    DataServiceHelper dataServiceHelper;
 
     @Autowired
     Map<Component, String> componentStringMap;
@@ -57,7 +54,7 @@ public class DataRdbServiceImpl implements DataService {
         SelectQuery selectQuery = new SelectQuery()
                 .addAllColumns()
                 .addFromTable(table);
-        Map<String, Field> fieldMap = getFieldIdMap(entity);
+        Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
 
         buildSelectQuery(selectQuery, entity, filters, fieldMap);
 
@@ -101,28 +98,9 @@ public class DataRdbServiceImpl implements DataService {
                         (!filter.getKey().equals(Constants.Q) && !filter.getKey().startsWith("_"))
                 )
                 .forEach(entry -> {
-                    Filter filter = getFilter(entry, fieldMap);
+                    Filter filter = dataServiceHelper.getFilter(entry, fieldMap);
                     buildQuery(selectQuery, entity, filter, fieldMap.get(filter.getKey()));
                 });
-    }
-
-    /**
-     * build filter object , contains key、operator 、value
-     *
-     * @param entry
-     * @param fieldMap
-     * @return
-     */
-    private Filter getFilter(Map.Entry<String, Object> entry, Map<String, Field> fieldMap) {
-        if (entry.getKey().endsWith("_gte") || entry.getKey().endsWith("_lte")) {
-            int idx = entry.getKey().lastIndexOf("_");
-            String key = entry.getKey().substring(0, idx);
-            String operator = entry.getKey().substring(idx + 1);
-            if (fieldMap.containsKey(key)) {
-                return new Filter(key, OperatorEnum.valueOf(operator), entry.getValue());
-            }
-        }
-        return new Filter(entry.getKey(), OperatorEnum.eq, entry.getValue());
     }
 
     /**
@@ -155,7 +133,7 @@ public class DataRdbServiceImpl implements DataService {
 
     @Override
     public long count(String entity, Map<String, Object> allRequestParams) {
-        Map<String, Field> fieldMap = getFieldIdMap(entity);
+        Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
         DbTable table = rdbService.getDbTable(entity);
         SelectQuery selectQuery = new SelectQuery()
                 .addCustomColumns(FunctionCall.countAll())
@@ -182,7 +160,7 @@ public class DataRdbServiceImpl implements DataService {
 
     @Override
     public Map<String, Object> findOne(String entity, String id) {
-        Map<String, Field> primaryFieldIdMap = getPrimaryFieldIdMap(entity);
+        Map<String, Field> primaryFieldIdMap = dataServiceHelper.getPrimaryFieldIdMap(entity);
         DbTable table = rdbService.getDbTable(entity);
         String[] idValues = id.split(Constants.delimiter);
         SelectQuery selectQuery =
@@ -199,7 +177,7 @@ public class DataRdbServiceImpl implements DataService {
 
     @Override
     public Map<String, Object> save(String entity, Map<String, Object> data) {
-        Map<String, Field> fieldIdMap = getFieldIdMap(entity);
+        Map<String, Field> fieldIdMap = dataServiceHelper.getFieldIdMap(entity);
         wrapData(fieldIdMap, data);
         DbTable table = rdbService.getDbTable(entity);
         InsertQuery insertCustomerQuery =
@@ -235,7 +213,7 @@ public class DataRdbServiceImpl implements DataService {
     public Map<String, Object> update(String entity, String id, Map<String, Object> data) {
         DbTable table = rdbService.getDbTable(entity);
         UpdateQuery updateQuery = new UpdateQuery(table);
-        Map<String, Field> fieldIdMap = getFieldIdMap(entity);
+        Map<String, Field> fieldIdMap = dataServiceHelper.getFieldIdMap(entity);
         fieldIdMap.forEach((k, v) -> {
             if (v.getIsPartOfPrimaryKey()) {
                 updateQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, v), data.get(v.getName())));
@@ -257,7 +235,7 @@ public class DataRdbServiceImpl implements DataService {
 
     @Override
     public void delete(String entity, String id) {
-        Map<String, Field> primaryFieldIdMap = getPrimaryFieldIdMap(entity);
+        Map<String, Field> primaryFieldIdMap = dataServiceHelper.getPrimaryFieldIdMap(entity);
         DbTable table = rdbService.getDbTable(entity);
         String[] idValues = id.split(Constants.delimiter);
         DeleteQuery deleteQuery = new DeleteQuery(table);
@@ -270,30 +248,12 @@ public class DataRdbServiceImpl implements DataService {
     }
 
     public Map<String, Object> addIdValue(String entity, Map<String, Object> data) {
-        Map<String, Field> fieldMap = getFieldIdMap(entity);
+        Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
         String idValue = fieldMap.entrySet().stream().filter(field -> field.getValue().getIsPartOfPrimaryKey())
                 .map(field -> data.get(field.getValue().getName()).toString())
                 .collect(Collectors.joining(Constants.delimiter));
         data.put(Constants.id, idValue);
         return data;
-    }
-
-    public Map<String, Field> getFieldIdMap(String entity) {
-        List<Field> fields = schemaService.findFields(entity);
-        return fields.stream().collect(Collectors.toMap(Field::getName, Function.identity(),
-                (v1, v2) -> {
-                    throw new RuntimeException(String.format("Duplicate key for values %s and %s", v1, v2));
-                },
-                TreeMap::new));
-    }
-
-    public Map<String, Field> getPrimaryFieldIdMap(String entity) {
-        List<Field> fields = schemaService.findFields(entity);
-        return fields.stream().filter(field -> field.getIsPartOfPrimaryKey()).collect(Collectors.toMap(Field::getName, Function.identity(),
-                (v1, v2) -> {
-                    throw new RuntimeException(String.format("Duplicate key for values %s and %s", v1, v2));
-                },
-                TreeMap::new));
     }
 
     private DbColumn getDbColumn(DbTable table, Field field) {

@@ -20,9 +20,7 @@ export const DataSourceList = (props) => (
             <TextField source="jdbcUrl"/>
             <TextField source="username"/>
             <TextField source="password" type="password"/>
-            <SelectField source="type" label="数据库类型" choices={[
-                {id: 'mysql', name: 'MySql'}
-            ]}/>
+            <SelectField source="type" label="数据库类型" choices={dataType}/>
             <SyncButton style={{padding: 0}}/>
             <EditButton/>
         </Datagrid>
@@ -32,9 +30,7 @@ export const DataSourceList = (props) => (
 export const DataSourceCreate = (props) => (
     <Create {...props}>
         <SimpleForm>
-            <SelectInput source="type" label="数据库类型" choices={[
-                {id: 'mysql', name: 'MySql'}
-            ]} validate={required}/>
+            <SelectInput source="type" label="数据库类型" choices={dataType} validate={required}/>
             <TextInput source="jdbcUrl" validate={required}/>
             <TextInput source="username" validate={required}/>
             <TextInput type="password" source="password" validate={required}/>
@@ -45,12 +41,13 @@ export const DataSourceCreate = (props) => (
 export const DataSourceEdit = (props) => (
     <Edit {...props} >
         <SimpleForm>
-            <SelectInput source="type" label="数据库类型" choices={[
-                {id: 'mysql', name: 'MySql'}
-            ]} validate={required}/>
+            <SelectInput source="type" label="数据库类型" choices={dataType} validate={required}/>
             <TextInput source="jdbcUrl" validate={required}/>
             <TextInput source="username" validate={required}/>
             <TextInput type="password" source="password" validate={required}/>
         </SimpleForm>
     </Edit>
 );
+
+const dataType = [{id: 'mysql', name: 'MySql'},
+    {id: 'mongo', name: 'Mongo'}];

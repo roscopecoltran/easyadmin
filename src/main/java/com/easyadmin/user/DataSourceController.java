@@ -1,10 +1,9 @@
 package com.easyadmin.user;
 
 import com.easyadmin.cloud.DataSource;
-import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
-import com.easyadmin.service.MongoDbService;
 import com.easyadmin.service.SequenceService;
+import com.easyadmin.service.SysService;
 import lombok.extern.slf4j.Slf4j;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -24,15 +23,14 @@ import java.util.List;
 @RestController
 public class DataSourceController {
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
     @Autowired
     SequenceService sequenceService;
 
     @GetMapping("/datasource/_datasource")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<DataSource>> list() {
-        List<DataSource> dataSources = mongoDbService.getDataStore().createQuery(DataSource.class).asList();
-        dataSources.forEach(dataSource -> dataSource.setCurrent(dataSource.getId().equals(Tenant.get().getCurrentDataSourceId())));
+        List<DataSource> dataSources = sysService.getTenantDataStore().createQuery(DataSource.class).asList();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", dataSources.size() + "")
@@ -43,7 +41,7 @@ public class DataSourceController {
     @GetMapping("/datasource/_datasource/{datasourceId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<DataSource> findRole(@PathVariable("datasourceId") String datasourceId) {
-        DataSource dataSource = mongoDbService.getDataStore().get(DataSource.class, datasourceId);
+        DataSource dataSource = sysService.getTenantDataStore().get(DataSource.class, datasourceId);
         return ResponseEntity.ok(dataSource);
     }
 
@@ -51,21 +49,21 @@ public class DataSourceController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<DataSource> addDataSource(@RequestBody final DataSource dataSource) {
         dataSource.setId(sequenceService.getNextSequence(Constants.SYS_COL_DS + Constants._id).toString());
-        mongoDbService.getDataStore().save(dataSource);
+        sysService.getTenantDataStore().save(dataSource);
         return ResponseEntity.ok(dataSource);
     }
 
     @PutMapping(value = "/datasource/_datasource/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<DataSource> editDataSource(@PathVariable("id") String id, @RequestBody DataSource dataSource) {
-        final Query<DataSource> dataSourceQuery = mongoDbService.getDataStore().createQuery(DataSource.class).field("id").equal(id);
-        final UpdateOperations<DataSource> updateOperations = mongoDbService.getDataStore().createUpdateOperations(DataSource.class)
+        final Query<DataSource> dataSourceQuery = sysService.getTenantDataStore().createQuery(DataSource.class).field("id").equal(id);
+        final UpdateOperations<DataSource> updateOperations = sysService.getTenantDataStore().createUpdateOperations(DataSource.class)
                 .set("jdbcUrl", dataSource.getJdbcUrl())
                 .set("username", dataSource.getUsername())
                 .set("password", dataSource.getPassword())
                 .set("type", dataSource.getType());
 
-        mongoDbService.getDataStore().update(dataSourceQuery, updateOperations);
+        sysService.getTenantDataStore().update(dataSourceQuery, updateOperations);
         return ResponseEntity.ok(dataSource);
     }
 }
