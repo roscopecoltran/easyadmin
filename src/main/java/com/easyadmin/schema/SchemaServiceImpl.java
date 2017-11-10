@@ -1,11 +1,13 @@
-package com.easyadmin.service;
+package com.easyadmin.schema;
 
+import com.easyadmin.cloud.DataSource;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.schema.enums.Redirect;
 import com.easyadmin.security.security.AuthorityName;
 import com.easyadmin.security.security.Permission;
+import com.easyadmin.service.SysService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,13 +29,15 @@ import java.util.stream.Collectors;
 @org.springframework.stereotype.Component
 public class SchemaServiceImpl implements SchemaService {
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
 
     @Override
     public List<Entity> findEntities() {
-        List<Entity> entities = mongoDbService.getDataStore().find(Entity.class).asList();
+        DataSource dataSource = sysService.getCurrentDataSource();
+        List<Entity> entities = sysService.getTenantDataStore().createQuery(Entity.class).field("dataSourceId").equal(dataSource.getId()).asList();
 
-        List<Field> fields = mongoDbService.getDataStore().find(Field.class).asList();
+        List<Field> fields = sysService.getTenantDataStore().createQuery(Field.class).field("dataSourceId").equal(dataSource.getId()).asList();
+
         fields.forEach(field -> {
             entities.forEach(entity -> {
                 if (field.getEid().equals(entity.getId())) {
@@ -55,7 +59,7 @@ public class SchemaServiceImpl implements SchemaService {
             });
             return entities;
         }
-        List<Permission> permissions = mongoDbService.getDataStore().createQuery(Permission.class).field("roleId").in(roles).asList();
+        List<Permission> permissions = sysService.getTenantDataStore().createQuery(Permission.class).field("roleId").in(roles).asList();
 
         List<Entity> entityList = entities.stream()
                 .filter(entity -> permissions.stream().anyMatch(t -> t.getEid().equals(entity.getId()) && t.containsPermission()))
@@ -85,6 +89,6 @@ public class SchemaServiceImpl implements SchemaService {
 
     @Override
     public Field findOneField(String fid) {
-        return mongoDbService.getDataStore().get(Field.class, fid);
+        return sysService.getTenantDataStore().get(Field.class, fid);
     }
 }

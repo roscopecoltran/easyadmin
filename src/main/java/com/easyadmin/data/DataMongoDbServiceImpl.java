@@ -1,8 +1,11 @@
-package com.easyadmin.service;
+package com.easyadmin.data;
 
 import com.easyadmin.consts.Constants;
-import com.easyadmin.data.RequestScope;
+import com.easyadmin.schema.SchemaService;
 import com.easyadmin.schema.domain.Field;
+import com.easyadmin.schema.domain.Filter;
+import com.easyadmin.service.MongoService;
+import com.easyadmin.service.SequenceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -21,7 +24,6 @@ import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Sorts.ascending;
@@ -32,27 +34,29 @@ import static com.mongodb.client.model.Sorts.descending;
  */
 @Slf4j
 @Component("dataMongoDbService")
-public class DataMongoDbServiceImpl implements DataService {
+public class DataMongoDbServiceImpl implements IDataService {
 
-    @Resource
-    SchemaService schemaService;
     @Autowired
-    MongoDbService mongoDbService;
+    MongoService mongoService;
     @Autowired
     SequenceService sequenceService;
+    @Autowired
+    DataServiceHelper dataServiceHelper;
 
     /**
      * get data json
      *
      * @param entity
-     * @param allRequestParams
+     * @param filters
      * @return
      */
-    public List<Map<String, Object>> list(String entity, Map<String, Object> allRequestParams) {
-        MongoCollection collection = mongoDbService.getCollection(entity);
+    @Override
+    public List<Map<String, Object>> list(String entity, Map<String, Object> filters) {
+        MongoCollection collection = mongoService.getCustomerCollection(entity);
+        Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
         List<Map<String, Object>> dataList = new LinkedList<>();
-        DBObject query = getQuery(entity, allRequestParams);
-        Map<String, Object> collect = allRequestParams.entrySet()
+        DBObject query = getQuery(filters, fieldMap);
+        Map<String, Object> collect = filters.entrySet()
                 .stream()
                 .filter(map -> map.getKey().startsWith("_"))
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
@@ -76,25 +80,29 @@ public class DataMongoDbServiceImpl implements DataService {
      * records num
      *
      * @param entity
-     * @param allRequestParams
+     * @param filters
      * @return
      */
-    public long count(String entity, Map<String, Object> allRequestParams) {
-        MongoCollection collection = mongoDbService.getCollection(entity);
-        DBObject query = getQuery(entity, allRequestParams);
+    @Override
+    public long count(String entity, Map<String, Object> filters) {
+        MongoCollection collection = mongoService.getCustomerCollection(entity);
+        Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
+        DBObject query = getQuery(filters, fieldMap);
         long count = collection.count((Bson) query);
         return count;
     }
 
+    @Override
     public Map<String, Object> findOne(String entity, String id) {
         Map<String, Object> data = null;
-        MongoCollection collection = mongoDbService.getCollection(entity);
+        MongoCollection collection = mongoService.getCustomerCollection(entity);
         BasicDBObject query = new BasicDBObject(Constants._id, id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
         try {
-            if (mongoCursor.hasNext())
+            if (mongoCursor.hasNext()) {
                 data = mongoCursor.next();
+            }
         } finally {
             mongoCursor.close();
         }
@@ -106,24 +114,27 @@ public class DataMongoDbServiceImpl implements DataService {
     /**
      * wrap query filter
      *
-     * @param allRequestParams
+     * @param filters
      * @return
      */
-    private DBObject getQuery(String entity, Map<String, Object> allRequestParams) {
+    private DBObject getQuery(Map<String, Object> filters, Map<String, Field> fieldMap) {
         // text search
-        Object search = allRequestParams.get(Constants.Q);
+        Object search = filters.get(Constants.Q);
         QueryBuilder query = new QueryBuilder();
         if (!StringUtils.isEmpty(search)) {
             query.text(search.toString());
         }
 
         // common filter
-        allRequestParams.entrySet()
+        filters.entrySet()
                 .stream()
                 .filter(map ->
                         (!map.getKey().equals(Constants.Q) && !map.getKey().startsWith("_"))
                 )
-                .forEach(objectEntry -> query.and(buildQuery(objectEntry, schemaService.findFields(entity)).get()));
+                .forEach(entry -> {
+                    Filter filter = dataServiceHelper.getFilter(entry, fieldMap);
+                    buildQuery(query, filter, fieldMap.get(filter.getKey()));
+                });
         // logic del flag
         query.and(QueryBuilder.start(Constants.DEL_FLAG).notEquals(true).get());
         return query.get();
@@ -139,47 +150,43 @@ public class DataMongoDbServiceImpl implements DataService {
         return "DESC".equalsIgnoreCase(requestScope.get_order()) ? descending(requestScope.get_sort()) : ascending(requestScope.get_sort());
     }
 
-    private QueryBuilder buildQuery(Map.Entry<String, Object> entry, List<Field> fields) {
-        log.info("entry:{}", entry);
-        Map<String, Field> result =
-                fields.stream().collect(Collectors.toMap(Field::getId,
-                        Function.identity()));
-        Field field = result.get(entry.getKey());
-        QueryBuilder qb = QueryBuilder.start().put(entry.getKey());
+    private void buildQuery(QueryBuilder query, Filter filter, Field field) {
+        log.info("filter:{}", filter);
+        QueryBuilder qb = QueryBuilder.start().put(filter.getKey());
         switch (field.getComponent()) {
             case Boolean:
-                qb.is(Boolean.valueOf(entry.getValue().toString()));
+                qb.is(Boolean.valueOf(filter.getValue().toString()));
                 break;
             case NullableBoolean:
-                if ("null".equalsIgnoreCase(entry.getValue().toString())) {
+                if ("null".equalsIgnoreCase(filter.getValue().toString())) {
                     qb.is(null).get();
                 } else {
-                    qb.is(Boolean.valueOf(entry.getValue().toString()));
+                    qb.is(Boolean.valueOf(filter.getValue().toString()));
                 }
                 break;
             case CheckboxGroup:
-                qb.is(entry.getValue().toString().split(","));
+                qb.is(filter.getValue().toString().split(","));
                 break;
             case Number:
-                qb.is(Integer.parseInt(entry.getValue().toString()));
+                qb.is(Integer.parseInt(filter.getValue().toString()));
                 break;
             case ReferenceArray:
-                qb.is(entry.getValue().toString().split(","));
+                qb.is(filter.getValue().toString().split(","));
                 break;
             case SelectArray:
-                qb.is(entry.getValue().toString().split(","));
+                qb.is(filter.getValue().toString().split(","));
                 break;
             default:
-                qb.is(entry.getValue().toString());
+                qb.is(filter.getValue().toString());
                 break;
 
         }
-
-        return qb;
+        query.and(qb.get());
     }
 
+    @Override
     public Document save(String entity, Map<String, Object> data) {
-        MongoCollection collection = mongoDbService.getCollection(entity);
+        MongoCollection collection = mongoService.getCustomerCollection(entity);
         if (!data.containsKey(Constants.id) || StringUtils.isEmpty(data.get(Constants.id))) {
             String id = sequenceService.getNextSequence(entity + Constants._id).toString();
             data.put(Constants.id, id);
@@ -192,8 +199,9 @@ public class DataMongoDbServiceImpl implements DataService {
         return document;
     }
 
+    @Override
     public Document update(String entity, String id, Map<String, Object> data) {
-        MongoCollection collection = mongoDbService.getCollection(entity);
+        MongoCollection collection = mongoService.getCustomerCollection(entity);
         Document document = new Document(data);
         BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
         collection.replaceOne(searchQuery, document);
@@ -202,7 +210,7 @@ public class DataMongoDbServiceImpl implements DataService {
 
     @Override
     public void delete(String entity, String id) {
-        MongoCollection<Document> collection = mongoDbService.getCollection(entity);
+        MongoCollection<Document> collection = mongoService.getCustomerCollection(entity);
         BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
         collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Constants.DEL_FLAG, true)));
     }

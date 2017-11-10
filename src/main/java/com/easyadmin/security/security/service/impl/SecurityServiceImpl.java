@@ -3,7 +3,7 @@ package com.easyadmin.security.security.service.impl;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.enums.CRUDPermission;
 import com.easyadmin.security.security.service.SecurityService;
-import com.easyadmin.service.SchemaService;
+import com.easyadmin.schema.SchemaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

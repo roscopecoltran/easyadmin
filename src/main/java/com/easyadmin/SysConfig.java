@@ -1,6 +1,8 @@
 package com.easyadmin;
 
 import com.easyadmin.schema.enums.Component;
+import com.mongodb.MongoClient;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -51,11 +53,12 @@ public class SysConfig {
         fieldTypeMap.put(JDBCType.BINARY, Component.Text);
         fieldTypeMap.put(JDBCType.VARBINARY, Component.Text);
         fieldTypeMap.put(JDBCType.LONGVARBINARY, Component.Text);
+        fieldTypeMap.put(JDBCType.LONGVARCHAR, Component.Text);
+        fieldTypeMap.put(JDBCType.LONGNVARCHAR, Component.Text);
 
         fieldTypeMap.put(JDBCType.DATE, Component.Date);
         fieldTypeMap.put(JDBCType.TIME, Component.Date);
         fieldTypeMap.put(JDBCType.TIMESTAMP, Component.Date);
-
         return fieldTypeMap;
     }
 
@@ -64,7 +67,17 @@ public class SysConfig {
         Map<Component, String> componentStringMap = new HashMap<Component, String>();
         componentStringMap.put(Component.Text, "varchar");
         componentStringMap.put(Component.Number, "number");
-
+        componentStringMap.put(Component.Date, "datetime");
         return componentStringMap;
+    }
+
+    @Bean
+    public Map<String, HikariDataSource> dataSourceMap(){
+        return new HashMap<>();
+    }
+
+    @Bean
+    public Map<String, MongoClient> uriMongoMap(){
+        return new HashMap<>();
     }
 }

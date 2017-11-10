@@ -8,7 +8,7 @@ import {
     required,
     SelectInput,
     SimpleForm,
-    TextField,
+    TextField
 } from "admin-on-rest";
 
 export const PermissionCreate = (props) => {

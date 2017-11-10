@@ -5,8 +5,8 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.security.security.JwtTokenUtil;
 import com.easyadmin.security.security.JwtUser;
 import com.easyadmin.security.security.User;
-import com.easyadmin.service.MongoDbService;
 import com.easyadmin.service.SequenceService;
+import com.easyadmin.service.SysService;
 import lombok.extern.slf4j.Slf4j;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -40,14 +40,14 @@ public class UserController {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
     @Autowired
     SequenceService sequenceService;
 
     @GetMapping("/user/_users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> list() {
-        List<User> users = mongoDbService.getDataStore().createQuery(User.class).asList();
+        List<User> users = sysService.getTenantDataStore().createQuery(User.class).asList();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", users.size() + "")
@@ -59,7 +59,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> findUser(@PathVariable("userId") String userId) {
 
-        User user = mongoDbService.getDataStore().get(User.class, userId);
+        User user = sysService.getTenantDataStore().get(User.class, userId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(user);
@@ -70,16 +70,16 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody final User user) {
         user.setId(sequenceService.getNextSequence(Constants.SYS_COL_USER + Constants._id).toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        mongoDbService.getDataStore().save(user);
+        sysService.getTenantDataStore().save(user);
 
 
         // add user to the tenant , important !!! need keep transaction.
-        final Query<Tenant> tenantQuery = mongoDbService.getSysDataStore().createQuery(Tenant.class)
+        final Query<Tenant> tenantQuery = sysService.getSysDataStore().createQuery(Tenant.class)
                 .filter("id =", Tenant.get().getId());
-        final UpdateOperations<Tenant> userUpdate = mongoDbService.getSysDataStore().createUpdateOperations(Tenant.class)
+        final UpdateOperations<Tenant> userUpdate = sysService.getSysDataStore().createUpdateOperations(Tenant.class)
                 .push("users", user.getUsername());
 
-        mongoDbService.getSysDataStore().update(tenantQuery, userUpdate);
+        sysService.getSysDataStore().update(tenantQuery, userUpdate);
 
         return ResponseEntity.ok(user);
     }
@@ -95,12 +95,12 @@ public class UserController {
     @PutMapping(value = "/user/_users/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User> editField(@PathVariable("id") String id, @RequestBody User user) {
-        final Query<User> userQuery = mongoDbService.getDataStore().createQuery(User.class).field("id").equal(id);
-        final UpdateOperations<User> updateOperations = mongoDbService.getDataStore().createUpdateOperations(User.class)
+        final Query<User> userQuery = sysService.getTenantDataStore().createQuery(User.class).field("id").equal(id);
+        final UpdateOperations<User> updateOperations = sysService.getTenantDataStore().createUpdateOperations(User.class)
                 .set("roles", user.getRoles())
                 .set("enabled", user.getEnabled());
 
-        mongoDbService.getDataStore().update(userQuery, updateOperations);
+        sysService.getTenantDataStore().update(userQuery, updateOperations);
         return ResponseEntity.ok(user);
     }
 

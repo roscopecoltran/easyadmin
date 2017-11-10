@@ -2,7 +2,7 @@ package com.easyadmin.security.security.repository;
 
 import com.easyadmin.cloud.Tenant;
 import com.easyadmin.security.security.User;
-import com.easyadmin.service.MongoDbService;
+import com.easyadmin.service.SysService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,18 +20,18 @@ import java.util.List;
 public class MongoUserRepository implements UserRepository {
 
     @Autowired
-    MongoDbService mongoDbService;
+    SysService sysService;
 
     @Override
     public User findByUsername(String username) {
-        List<Tenant> tenants = mongoDbService.getSysDataStore().createQuery(Tenant.class).field("users").equal(username).asList();
+        List<Tenant> tenants = sysService.getSysDataStore().createQuery(Tenant.class).field("users").equal(username).asList();
         if (CollectionUtils.isEmpty(tenants) || tenants.size() > 1) {
             log.error("exist one user in multiple org!!! user :{}", username);
             return null;
         }
         Tenant.set(tenants.get(0));
 
-        List<User> users = mongoDbService.getDataStore().createQuery(User.class)
+        List<User> users = sysService.getTenantDataStore().createQuery(User.class)
                 .field("username").equal(username)
                 .asList();
 

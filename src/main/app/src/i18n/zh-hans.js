@@ -53,6 +53,9 @@ export default {
                 d: '删除',
             }
         },
+        _datasource: {
+            name:'数据源'
+        },
         apply:{
             name:'账号',
             fields:{
