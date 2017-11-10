@@ -16,7 +16,7 @@ export default class extends Component {
         return props.isLogin ? (
             <Admin {...props}>
                 {this.props.schemas.map(resource =>
-                    <Resource key={resource.id} label={resource.label} name={resource.id} options={resource}
+                    <Resource key={resource.name} label={resource.label} name={resource.name} options={resource}
                               list={CRUDList}
                               showInMenu={resource.showInMenu}
                               create={resource.crud.includes('c') ? CRUDCreate : null}

@@ -55,7 +55,7 @@ public class SchemaController {
 
     @GetMapping("/schemas/_fields")
     public ResponseEntity<List<Field>> findAllFields(@RequestParam("eid") String eid) {
-        List<Field> fields = schemaService.findFields(eid);
+        List<Field> fields = schemaService.findEntities().stream().filter(entity -> entity.getId().equals(eid)).findFirst().get().getFields();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", fields.size() + "")

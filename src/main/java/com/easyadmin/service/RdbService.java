@@ -26,10 +26,7 @@ import schemacrawler.utility.SchemaCrawlerUtility;
 
 import java.sql.Connection;
 import java.sql.JDBCType;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author gongxinyi
@@ -105,9 +102,8 @@ public class RdbService {
      */
     public void syncSchemas(String dataSourceId) throws Exception {
         List<Entity> entities = schemaService.findEntities();
-        HikariDataSource hikariDataSource = getDataSource(dataSourceId);
-
-        Collection<Table> tables = getDbSchemas(hikariDataSource.getSchema());
+        String schema = sysService.getTenantDataStore().get(DataSource.class, dataSourceId).getMySqlDbName();
+        Collection<Table> tables = getDbSchemas(schema);
         for (Table table : tables) {
             if (table.getPrimaryKey() == null) {
                 log.error("table : {} hasn't primary key", table.getName());
@@ -115,18 +111,7 @@ public class RdbService {
             }
             Optional<Entity> optionalEntity = entities.stream().filter(entity -> dataSourceId.equals(entity.getDataSourceId()) && entity.getId().equals(table.getName())).findAny();
             if (!optionalEntity.isPresent()) {
-                Entity entity = new Entity();
-                entity.setDataSourceId(dataSourceId);
-                String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
-                entity.setId(Constants.ENTITY_NAME_PREFIX + id);
-                entity.setLabel(table.getName());
-                entity.setShowInMenu(true);
-                sysService.getTenantDataStore().save(entity);
-                for (Column column : table.getColumns()) {
-                    Field field = column2Field(column, entity.getId());
-                    field.setDataSourceId(dataSourceId);
-                    sysService.getTenantDataStore().save(field);
-                }
+                addEntityAndFields(table, dataSourceId);
             } else {
                 Entity findEntity = optionalEntity.get();
                 for (Column column : table.getColumns()) {
@@ -145,6 +130,32 @@ public class RdbService {
                 });
             }
         }
+    }
+
+
+    /**
+     * add new entity and its fields when entity is not exists
+     *
+     * @param table
+     * @param dataSourceId
+     * @throws JsonProcessingException
+     */
+    private void addEntityAndFields(Table table, String dataSourceId) throws JsonProcessingException {
+        Entity entity = new Entity();
+        entity.setDataSourceId(dataSourceId);
+        String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
+        entity.setId(Constants.ENTITY_NAME_PREFIX + id);
+        entity.setName(table.getName());
+        entity.setLabel(StringUtils.isEmpty(table.getRemarks())?table.getName():table.getRemarks());
+        entity.setShowInMenu(true);
+        sysService.getTenantDataStore().save(entity);
+        List<Field> fields=new ArrayList<>();
+        for (Column column : table.getColumns()) {
+            Field field = column2Field(column, entity.getId());
+            field.setDataSourceId(dataSourceId);
+            fields.add(field);
+        }
+        sysService.getTenantDataStore().save(fields);
     }
 
     /**

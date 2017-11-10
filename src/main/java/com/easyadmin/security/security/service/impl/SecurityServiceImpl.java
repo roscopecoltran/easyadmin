@@ -27,7 +27,7 @@ public class SecurityServiceImpl implements SecurityService {
     public Boolean hasProtectedAccess(String entity, CRUDPermission permission) {
         List<Entity> entityList = schemaService.findEntities();
         Optional<Entity> result = entityList.stream()
-                .filter(entityPermission -> entityPermission.getId().equals(entity) && entityPermission.getCrud().contains(permission))
+                .filter(entityPermission -> entityPermission.getName().equals(entity) && entityPermission.getCrud().contains(permission))
                 .findAny();
         return result.isPresent();
     }

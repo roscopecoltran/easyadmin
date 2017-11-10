@@ -24,6 +24,7 @@ import java.util.List;
 public final class Entity {
     @Id
     private String id;
+    private String name;
     private String label;
     private List<Field> fields;
 

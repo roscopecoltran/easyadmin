@@ -83,8 +83,8 @@ public class SchemaServiceImpl implements SchemaService {
     }
 
     @Override
-    public List<Field> findFields(String eid) {
-        return findOne(eid).getFields();
+    public List<Field> findFields(String entity) {
+        return findEntities().stream().filter(e-> e.getName().equals(entity)).findFirst().get().getFields();
     }
 
     @Override
