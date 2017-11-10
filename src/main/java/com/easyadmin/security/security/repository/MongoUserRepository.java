@@ -1,5 +1,6 @@
 package com.easyadmin.security.security.repository;
 
+import com.easyadmin.cloud.DataSource;
 import com.easyadmin.cloud.Tenant;
 import com.easyadmin.security.security.User;
 import com.easyadmin.service.SysService;
@@ -11,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 /**
- *
  * @author gongxinyi
  * @date 2017-08-29
  */
@@ -30,7 +30,8 @@ public class MongoUserRepository implements UserRepository {
             return null;
         }
         Tenant.set(tenants.get(0));
-
+        DataSource dataSource = sysService.getCurrentDataSource();
+        Tenant.get().setCurrentDataSource(dataSource);
         List<User> users = sysService.getTenantDataStore().createQuery(User.class)
                 .field("username").equal(username)
                 .asList();

@@ -116,6 +116,11 @@ export const FieldCreate = (props) => {
                 </EmbeddedManyInput>
             </DependentInput>
 
+            <BooleanInput source="showInList" label="列表页显示"/>
+            <BooleanInput source="showInFilter" label="筛选显示"/>
+            <BooleanInput source="showInCreate" label="新增页显示"/>
+            <BooleanInput source="showInEdit" label="编辑页显示"/>
+            <BooleanInput source="showInShow" label="详细页显示"/>
         </SimpleForm>
     </Create>
 };
@@ -158,7 +163,11 @@ export const FieldEdit = (props) => {
                     <TextInput source="name"/>
                 </EmbeddedManyInput>
             </DependentInput>
-
+            <BooleanInput source="showInList" label="列表页显示"/>
+            <BooleanInput source="showInFilter" label="筛选显示"/>
+            <BooleanInput source="showInCreate" label="新增页显示"/>
+            <BooleanInput source="showInEdit" label="编辑页显示"/>
+            <BooleanInput source="showInShow" label="详细页显示"/>
         </SimpleForm>
     </Edit>
 };

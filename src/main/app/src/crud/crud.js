@@ -72,7 +72,7 @@ const CRUDFilter = (props) => (
     <Filter {...props}>
         {/*全文搜索先注释掉，对于有全文索引的字段，才显示Search框 [TODO]*/}
         {/*<TextInput label="Search" source="q" alwaysOn/>*/}
-        {props.options.fields.filter(field => !filterComponent.includes(field.component)).map(renderFilter)}
+        {props.options.fields.filter(field => !filterComponent.includes(field.component) && field.showInFilter).map(renderFilter)}
     </Filter>
 );
 
@@ -153,7 +153,7 @@ export const CRUDList = (props) => (
 export const CRUDCreate = (props) => (
     <Create {...props} title={props.options.label}>
         <SimpleForm redirect={props.options.redirect}>
-            {props.options.fields.map(renderInput)}
+            {props.options.fields.filter(field=>field.showInCreate).map(renderInput)}
         </SimpleForm>
     </Create>
 );
@@ -190,7 +190,7 @@ const EditActions = ({basePath, data, refresh, options}) => {
 export const CRUDEdit = (props) => (
     <Edit actions={<EditActions options={props}/>} {...props} title={props.options.label}>
         <SimpleForm redirect={props.options.redirect}>
-            {props.options.fields.map(renderInput)}
+            {props.options.fields.filter(field=>field.showInEdit).map(renderInput)}
         </SimpleForm>
     </Edit>
 );
@@ -203,7 +203,7 @@ export const CRUDEdit = (props) => (
 export const CRUDShow = (props) => (
     <Show {...props} title={props.options.label}>
         <SimpleShowLayout>
-            {props.options.fields.map(renderField)}
+            {props.options.fields.filter(field=>field.showInShow).map(renderField)}
         </SimpleShowLayout>
     </Show>
 );

@@ -32,4 +32,6 @@ public final class Entity {
 
     @JsonIgnore
     private String dataSourceId;
+
+    private boolean showInMenu;
 }

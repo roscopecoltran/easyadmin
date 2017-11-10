@@ -23,7 +23,8 @@ export default {
         _entitys: {
             name: 'Entity',
             fields: {
-                label: 'label'
+                label: 'label',
+                showInMenu: 'showInMenu',
             }
         },
         _fields: {
@@ -39,7 +40,12 @@ export default {
                 inputType: 'inputType',
                 maxLength: 'maxLength',
                 reference: 'reference',
-                referenceOptionText: 'referenceOptionText'
+                referenceOptionText: 'referenceOptionText',
+                showInList:'showInList',
+                showInFilter:'showInFilter',
+                showInCreate:'showInCreate',
+                showInEdit:'showInEdit',
+                showInShow:'showInShow',
             }
         },
         _permission: {

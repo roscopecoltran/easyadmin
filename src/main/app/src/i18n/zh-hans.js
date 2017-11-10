@@ -23,7 +23,8 @@ export default {
         _entitys: {
             name: '对象',
             fields: {
-                label: '标签'
+                label: '标签',
+                showInMenu: '是否显示在菜单栏',
             }
         },
         _fields: {
@@ -39,7 +40,12 @@ export default {
                 inputType: '文本类型',
                 maxLength: '最大长度',
                 reference: '引用对象',
-                referenceOptionText: '引用对象显示字段'
+                referenceOptionText: '引用对象显示字段',
+                showInList:'列表',
+                showInFilter:'筛选',
+                showInCreate:'新增',
+                showInEdit:'编辑',
+                showInShow:'详细页',
             }
         },
         _permission: {

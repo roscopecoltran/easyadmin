@@ -15,12 +15,10 @@ import org.springframework.stereotype.Component;
 public class DataServiceProxy {
     @Autowired
     ApplicationContext applicationContext;
-    @Autowired
-    SysService sysService;
 
     public IDataService getDataService() {
         IDataService dataService;
-        DataSource dataSource = sysService.getCurrentDataSource();
+        DataSource dataSource = Tenant.get().getCurrentDataSource();
         switch (dataSource.getType()) {
             case mysql:
                 dataService = applicationContext.getBean(DataRdbServiceImpl.class);

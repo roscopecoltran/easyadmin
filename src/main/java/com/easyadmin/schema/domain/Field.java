@@ -2,7 +2,6 @@ package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.InputType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -63,8 +62,6 @@ public class Field implements Serializable {
     private String minValue;
     private String maxValue;
 
-    private Boolean showInList;
-
     /**
      * 是否是主键
      */
@@ -79,4 +76,9 @@ public class Field implements Serializable {
         return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);
     }
 
+    private Boolean showInList;
+    private Boolean showInFilter;
+    private Boolean showInCreate;
+    private Boolean showInEdit;
+    private Boolean showInShow;
 }

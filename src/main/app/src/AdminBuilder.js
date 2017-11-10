@@ -18,6 +18,7 @@ export default class extends Component {
                 {this.props.schemas.map(resource =>
                     <Resource key={resource.id} label={resource.label} name={resource.id} options={resource}
                               list={CRUDList}
+                              showInMenu={resource.showInMenu}
                               create={resource.crud.includes('c') ? CRUDCreate : null}
                               edit={resource.crud.includes('u') ? CRUDEdit : null}
                               show={CRUDShow} remove={resource.crud.includes('c') ? CRUDDelete : null}/>

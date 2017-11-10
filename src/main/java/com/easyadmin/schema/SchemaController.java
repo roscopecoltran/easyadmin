@@ -76,7 +76,7 @@ public class SchemaController {
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
-        entity.setDataSourceId(sysService.getCurrentDataSource().getId());
+        entity.setDataSourceId(Tenant.get().getCurrentDataSource().getId());
         sysService.getTenantDataStore().save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
@@ -95,7 +95,7 @@ public class SchemaController {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
         field.setName(field.getId());
-        field.setDataSourceId(sysService.getCurrentDataSource().getId());
+        field.setDataSourceId(Tenant.get().getCurrentDataSource().getId());
         sysService.getTenantDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }

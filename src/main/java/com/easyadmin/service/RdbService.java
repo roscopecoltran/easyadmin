@@ -7,6 +7,7 @@ import com.easyadmin.schema.SchemaService;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.InputType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec;
@@ -51,18 +52,10 @@ public class RdbService {
      * all the tenant cache the datasource
      */
     @Autowired
-    Map<String, HikariDataSource> urlDataSourceMap;
+    Map<String, JdbcTemplate> jdbcTemplateMap;
 
     public String getCurrentSchema() {
-        return getDataSource().getSchema();
-    }
-
-    public HikariDataSource getDataSource() {
-        DataSource dataSource = sysService.getCurrentDataSource();
-        if (!urlDataSourceMap.containsKey(dataSource.getJdbcUrl())) {
-            urlDataSourceMap.put(dataSource.getJdbcUrl(), dataSource2Hikari(dataSource));
-        }
-        return urlDataSourceMap.get(dataSource.getJdbcUrl());
+        return Tenant.get().getCurrentDataSource().getMySqlDbName();
     }
 
     private HikariDataSource getDataSource(String dataSourceId) {
@@ -76,17 +69,20 @@ public class RdbService {
         ds.setDriverClassName(com.mysql.jdbc.Driver.class.getName());
         ds.setUsername(dataSource.getUsername());
         ds.setPassword(dataSource.getPassword());
-        ds.setSchema(dataSource.getJdbcUrl().substring(dataSource.getJdbcUrl().lastIndexOf("/") + 1));
         return ds;
     }
 
     public JdbcTemplate getJdbcTemplate() {
-        HikariDataSource dataSource = getDataSource();
-        return new JdbcTemplate(dataSource);
+        DataSource dataSource = Tenant.get().getCurrentDataSource();
+        String jdbcUrl = dataSource.getJdbcUrl();
+        if (!jdbcTemplateMap.containsKey(jdbcUrl)) {
+            jdbcTemplateMap.put(jdbcUrl, new JdbcTemplate(dataSource2Hikari(dataSource)));
+        }
+        return jdbcTemplateMap.get(jdbcUrl);
     }
 
     public Collection<Table> getDbSchemas(String schema) throws Exception {
-        Connection connection = getDataSource().getConnection();
+        Connection connection = getJdbcTemplate().getDataSource().getConnection();
 
         final SchemaCrawlerOptions options = new SchemaCrawlerOptions();
         options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schema));
@@ -124,6 +120,7 @@ public class RdbService {
                 String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
                 entity.setId(Constants.ENTITY_NAME_PREFIX + id);
                 entity.setLabel(table.getName());
+                entity.setShowInMenu(true);
                 sysService.getTenantDataStore().save(entity);
                 for (Column column : table.getColumns()) {
                     Field field = column2Field(column, entity.getId());
@@ -169,6 +166,12 @@ public class RdbService {
         field.setRequired(!column.isNullable());
         field.setDefaultValue(column.getDefaultValue());
         field.setComponent(getComponent(column));
+        field.setInputType(InputType.text);
+        field.setShowInList(true);
+        field.setShowInFilter(true);
+        field.setShowInCreate(true);
+        field.setShowInEdit(true);
+        field.setShowInShow(true);
         String fid = sequenceService.getNextSequence(Constants.SYS_COL_Field + Constants._id).toString();
         field.setId(Constants.FIELD_NAME_PREFIX + fid);
         return field;

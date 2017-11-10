@@ -1,6 +1,7 @@
 package com.easyadmin.schema;
 
 import com.easyadmin.cloud.DataSource;
+import com.easyadmin.cloud.Tenant;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.CRUDPermission;
@@ -33,7 +34,7 @@ public class SchemaServiceImpl implements SchemaService {
 
     @Override
     public List<Entity> findEntities() {
-        DataSource dataSource = sysService.getCurrentDataSource();
+        DataSource dataSource = Tenant.get().getCurrentDataSource();
         List<Entity> entities = sysService.getTenantDataStore().createQuery(Entity.class).field("dataSourceId").equal(dataSource.getId()).asList();
 
         List<Field> fields = sysService.getTenantDataStore().createQuery(Field.class).field("dataSourceId").equal(dataSource.getId()).asList();
@@ -43,7 +44,6 @@ public class SchemaServiceImpl implements SchemaService {
                 if (field.getEid().equals(entity.getId())) {
                     if (CollectionUtils.isEmpty(entity.getFields()))
                         entity.setFields(new ArrayList<>());
-                    field.setShowInList(true);
                     entity.getFields().add(field);
                 }
             });

@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.JDBCType;
@@ -72,7 +73,7 @@ public class SysConfig {
     }
 
     @Bean
-    public Map<String, HikariDataSource> dataSourceMap(){
+    public Map<String, JdbcTemplate> jdbcTemplateMap(){
         return new HashMap<>();
     }
 

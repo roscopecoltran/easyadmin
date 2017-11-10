@@ -12,7 +12,7 @@ const Menu = ({resources, onMenuTap, translate, logout}) => (
     <div>
         <WithPermission authClient={authClient} value={['ROLE_USER', 'ROLE_ADMIN']}>
             <DashboardMenuItem onTouchTap={onMenuTap}/>
-            {resources.filter(resource => !resource.name.startsWith('_') && resource.name !== 'apply').map((resource) => (
+            {resources.filter(resource => !resource.name.startsWith('_') && resource.name !== 'apply' && resource.showInMenu).map((resource) => (
                 <MenuItem
                     key={resource.name}
                     containerElement={<Link to={'/' + resource.name}/>}
