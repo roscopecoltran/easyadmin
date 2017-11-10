@@ -70,4 +70,14 @@ public class SchemaTest extends AbstractTest {
                 .andExpect(status().isCreated())
                 .andDo(document("addEntity", preprocessResponse(prettyPrint())));
     }
+
+    @Test
+    public void syncSchemas() throws Exception {
+        final String token = extractToken(login("admin", "admin").andReturn());
+
+        mockMvc.perform(get("/schemas/sync")
+                .header("Authorization", "Bearer " + token)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }

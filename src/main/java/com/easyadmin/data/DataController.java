@@ -4,12 +4,12 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.service.DataService;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +35,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class DataController {
-    @Autowired
+    @Resource(name = "dataDbService")
     DataService dataService;
 
     @GetMapping(value = "/api/{entity}")
@@ -81,9 +81,9 @@ public class DataController {
 
     @DeleteMapping(value = "/api/{entity}/{id}")
     @PreAuthorize("@securityService.hasProtectedAccess(#entity,'d')")
-    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
-        Map<String, Object> document = dataService.deleteLogic(entity, id);
-        return ResponseEntity.status(HttpStatus.OK).body(document);
+    public ResponseEntity dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
+        dataService.delete(entity, id);
+        return ResponseEntity.ok().build();
     }
 
 

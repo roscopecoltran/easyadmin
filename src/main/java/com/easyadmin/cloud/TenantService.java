@@ -2,7 +2,7 @@ package com.easyadmin.cloud;
 
 import com.easyadmin.security.security.Role;
 import com.easyadmin.security.security.User;
-import com.easyadmin.service.DbService;
+import com.easyadmin.service.MongoDbService;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import org.mongodb.morphia.Datastore;
@@ -24,7 +24,7 @@ public class TenantService {
     @Autowired
     MongoProperties properties;
     @Autowired
-    DbService dbService;
+    MongoDbService mongoDbService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -41,7 +41,7 @@ public class TenantService {
         String[] user = {apply.getUsername()};
         tenant.setUsers(user);
 
-        dbService.getSysDataStore().save(tenant);
+        mongoDbService.getSysDataStore().save(tenant);
 
         // init db and users , roles
         initUserAndRole(tenant, apply);

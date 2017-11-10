@@ -3,20 +3,15 @@ package com.easyadmin.schema;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
-import com.easyadmin.service.DataService;
-import com.easyadmin.service.DbService;
-import com.easyadmin.service.SchemaService;
-import com.easyadmin.service.SequenceService;
+import com.easyadmin.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +22,20 @@ import java.util.Map;
  */
 @RestController
 public class SchemaController {
-    @Autowired
+    @Resource
     SchemaService schemaService;
-    @Autowired
+    @Resource(name = "dataMongoDbService")
     DataService dataService;
     @Autowired
-    DbService dbService;
+    RdbService rdbService;
+    @Autowired
+    MongoDbService mongoDbService;
     @Autowired
     SequenceService sequenceService;
 
     @GetMapping("/schemas/_entitys")
     public ResponseEntity<List<Entity>> getSchemas() {
-        List<Entity> entities = schemaService.findEntitys();
+        List<Entity> entities = schemaService.findEntities();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", entities.size() + "")
@@ -77,13 +74,14 @@ public class SchemaController {
     public ResponseEntity<Entity> addEntity(@RequestBody Entity entity) {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
-        dbService.getDataStore().save(entity);
+        mongoDbService.getDataStore().save(entity);
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
     @PutMapping(value = "/schemas/_entitys/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Entity> editEntity(@PathVariable("id") String id, @RequestBody Entity entity) {
+        entity.setFields(null);
         dataService.update(Constants.SYS_COL_Entity, id, new ObjectMapper().convertValue(entity, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
@@ -93,7 +91,8 @@ public class SchemaController {
     public ResponseEntity<Field> addField(@RequestBody Field field) {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Field + "_id").toString();
         field.setId(Constants.FIELD_NAME_PREFIX + id);
-        dbService.getDataStore().save(field);
+        field.setName(field.getId());
+        mongoDbService.getDataStore().save(field);
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
     }
 
@@ -102,5 +101,16 @@ public class SchemaController {
     public ResponseEntity<Field> editField(@PathVariable("id") String id, @RequestBody Field field) {
         dataService.update(Constants.SYS_COL_Field, id, new ObjectMapper().convertValue(field, Map.class));
         return ResponseEntity.status(HttpStatus.CREATED).body(field);
+    }
+
+    @GetMapping(value = "/schemas/sync")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity syncSchemas() {
+        try {
+            rdbService.syncSchemas(rdbService.getSchema());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().build();
     }
 }

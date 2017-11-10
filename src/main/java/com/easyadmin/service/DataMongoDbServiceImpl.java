@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +31,13 @@ import static com.mongodb.client.model.Sorts.descending;
  * Created by gongxinyi on 2017-08-11.
  */
 @Slf4j
-@Component
-public class DataServiceImpl implements DataService {
+@Component("dataMongoDbService")
+public class DataMongoDbServiceImpl implements DataService {
 
-    @Autowired
+    @Resource
     SchemaService schemaService;
     @Autowired
-    DbService dbService;
+    MongoDbService mongoDbService;
     @Autowired
     SequenceService sequenceService;
 
@@ -48,7 +49,7 @@ public class DataServiceImpl implements DataService {
      * @return
      */
     public List<Map<String, Object>> list(String entity, Map<String, Object> allRequestParams) {
-        MongoCollection collection = dbService.getCollection(entity);
+        MongoCollection collection = mongoDbService.getCollection(entity);
         List<Map<String, Object>> dataList = new LinkedList<>();
         DBObject query = getQuery(entity, allRequestParams);
         Map<String, Object> collect = allRequestParams.entrySet()
@@ -79,7 +80,7 @@ public class DataServiceImpl implements DataService {
      * @return
      */
     public long count(String entity, Map<String, Object> allRequestParams) {
-        MongoCollection collection = dbService.getCollection(entity);
+        MongoCollection collection = mongoDbService.getCollection(entity);
         DBObject query = getQuery(entity, allRequestParams);
         long count = collection.count((Bson) query);
         return count;
@@ -87,7 +88,7 @@ public class DataServiceImpl implements DataService {
 
     public Map<String, Object> findOne(String entity, String id) {
         Map<String, Object> data = null;
-        MongoCollection collection = dbService.getCollection(entity);
+        MongoCollection collection = mongoDbService.getCollection(entity);
         BasicDBObject query = new BasicDBObject(Constants._id, id);
         FindIterable<Document> findIterable = collection.find(query);
         MongoCursor<Document> mongoCursor = findIterable.iterator();
@@ -178,7 +179,7 @@ public class DataServiceImpl implements DataService {
     }
 
     public Document save(String entity, Map<String, Object> data) {
-        MongoCollection collection = dbService.getCollection(entity);
+        MongoCollection collection = mongoDbService.getCollection(entity);
         if (!data.containsKey(Constants.id) || StringUtils.isEmpty(data.get(Constants.id))) {
             String id = sequenceService.getNextSequence(entity + Constants._id).toString();
             data.put(Constants.id, id);
@@ -192,17 +193,17 @@ public class DataServiceImpl implements DataService {
     }
 
     public Document update(String entity, String id, Map<String, Object> data) {
-        MongoCollection collection = dbService.getCollection(entity);
+        MongoCollection collection = mongoDbService.getCollection(entity);
         Document document = new Document(data);
         BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
         collection.replaceOne(searchQuery, document);
         return document;
     }
 
-    public Document deleteLogic(String entity, String id) {
-        MongoCollection<Document> collection = dbService.getCollection(entity);
+    @Override
+    public void delete(String entity, String id) {
+        MongoCollection<Document> collection = mongoDbService.getCollection(entity);
         BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
-        Document document = collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Constants.DEL_FLAG, true)));
-        return document;
+        collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Constants.DEL_FLAG, true)));
     }
 }

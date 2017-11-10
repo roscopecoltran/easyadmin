@@ -9,7 +9,9 @@ import java.util.List;
  * schema service
  * <p>
  * include getEntitys，findOne entity by eid，find all the Fields by eid
- * Created by gongxinyi on 2017-08-31.
+ *
+ * @author gongxinyi
+ * @date 2017-08-31
  */
 public interface SchemaService {
     /**
@@ -17,7 +19,7 @@ public interface SchemaService {
      *
      * @return
      */
-    List<Entity> findEntitys();
+    List<Entity> findEntities();
 
     /**
      * find one entity by pk

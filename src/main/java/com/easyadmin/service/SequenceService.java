@@ -18,7 +18,7 @@ public class SequenceService {
     public final static String SEQUENCE_COLLECTION = "_sequence";
 
     @Autowired
-    DbService dbService;
+    MongoDbService mongoDbService;
 
     private void createCountersCollection(MongoCollection countersCollection, String sequenceName) {
 
@@ -37,7 +37,7 @@ public class SequenceService {
      * @return
      */
     public Object getNextSequence(String sequenceName) {
-        MongoCollection<Document> countersCollection = dbService.getCollection(SEQUENCE_COLLECTION);
+        MongoCollection<Document> countersCollection = mongoDbService.getCollection(SEQUENCE_COLLECTION);
         if (countersCollection.count() == 0) {
             createCountersCollection(countersCollection, sequenceName);
         }

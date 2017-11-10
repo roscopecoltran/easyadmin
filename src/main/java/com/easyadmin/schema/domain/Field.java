@@ -19,7 +19,9 @@ import java.io.Serializable;
  * <p>
  * the props of fields in list page will define in inherit class
  * <p>
- * Created by gongxinyi on 2017-08-10.
+ *
+ * @author gongxinyi
+ * @date 2017-08-10
  */
 @Data
 @ToString
@@ -60,6 +62,16 @@ public class Field implements Serializable {
     private String maxValue;
 
     private Boolean showInList;
+
+    /**
+     * 是否是主键
+     */
+    private Boolean isPartOfPrimaryKey;
+
+    /**
+     * 是否自增字段
+     */
+    private Boolean isAutoIncremented;
 
     public boolean isReference() {
         return Component.Reference.equals(component) || Component.ReferenceArray.equals(component);

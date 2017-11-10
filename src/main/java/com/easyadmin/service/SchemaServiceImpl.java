@@ -20,18 +20,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by gongxinyi on 2017-08-10.
+ * @author gongxinyi
+ * @date 2017-08-10
  */
 @Slf4j
 @org.springframework.stereotype.Component
 public class SchemaServiceImpl implements SchemaService {
     @Autowired
-    DbService dbService;
+    MongoDbService mongoDbService;
 
-    public List<Entity> findEntitys() {
-        List<Entity> entities = dbService.getDataStore().find(Entity.class).asList();
+    @Override
+    public List<Entity> findEntities() {
+        List<Entity> entities = mongoDbService.getDataStore().find(Entity.class).asList();
 
-        List<Field> fields = dbService.getDataStore().find(Field.class).asList();
+        List<Field> fields = mongoDbService.getDataStore().find(Field.class).asList();
         fields.forEach(field -> {
             entities.forEach(entity -> {
                 if (field.getEid().equals(entity.getId())) {
@@ -53,7 +55,7 @@ public class SchemaServiceImpl implements SchemaService {
             });
             return entities;
         }
-        List<Permission> permissions = dbService.getDataStore().createQuery(Permission.class).field("roleId").in(roles).asList();
+        List<Permission> permissions = mongoDbService.getDataStore().createQuery(Permission.class).field("roleId").in(roles).asList();
 
         List<Entity> entityList = entities.stream()
                 .filter(entity -> permissions.stream().anyMatch(t -> t.getEid().equals(entity.getId()) && t.containsPermission()))
@@ -71,15 +73,18 @@ public class SchemaServiceImpl implements SchemaService {
         return entityList;
     }
 
+    @Override
     public Entity findOne(String eid) {
-        return dbService.getDataStore().get(Entity.class, eid);
+        return findEntities().stream().filter(entity -> entity.getId().equals(eid)).findFirst().get();
     }
 
+    @Override
     public List<Field> findFields(String eid) {
-        return dbService.getDataStore().find(Field.class).field("eid").equal(eid).asList();
+        return findOne(eid).getFields();
     }
 
+    @Override
     public Field findOneField(String fid) {
-        return dbService.getDataStore().get(Field.class, fid);
+        return mongoDbService.getDataStore().get(Field.class, fid);
     }
 }
