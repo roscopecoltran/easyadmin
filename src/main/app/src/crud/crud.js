@@ -8,6 +8,7 @@ import {
     Create,
     Datagrid,
     DateField,
+    DateInput,
     Delete,
     DeleteButton,
     Edit,
@@ -54,7 +55,7 @@ import {CardActions} from "material-ui/Card";
 import FlatButton from "material-ui/FlatButton";
 import NavigationRefresh from "material-ui/svg-icons/navigation/refresh";
 import SelectArrayField from "./SelectArrayField";
-import DateTimeInput from "aor-datetime-input";
+import DateTimeInput from "./DateTimeInput";
 const cardActionStyle = {
     zIndex: 2,
     display: 'inline-block',
@@ -82,27 +83,31 @@ const renderFilter = (field) => (
             field.component === 'Autocomplete' ? renderAutoCompleteInput(field) :
                 field.component === 'CheckboxGroup' ? renderCheckboxGroupInput(field) :
                     field.component === 'Date' ? renderDateTimeFilter(field) :
-                            field.component === 'LongText' ? renderLongTextInput(field) :
-                                field.component === 'Number' ? renderNumberFilter(field) :
-                                    field.component === 'RadioButtonGroup' ? renderRadioButtonGroupInput(field) :
-                                        field.component === 'Reference' ? renderReferenceInput(field) :
-                                            field.component === 'ReferenceArray' ? renderReferenceArrayInput(field) :
-                                                field.component === 'RichText' ? renderRichTextInput(field) :
-                                                    field.component === 'Select' ? renderSelectInput(field) :
-                                                        field.component === 'SelectArray' ? renderSelectArrayInput(field) :
-                                                                renderTextInput(field)
+                        field.component === 'LongText' ? renderLongTextInput(field) :
+                            field.component === 'Number' ? renderNumberFilter(field) :
+                                field.component === 'RadioButtonGroup' ? renderRadioButtonGroupInput(field) :
+                                    field.component === 'Reference' ? renderReferenceInput(field) :
+                                        field.component === 'ReferenceArray' ? renderReferenceArrayInput(field) :
+                                            field.component === 'RichText' ? renderRichTextInput(field) :
+                                                field.component === 'Select' ? renderSelectInput(field) :
+                                                    field.component === 'SelectArray' ? renderSelectArrayInput(field) :
+                                                        renderTextInput(field)
 );
 
 const renderDateTimeFilter = (field) => (
-    [<DateTimeInput key={field.id + '_gte'} label={field.label + " 开始"} source={field.name + '_gte'}/>,
-        <DateTimeInput key={field.id + '_lte'} label={field.label + " 截止"} source={field.name + '_lte'}/>]
+    [<DateTimeInput key={field.id + '_gte'} label={field.label + " 开始"} source={field.name + '_gte'}
+                    options={{locale: 'zh-hans'}}/>,
+        <DateTimeInput key={field.id + '_lte'} label={field.label + " 截止"} source={field.name + '_lte'}
+                       options={{locale: 'zh-hans'}}/>]
 )
 
 
 const renderNumberFilter = (field) => (
-    [<NumberInput key={field.id + '_gte'} source={field.name + '_gte'} label={field.label+' 大于等于'} defaultValue={field.defaultValue}
+    [<NumberInput key={field.id + '_gte'} source={field.name + '_gte'} label={field.label + ' 大于等于'}
+                  defaultValue={field.defaultValue}
                   validate={[number]}/>,
-        <NumberInput key={field.id + '_lte'} source={field.name + '_lte'} label={field.label+' 小于等于'} defaultValue={field.defaultValue}
+        <NumberInput key={field.id + '_lte'} source={field.name + '_lte'} label={field.label + ' 小于等于'}
+                     defaultValue={field.defaultValue}
                      validate={[number]}/>]
 )
 
@@ -153,7 +158,7 @@ export const CRUDList = (props) => (
 export const CRUDCreate = (props) => (
     <Create {...props} title={props.options.label}>
         <SimpleForm redirect={props.options.redirect}>
-            {props.options.fields.filter(field=>field.showInCreate).map(renderInput)}
+            {props.options.fields.filter(field => field.showInCreate).map(renderInput)}
         </SimpleForm>
     </Create>
 );
@@ -190,7 +195,7 @@ const EditActions = ({basePath, data, refresh, options}) => {
 export const CRUDEdit = (props) => (
     <Edit actions={<EditActions options={props}/>} {...props} title={props.options.label}>
         <SimpleForm redirect={props.options.redirect}>
-            {props.options.fields.filter(field=>field.showInEdit).map(renderInput)}
+            {props.options.fields.filter(field => field.showInEdit).map(renderInput)}
         </SimpleForm>
     </Edit>
 );
@@ -203,7 +208,7 @@ export const CRUDEdit = (props) => (
 export const CRUDShow = (props) => (
     <Show {...props} title={props.options.label}>
         <SimpleShowLayout>
-            {props.options.fields.filter(field=>field.showInShow).map(renderField)}
+            {props.options.fields.filter(field => field.showInShow).map(renderField)}
         </SimpleShowLayout>
     </Show>
 );
@@ -293,7 +298,7 @@ const renderImageField = (field) => (
 )
 
 const renderDateField = (field) => (
-    <DateField key={field.id} label={field.label} source={field.name}/>
+    <DateField key={field.id} label={field.label} source={field.name} showTime={true}  options={{locale: 'zh-hans'}}/>
 )
 
 const renderFileField = (field) => (
@@ -331,7 +336,7 @@ const renderInput = (field) => (
 
 
 const renderDateTimeInput = (field) => (
-    <DateTimeInput key={field.id} label={field.label} source={field.name} validate={generateValidators(field)}/>
+    <DateTimeInput key={field.id} label={field.label} source={field.name} validate={generateValidators(field)} options={{locale: 'zh-hans'}}/>
 );
 
 const renderAutoCompleteInput = (field) => (

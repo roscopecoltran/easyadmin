@@ -63,5 +63,5 @@ public interface IDataService {
      * @param id
      * @return
      */
-    void delete(String entity, String id);
+    String delete(String entity, String id);
 }

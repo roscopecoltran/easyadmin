@@ -4,6 +4,7 @@ import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.DbColumnType;
 import com.easyadmin.service.RdbService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthmarketscience.sqlbuilder.*;
@@ -34,7 +35,7 @@ public class DataRdbServiceImpl implements IDataService {
     DataServiceHelper dataServiceHelper;
 
     @Autowired
-    Map<Component, String> componentStringMap;
+    Map<Component, DbColumnType> componentStringMap;
 
     @Override
     public List<Map<String, Object>> list(String entity, Map<String, Object> filters) {
@@ -199,9 +200,14 @@ public class DataRdbServiceImpl implements IDataService {
             Field field = fieldIdMap.get(k);
             switch (field.getComponent()) {
                 case Date:
-                    DateTimeFormatter f = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-                    DateTime dateTime = f.parseDateTime(v.toString());
-                    data.put(k, dateTime == null ? null : JdbcEscape.timestamp(dateTime.toDate()));
+                    DateTime date;
+                    if (v instanceof Long) {
+                        date = new DateTime((long) v);
+                    } else {
+                        DateTimeFormatter f = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        date = f.parseDateTime(v.toString());
+                    }
+                    data.put(k, date == null ? null : JdbcEscape.timestamp(date.toDate()));
                     break;
                 default:
                     break;
@@ -234,7 +240,7 @@ public class DataRdbServiceImpl implements IDataService {
     }
 
     @Override
-    public void delete(String entity, String id) {
+    public String delete(String entity, String id) {
         Map<String, Field> primaryFieldIdMap = dataServiceHelper.getPrimaryFieldIdMap(entity);
         DbTable table = rdbService.getDbTable(entity);
         String[] idValues = id.split(Constants.delimiter);
@@ -245,6 +251,7 @@ public class DataRdbServiceImpl implements IDataService {
         });
         log.info("delete record , entity:{},data:{},sql:{}", entity, id, deleteQuery);
         rdbService.getJdbcTemplate().execute(deleteQuery.toString());
+        return id;
     }
 
     public Map<String, Object> addIdValue(String entity, Map<String, Object> data) {
@@ -257,6 +264,6 @@ public class DataRdbServiceImpl implements IDataService {
     }
 
     private DbColumn getDbColumn(DbTable table, Field field) {
-        return new DbColumn(table, field.getName(), componentStringMap.get(field.getComponent()));
+        return new DbColumn(table, field.getName(), String.valueOf(componentStringMap.get(field.getComponent())));
     }
 }

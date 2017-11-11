@@ -209,9 +209,10 @@ public class DataMongoDbServiceImpl implements IDataService {
     }
 
     @Override
-    public void delete(String entity, String id) {
+    public String delete(String entity, String id) {
         MongoCollection<Document> collection = mongoService.getCustomerCollection(entity);
         BasicDBObject searchQuery = new BasicDBObject().append(Constants._id, id);
         collection.findOneAndUpdate(searchQuery, new BasicDBObject("$set", new BasicDBObject(Constants.DEL_FLAG, true)));
+        return id;
     }
 }

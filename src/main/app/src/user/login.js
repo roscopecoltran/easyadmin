@@ -105,13 +105,6 @@ class Login extends Component {
                                     label={translate('aor.auth.sign_in')}
                                     fullWidth
                                 />
-                                <FlatButton
-                                    primary
-                                    label="申请"
-                                    icon={<SocialPeople/>}
-                                    containerElement={<Link to={{pathname: '/apply/create'}}/>}
-                                    style={{overflow: 'inherit'}}
-                                />;
                             </CardActions>
                         </form>
                     </Card>

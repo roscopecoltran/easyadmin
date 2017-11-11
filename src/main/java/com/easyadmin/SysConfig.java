@@ -1,6 +1,7 @@
 package com.easyadmin;
 
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.DbColumnType;
 import com.mongodb.MongoClient;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -64,11 +65,11 @@ public class SysConfig {
     }
 
     @Bean
-    public Map<Component, String> componentStringMap() {
-        Map<Component, String> componentStringMap = new HashMap<Component, String>();
-        componentStringMap.put(Component.Text, "varchar");
-        componentStringMap.put(Component.Number, "number");
-        componentStringMap.put(Component.Date, "datetime");
+    public Map<Component, DbColumnType> componentStringMap() {
+        Map<Component, DbColumnType> componentStringMap = new HashMap<Component, DbColumnType>();
+        componentStringMap.put(Component.Text, DbColumnType.varchar);
+        componentStringMap.put(Component.Number, DbColumnType.number);
+        componentStringMap.put(Component.Date, DbColumnType.datetime);
         return componentStringMap;
     }
 

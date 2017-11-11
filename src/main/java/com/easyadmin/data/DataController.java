@@ -80,9 +80,9 @@ public class DataController {
 
     @DeleteMapping(value = "/api/{entity}/{id}")
     @PreAuthorize("@securityService.hasProtectedAccess(#entity,'d')")
-    public ResponseEntity dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
+    public ResponseEntity<String> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
         dataServiceProxy.getDataService().delete(entity, id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(id);
     }
 
 

@@ -1,7 +1,10 @@
 package com.easyadmin.schema.domain;
 
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.DbColumnType;
 import com.easyadmin.schema.enums.InputType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -81,4 +84,23 @@ public class Field implements Serializable {
     private Boolean showInCreate;
     private Boolean showInEdit;
     private Boolean showInShow;
+
+    @JsonIgnore
+    private DbColumnType originalDbColumnType;
+
+    @JsonProperty
+    public IChoiceItem[] getChoices() {
+        if (DbColumnType.number.equals(originalDbColumnType)) {
+            try {
+                IChoiceItem[] choiceItems = new IChoiceItem[choices.length];
+                for (int i = 0; i < choiceItems.length; i++) {
+                    choiceItems[i] = choices[i].toChoiceItemNum();
+                }
+                return choiceItems;
+            } catch (Exception e) {
+            }
+        }
+        return choices;
+    }
+
 }

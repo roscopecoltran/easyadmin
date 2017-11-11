@@ -7,6 +7,7 @@ import com.easyadmin.schema.SchemaService;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.Component;
+import com.easyadmin.schema.enums.DbColumnType;
 import com.easyadmin.schema.enums.InputType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
@@ -41,7 +42,8 @@ public class RdbService {
     SequenceService sequenceService;
     @Autowired
     Map<JDBCType, Component> fieldTypeMap;
-
+    @Autowired
+    Map<Component, DbColumnType> componentStringMap;
     @Autowired
     SchemaService schemaService;
 
@@ -53,11 +55,6 @@ public class RdbService {
 
     public String getCurrentSchema() {
         return Tenant.get().getCurrentDataSource().getMySqlDbName();
-    }
-
-    private HikariDataSource getDataSource(String dataSourceId) {
-        DataSource dataSource = sysService.getTenantDataStore().get(DataSource.class, dataSourceId);
-        return dataSource2Hikari(dataSource);
     }
 
     private HikariDataSource dataSource2Hikari(DataSource dataSource) {
@@ -146,10 +143,10 @@ public class RdbService {
         String id = sequenceService.getNextSequence(Constants.SYS_COL_Entity + "_id").toString();
         entity.setId(Constants.ENTITY_NAME_PREFIX + id);
         entity.setName(table.getName());
-        entity.setLabel(StringUtils.isEmpty(table.getRemarks())?table.getName():table.getRemarks());
+        entity.setLabel(StringUtils.isEmpty(table.getRemarks()) ? table.getName() : table.getRemarks());
         entity.setShowInMenu(true);
         sysService.getTenantDataStore().save(entity);
-        List<Field> fields=new ArrayList<>();
+        List<Field> fields = new ArrayList<>();
         for (Column column : table.getColumns()) {
             Field field = column2Field(column, entity.getId());
             field.setDataSourceId(dataSourceId);
@@ -180,8 +177,9 @@ public class RdbService {
         field.setInputType(InputType.text);
         field.setShowInList(true);
         field.setShowInFilter(true);
-        field.setShowInCreate(true);
-        field.setShowInEdit(true);
+        field.setShowInCreate(!Component.Date.equals(field.getComponent()) && field.getRequired());
+        field.setShowInEdit(!Component.Date.equals(field.getComponent()));
+        field.setOriginalDbColumnType(componentStringMap.get(getComponent(column)));
         field.setShowInShow(true);
         String fid = sequenceService.getNextSequence(Constants.SYS_COL_Field + Constants._id).toString();
         field.setId(Constants.FIELD_NAME_PREFIX + fid);
