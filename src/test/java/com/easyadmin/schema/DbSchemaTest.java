@@ -24,7 +24,7 @@ public class DbSchemaTest {
 
     @Test
     public void testSchema() throws Exception {
-        Collection<Table> dbTable = rdbService.getDbSchemas("financial_cf_credit_icr");
+        Collection<Table> dbTable = rdbService.getDbSchemas();
         dbTable.stream().forEach(table -> {
             if("cf_credit_log".equals(table.getName())){
                 Collection<Column> columns=table.getColumns();

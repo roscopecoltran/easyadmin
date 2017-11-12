@@ -12,6 +12,7 @@ import {
     TextField,
     TextInput
 } from "admin-on-rest";
+import {DependentInput} from "aor-dependent-input";
 import SyncButton from "./SyncButton";
 export const DataSourceList = (props) => (
     <List {...props} pagination={null} perPage={9999}>
@@ -32,6 +33,9 @@ export const DataSourceCreate = (props) => (
         <SimpleForm>
             <SelectInput source="type" label="数据库类型" choices={dataType} validate={required}/>
             <TextInput source="jdbcUrl" validate={required}/>
+            <DependentInput dependsOn="type" value="cds">
+                <TextInput source="globalUrl" validate={required}/>
+            </DependentInput>
             <TextInput source="username" validate={required}/>
             <TextInput type="password" source="password" validate={required}/>
         </SimpleForm>
@@ -43,11 +47,14 @@ export const DataSourceEdit = (props) => (
         <SimpleForm>
             <SelectInput source="type" label="数据库类型" choices={dataType} validate={required}/>
             <TextInput source="jdbcUrl" validate={required}/>
+            <DependentInput dependsOn="type" value="cds">
+                <TextInput source="globalUrl" validate={required}/>
+            </DependentInput>
             <TextInput source="username" validate={required}/>
             <TextInput type="password" source="password" validate={required}/>
         </SimpleForm>
     </Edit>
 );
 
-const dataType = [{id: 'mysql', name: 'MySql'},
+const dataType = [{id: 'mysql', name: 'MySql'},{id: 'cds', name: 'cds'},
     {id: 'mongo', name: 'Mongo'}];

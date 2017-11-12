@@ -20,9 +20,27 @@ public class DataSource {
     private String password;
     private DbTypeEnum type;
     private String dbName;
+    private String globalUrl;
     private boolean isCurrent;
 
     public String getMySqlDbName() {
-        return StringUtils.isNotEmpty(jdbcUrl) && DbTypeEnum.mysql.equals(type) ? jdbcUrl.substring(jdbcUrl.lastIndexOf("/") + 1) : null;
+        if (DbTypeEnum.mysql.equals(type)) {
+            return StringUtils.isNotEmpty(jdbcUrl) ? jdbcUrl.substring(jdbcUrl.lastIndexOf("/") + 1) : null;
+        } else if (DbTypeEnum.cds.equals(type)) {
+            return StringUtils.isNotEmpty(globalUrl) ? globalUrl.substring(globalUrl.lastIndexOf("/") + 1) : null;
+        } else {
+            return null;
+        }
     }
+
+    public String getCurrentSchema() {
+        if (DbTypeEnum.mysql.equals(type)) {
+            return StringUtils.isNotEmpty(jdbcUrl) ? jdbcUrl.substring(jdbcUrl.lastIndexOf("/") + 1) : null;
+        } else if (DbTypeEnum.cds.equals(type)) {
+            return StringUtils.isNotEmpty(jdbcUrl) ? jdbcUrl.substring(jdbcUrl.lastIndexOf("/") + 1, jdbcUrl.indexOf("?")) : null;
+        } else {
+            return null;
+        }
+    }
+
 }

@@ -8,6 +8,7 @@ import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.DbColumnType;
+import com.easyadmin.schema.enums.DbTypeEnum;
 import com.easyadmin.schema.enums.InputType;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
@@ -17,6 +18,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.util.StringUtils;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
@@ -53,13 +55,13 @@ public class RdbService {
     @Autowired
     Map<String, JdbcTemplate> jdbcTemplateMap;
 
-    public String getCurrentSchema() {
-        return Tenant.get().getCurrentDataSource().getMySqlDbName();
-    }
-
     private HikariDataSource dataSource2Hikari(DataSource dataSource) {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(dataSource.getJdbcUrl());
+        if (DbTypeEnum.cds.equals(dataSource.getType())) {
+            ds.setJdbcUrl(dataSource.getGlobalUrl());
+        } else {
+            ds.setJdbcUrl(dataSource.getJdbcUrl());
+        }
         ds.setDriverClassName(com.mysql.jdbc.Driver.class.getName());
         ds.setUsername(dataSource.getUsername());
         ds.setPassword(dataSource.getPassword());
@@ -70,25 +72,38 @@ public class RdbService {
         DataSource dataSource = Tenant.get().getCurrentDataSource();
         String jdbcUrl = dataSource.getJdbcUrl();
         if (!jdbcTemplateMap.containsKey(jdbcUrl)) {
-            jdbcTemplateMap.put(jdbcUrl, new JdbcTemplate(dataSource2Hikari(dataSource)));
+            if (DbTypeEnum.cds.equals(dataSource.getType())) {
+                jdbcTemplateMap.put(jdbcUrl, new JdbcTemplate(cdsDataSource(dataSource)));
+            } else {
+                jdbcTemplateMap.put(jdbcUrl, new JdbcTemplate(dataSource2Hikari(dataSource)));
+            }
         }
         return jdbcTemplateMap.get(jdbcUrl);
     }
 
-    public Collection<Table> getDbSchemas(String schema) throws Exception {
-        Connection connection = getJdbcTemplate().getDataSource().getConnection();
+    private DriverManagerDataSource cdsDataSource(DataSource dataSource) {
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        driverManagerDataSource.setUrl(dataSource.getJdbcUrl());
+        driverManagerDataSource.setDriverClassName("com.jdjr.cds.driver.CdsDriver");
+        return driverManagerDataSource;
+    }
+
+    public Collection<Table> getDbSchemas() throws Exception {
+        DataSource dataSource = Tenant.get().getCurrentDataSource();
+        Connection connection = dataSource2Hikari(dataSource).getConnection();
 
         final SchemaCrawlerOptions options = new SchemaCrawlerOptions();
-        options.setSchemaInclusionRule(new RegularExpressionInclusionRule(schema));
+        options.setSchemaInclusionRule(new RegularExpressionInclusionRule(dataSource.getMySqlDbName()));
         Catalog catalog = SchemaCrawlerUtility.getCatalog(connection, options);
 
         return catalog.getTables();
     }
 
     public DbTable getDbTable(String tableName) {
-        DbSpec spec = new DbSpec(getCurrentSchema());
-        DbSchema dbSchema = new DbSchema(spec, getCurrentSchema());
-        return new DbTable(dbSchema, tableName);
+        DataSource dataSource = Tenant.get().getCurrentDataSource();
+        DbSpec spec = new DbSpec();
+        DbSchema schema = spec.addDefaultSchema();
+        return schema.addTable(tableName);
     }
 
     /**
@@ -98,9 +113,12 @@ public class RdbService {
      * @throws Exception
      */
     public void syncSchemas(String dataSourceId) throws Exception {
+        DataSource dataSource = Tenant.get().getCurrentDataSource();
+        if (!dataSourceId.equals(dataSource.getId())) {
+            return;
+        }
         List<Entity> entities = schemaService.findEntities();
-        String schema = sysService.getTenantDataStore().get(DataSource.class, dataSourceId).getMySqlDbName();
-        Collection<Table> tables = getDbSchemas(schema);
+        Collection<Table> tables = getDbSchemas();
         for (Table table : tables) {
             if (table.getPrimaryKey() == null) {
                 log.error("table : {} hasn't primary key", table.getName());

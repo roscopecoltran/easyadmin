@@ -5,5 +5,6 @@ package com.easyadmin.schema.enums;
  */
 public enum DbTypeEnum {
     mongo,
-    mysql
+    mysql,
+    cds
 }

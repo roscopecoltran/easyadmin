@@ -130,6 +130,23 @@
             <artifactId>HikariCP</artifactId>
             <version>2.7.2</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.jd.jr</groupId>
+            <artifactId>jdcds-driver</artifactId>
+            <version>3.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.wangyin</groupId>
+            <artifactId>wangyin-commons</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>1.0.6</version>
+        </dependency>
     </dependencies>
 
     <build>
