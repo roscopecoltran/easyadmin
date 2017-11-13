@@ -2,14 +2,24 @@ package com.easyadmin;
 
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.DbColumnType;
+import com.easyadmin.schema.enums.EsColumnType;
 import com.mongodb.MongoClient;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.network.InetAddresses;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.JDBCType;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,13 +75,35 @@ public class SysConfig {
     }
 
     @Bean
+    public Map<EsColumnType, Component> esFieldTypeMap() {
+        Map<EsColumnType, Component> esFieldTypeMap = new HashMap();
+        esFieldTypeMap.put(EsColumnType._text, Component.Text);
+        esFieldTypeMap.put(EsColumnType._keyword, Component.Text);
+
+        esFieldTypeMap.put(EsColumnType._date, Component.Date);
+        esFieldTypeMap.put(EsColumnType._boolean, Component.Boolean);
+
+        esFieldTypeMap.put(EsColumnType._long, Component.Number);
+        esFieldTypeMap.put(EsColumnType._integer, Component.Number);
+        esFieldTypeMap.put(EsColumnType._short, Component.Number);
+        esFieldTypeMap.put(EsColumnType._byte, Component.Number);
+        esFieldTypeMap.put(EsColumnType._double, Component.Number);
+        esFieldTypeMap.put(EsColumnType._float, Component.Number);
+        esFieldTypeMap.put(EsColumnType._half_float, Component.Number);
+        esFieldTypeMap.put(EsColumnType._scaled_float, Component.Number);
+
+        return esFieldTypeMap;
+    }
+
+    @Bean
     public Map<Component, DbColumnType> componentStringMap() {
-        Map<Component, DbColumnType> componentStringMap = new HashMap<Component, DbColumnType>();
+        Map<Component, DbColumnType> componentStringMap = new HashMap(3);
         componentStringMap.put(Component.Text, DbColumnType.varchar);
         componentStringMap.put(Component.Number, DbColumnType.number);
         componentStringMap.put(Component.Date, DbColumnType.datetime);
         return componentStringMap;
     }
+
 
     @Bean
     public Map<String, JdbcTemplate> jdbcTemplateMap(){
@@ -80,6 +112,11 @@ public class SysConfig {
 
     @Bean
     public Map<String, MongoClient> uriMongoMap(){
+        return new HashMap<>();
+    }
+
+    @Bean
+    public Map<String,TransportClient> esClientMap(){
         return new HashMap<>();
     }
 }

@@ -5,8 +5,10 @@ import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Entity;
 import com.easyadmin.schema.domain.Field;
+import com.easyadmin.schema.enums.DbTypeEnum;
 import com.easyadmin.service.RdbService;
 import com.easyadmin.service.SequenceService;
+import com.easyadmin.service.ServiceProxy;
 import com.easyadmin.service.SysService;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
@@ -29,7 +31,7 @@ public class SchemaController {
     @Resource
     SchemaService schemaService;
     @Autowired
-    RdbService rdbService;
+    ServiceProxy serviceProxy;
     @Autowired
     SysService sysService;
     @Autowired
@@ -112,7 +114,7 @@ public class SchemaController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity syncSchemas(@PathVariable("dataSourceId") String dataSourceId) {
         try {
-            rdbService.syncSchemas(dataSourceId);
+            serviceProxy.getSchemaSyncService().syncSchemas();
         } catch (Exception e) {
             e.printStackTrace();
         }

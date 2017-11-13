@@ -22,6 +22,13 @@ public class DataSource {
     private String dbName;
     private boolean isCurrent;
 
+    /**
+     * for es
+     */
+    private String nodes;
+    private String clusterName;
+    private String indexName;
+
     public String getMySqlDbName() {
         return StringUtils.isNotEmpty(jdbcUrl) && DbTypeEnum.mysql.equals(type) ? jdbcUrl.substring(jdbcUrl.lastIndexOf("/") + 1) : null;
     }

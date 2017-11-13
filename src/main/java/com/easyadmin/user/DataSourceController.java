@@ -56,14 +56,7 @@ public class DataSourceController {
     @PutMapping(value = "/datasource/_datasource/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<DataSource> editDataSource(@PathVariable("id") String id, @RequestBody DataSource dataSource) {
-        final Query<DataSource> dataSourceQuery = sysService.getTenantDataStore().createQuery(DataSource.class).field("id").equal(id);
-        final UpdateOperations<DataSource> updateOperations = sysService.getTenantDataStore().createUpdateOperations(DataSource.class)
-                .set("jdbcUrl", dataSource.getJdbcUrl())
-                .set("username", dataSource.getUsername())
-                .set("password", dataSource.getPassword())
-                .set("type", dataSource.getType());
-
-        sysService.getTenantDataStore().update(dataSourceQuery, updateOperations);
+        sysService.getTenantDataStore().merge(dataSource);
         return ResponseEntity.ok(dataSource);
     }
 }
