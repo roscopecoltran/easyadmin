@@ -1,10 +1,12 @@
 package com.easyadmin.data;
 
+import com.easyadmin.cloud.Tenant;
 import com.easyadmin.consts.Constants;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.DbColumnType;
+import com.easyadmin.schema.enums.DbTypeEnum;
 import com.easyadmin.service.RdbService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthmarketscience.sqlbuilder.*;
@@ -17,8 +19,10 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -42,35 +46,37 @@ public class DataRdbServiceImpl implements IDataService {
         /**
          * 过滤出系统字段
          */
-        Map<String, Object> pageAndSortFieldMap = filters.entrySet()
-                .stream()
-                .filter(map -> map.getKey().startsWith("_"))
-                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
-        RequestScope requestScope = new ObjectMapper().convertValue(pageAndSortFieldMap, RequestScope.class);
+        RequestScope requestScope = getRequestScope(filters);
 
         /**
          * 构建rdb select query
          */
+        Map<String, Object> fieldFilters = getFieldFilter(filters);
         DbTable table = rdbService.getDbTable(entity);
         SelectQuery selectQuery = new SelectQuery()
                 .addAllColumns()
                 .addFromTable(table);
         Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
 
-        buildSelectQuery(selectQuery, entity, filters, fieldMap);
+        Object[] args = new Object[fieldFilters.size() + 2];
+
+        buildSelectQuery(selectQuery, args, entity, fieldFilters, fieldMap);
 
         /**
          * 排序
          */
         sort(selectQuery, entity, requestScope, fieldMap);
 
+
         String sql = selectQuery.toString() + pagination(requestScope);
+        args[args.length - 1] = requestScope.getLimit();
+        args[args.length - 2] = requestScope.get_start();
         log.info("list record ,entity:{},data:{},sql:{}", entity, filters, sql);
 
         /**
          * 查询结果
          */
-        List<Map<String, Object>> dbDataList = rdbService.getJdbcTemplate().queryForList(sql);
+        List<Map<String, Object>> dbDataList = rdbService.getJdbcTemplate().queryForList(sql, args);
 
         /**
          * field id wrapper
@@ -83,25 +89,50 @@ public class DataRdbServiceImpl implements IDataService {
     }
 
     /**
+     * 过滤系统字段
+     *
+     * @param filters
+     * @return
+     */
+    private RequestScope getRequestScope(Map<String, Object> filters) {
+        Map<String, Object> requestScopeFilter = filters.entrySet()
+                .stream()
+                .filter(map -> map.getKey().startsWith("_"))
+                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+        return new ObjectMapper().convertValue(requestScopeFilter, RequestScope.class);
+    }
+
+    /**
+     * 过滤筛选条件
+     *
+     * @param filters
+     * @return
+     */
+    private Map<String, Object> getFieldFilter(Map<String, Object> filters) {
+        return filters.entrySet()
+                .stream()
+                .filter(map -> !map.getKey().startsWith("_"))
+                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+    }
+
+
+    /**
      * 分页
      *
      * @param requestScope
      * @return
      */
     private String pagination(RequestScope requestScope) {
-        return " limit " + requestScope.get_start() + "," + requestScope.getLimit();
+        return " limit ?,?";
     }
 
-    private void buildSelectQuery(SelectQuery selectQuery, String entity, Map<String, Object> filters, Map<String, Field> fieldMap) {
-        filters.entrySet()
-                .stream()
-                .filter(filter ->
-                        (!filter.getKey().equals(Constants.Q) && !filter.getKey().startsWith("_"))
-                )
-                .forEach(entry -> {
-                    Filter filter = dataServiceHelper.getFilter(entry, fieldMap);
-                    buildQuery(selectQuery, entity, filter, fieldMap.get(filter.getKey()));
-                });
+    private void buildSelectQuery(SelectQuery selectQuery, Object[] args, String entity, Map<String, Object> filters, Map<String, Field> fieldMap) {
+        int i = 0;
+        for (Map.Entry<String, Object> entry : filters.entrySet()) {
+            Filter filter = dataServiceHelper.getFilter(entry, fieldMap);
+            buildQuery(selectQuery, entity, filter, fieldMap.get(filter.getKey()));
+            args[i++] = filter.getValue();
+        }
     }
 
     /**
@@ -114,35 +145,40 @@ public class DataRdbServiceImpl implements IDataService {
      */
     private void buildQuery(SelectQuery selectQuery, String entity, Filter filter, Field field) {
         log.info("filter:{}", filter);
+        QueryPreparer preparer = new QueryPreparer();
+        Object filterValue = preparer.addStaticPlaceHolder(filter.getValue());
         DbTable table = rdbService.getDbTable(entity);
         DbColumn dbColumn = getDbColumn(table, field);
         switch (filter.getOperatorEnum()) {
             case eq:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, filter.getValue()));
+                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, filterValue));
                 break;
             case gte:
-                selectQuery.addCondition(BinaryCondition.greaterThanOrEq(dbColumn, filter.getValue()));
+                selectQuery.addCondition(BinaryCondition.greaterThanOrEq(dbColumn, filterValue));
                 break;
             case lte:
-                selectQuery.addCondition(BinaryCondition.lessThanOrEq(dbColumn, filter.getValue()));
+                selectQuery.addCondition(BinaryCondition.lessThanOrEq(dbColumn, filterValue));
                 break;
             default:
-                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, filter.getValue()));
+                selectQuery.addCondition(BinaryCondition.equalTo(dbColumn, filterValue));
                 break;
         }
     }
 
     @Override
-    public long count(String entity, Map<String, Object> allRequestParams) {
+    public long count(String entity, Map<String, Object> filters) {
+        Map<String, Object> fieldFilter = getFieldFilter(filters);
         Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
         DbTable table = rdbService.getDbTable(entity);
         SelectQuery selectQuery = new SelectQuery()
                 .addCustomColumns(FunctionCall.countAll())
                 .addFromTable(table);
+        Object[] args = new Object[fieldFilter.size()];
 
-        buildSelectQuery(selectQuery, entity, allRequestParams, fieldMap);
-        log.info("count record ,entity:{},data:{},sql:{}", entity, allRequestParams, selectQuery);
-        return rdbService.getJdbcTemplate().queryForObject(selectQuery.toString(), Long.class);
+        buildSelectQuery(selectQuery, args, entity, fieldFilter, fieldMap);
+        String sql = selectQuery.toString();
+        log.info("count record ,entity:{},data:{},sql:{}", entity, fieldFilter, sql);
+        return rdbService.getJdbcTemplate().queryForObject(sql, args, Long.class);
     }
 
     /**
@@ -200,6 +236,9 @@ public class DataRdbServiceImpl implements IDataService {
             Field field = fieldIdMap.get(k);
             switch (field.getComponent()) {
                 case Date:
+                    if (v == null) {
+                        break;
+                    }
                     DateTime date;
                     if (v instanceof Long) {
                         date = new DateTime((long) v);
@@ -218,24 +257,42 @@ public class DataRdbServiceImpl implements IDataService {
     @Override
     public Map<String, Object> update(String entity, String id, Map<String, Object> data) {
         DbTable table = rdbService.getDbTable(entity);
+        List<Object> args = new LinkedList<>();
+
         UpdateQuery updateQuery = new UpdateQuery(table);
         Map<String, Field> fieldIdMap = dataServiceHelper.getFieldIdMap(entity);
-        fieldIdMap.forEach((k, v) -> {
-            if (v.getIsPartOfPrimaryKey()) {
-                updateQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, v), data.get(v.getName())));
-            }
-        });
 
         wrapData(fieldIdMap, data);
-
-        data.entrySet()
-                .stream().filter(a -> !Constants.id.equals(a.getKey()))
-                .forEach(k -> {
-                    updateQuery.addSetClause(getDbColumn(table, fieldIdMap.get(k.getKey())), k.getValue());
-                });
-
-        log.info("update record , entity:{},data:{},sql:{}", entity, data, updateQuery);
-        rdbService.getJdbcTemplate().execute(updateQuery.toString());
+        data.forEach((k, v) -> {
+            if (!Constants.id.equals(k) && fieldIdMap.containsKey(k) && fieldIdMap.get(k).getShowInEdit()) {
+                args.add(v);
+                QueryPreparer preparer = new QueryPreparer();
+                Object setValue = preparer.addStaticPlaceHolder(v);
+                updateQuery.addSetClause(getDbColumn(table, fieldIdMap.get(k)), setValue);
+            }
+        });
+        if (DbTypeEnum.cds.equals(Tenant.get().getCurrentDataSource().getType())) {
+            Optional<Map.Entry<String, Field>> optionalShardKey = fieldIdMap.entrySet().stream().filter(entry -> Boolean.TRUE.equals(entry.getValue().getIsShardKey())).findAny();
+            if (!optionalShardKey.isPresent()) {
+                throw new RuntimeException("cds数据源更新操作必须包含切分键");
+            }
+            Map.Entry<String, Field> shardKey = optionalShardKey.get();
+            args.add(data.get(shardKey.getKey()));
+            QueryPreparer preparer = new QueryPreparer();
+            Object whereValue = preparer.addStaticPlaceHolder(data.get(shardKey.getKey()));
+            updateQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, shardKey.getValue()), whereValue));
+        }
+        fieldIdMap.forEach((k, v) -> {
+            if (v.getIsPartOfPrimaryKey() && !Boolean.TRUE.equals(v.getIsShardKey())) {
+                args.add(data.get(k));
+                QueryPreparer preparer = new QueryPreparer();
+                Object whereValue = preparer.addStaticPlaceHolder(v);
+                updateQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, v), whereValue));
+            }
+        });
+        String sql = updateQuery.toString();
+        log.info("update record , entity:{},data:{},sql:{}", entity, data, sql);
+        rdbService.getJdbcTemplate().update(sql, args.toArray());
         return data;
     }
 
@@ -249,6 +306,16 @@ public class DataRdbServiceImpl implements IDataService {
         primaryFieldIdMap.forEach((k, v) -> {
             deleteQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, primaryFieldIdMap.get(k)), idValues[idx]));
         });
+        if (DbTypeEnum.cds.equals(Tenant.get().getCurrentDataSource().getType())) {
+            Map<String, Field> fieldIdMap = dataServiceHelper.getFieldIdMap(entity);
+            Optional<Map.Entry<String, Field>> optionalShardKey = fieldIdMap.entrySet().stream().filter(entry -> Boolean.TRUE.equals(entry.getValue().getIsShardKey())).findAny();
+            if (!optionalShardKey.isPresent()) {
+                throw new RuntimeException("cds数据源更新操作必须包含切分键");
+            }
+            Map.Entry<String, Field> shardKey = optionalShardKey.get();
+            Map<String, Object> record = findOne(entity, id);
+            deleteQuery.addCondition(BinaryCondition.equalTo(getDbColumn(table, shardKey.getValue()), record.get(shardKey.getKey())));
+        }
         log.info("delete record , entity:{},data:{},sql:{}", entity, id, deleteQuery);
         rdbService.getJdbcTemplate().execute(deleteQuery.toString());
         return id;

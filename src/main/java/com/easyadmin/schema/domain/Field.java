@@ -69,7 +69,10 @@ public class Field implements Serializable {
      * 是否是主键
      */
     private Boolean isPartOfPrimaryKey;
-
+    /**
+     * 是否切分键 for cds
+     */
+    private Boolean isShardKey;
     /**
      * 是否自增字段
      */

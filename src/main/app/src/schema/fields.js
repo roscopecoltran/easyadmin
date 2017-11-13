@@ -121,6 +121,8 @@ export const FieldCreate = (props) => {
             <BooleanInput source="showInCreate" label="新增页显示"/>
             <BooleanInput source="showInEdit" label="编辑页显示"/>
             <BooleanInput source="showInShow" label="详细页显示"/>
+
+            <BooleanInput source="isShardKey" label="是否切分键"/>
         </SimpleForm>
     </Create>
 };
@@ -168,6 +170,8 @@ export const FieldEdit = (props) => {
             <BooleanInput source="showInCreate" label="新增页显示"/>
             <BooleanInput source="showInEdit" label="编辑页显示"/>
             <BooleanInput source="showInShow" label="详细页显示"/>
+
+            <BooleanInput source="isShardKey" label="是否切分键"/>
         </SimpleForm>
     </Edit>
 };
