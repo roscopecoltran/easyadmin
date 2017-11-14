@@ -27,7 +27,7 @@ public class EsService {
 
     public TransportClient getEsClient() {
         DataSource dataSource = Tenant.get().getCurrentDataSource();
-        String nodes = dataSource.getNodes();
+        String nodes = dataSource.getJdbcUrl();
         if (!esClientMap.containsKey(nodes)) {
             esClientMap.put(nodes, dataSource2TransportClient(dataSource));
         }
@@ -36,10 +36,10 @@ public class EsService {
 
     private TransportClient dataSource2TransportClient(DataSource dataSource) {
         TransportClient client = new PreBuiltTransportClient(Settings.EMPTY);
-        if (StringUtils.isBlank(dataSource.getNodes())) {
+        if (StringUtils.isBlank(dataSource.getJdbcUrl())) {
             throw new IllegalArgumentException("elasticsearch nodes can not be empty");
         }
-        String[] nodeAddress = dataSource.getNodes().split(",");
+        String[] nodeAddress = dataSource.getJdbcUrl().split(",");
         for (String node : nodeAddress) {
             String[] nodeStr = node.split(":");
             client.addTransportAddress(new InetSocketTransportAddress(InetAddresses.forString(nodeStr[0]), Integer.parseInt(nodeStr[1])));

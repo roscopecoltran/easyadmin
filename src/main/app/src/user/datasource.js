@@ -27,7 +27,7 @@ export const DataSourceList = (props) => (
 );
 
 export const DataSourceCreate = (props) => (
-    <Create {...props}>
+    <Create {...props} redirect="list">
         <SimpleForm>
             <SelectInput source="type" label="数据库类型" choices={dataType} validate={required}/>
             <DependentInput dependsOn="type" resolve={checkRdb}>
@@ -45,7 +45,7 @@ export const DataSourceCreate = (props) => (
 );
 
 export const DataSourceEdit = (props) => (
-    <Edit {...props} >
+    <Edit {...props} redirect="list">
         <SimpleForm>
             <SelectInput source="type" label="数据库类型" choices={dataType} validate={required}/>
             <DependentInput dependsOn="type" resolve={checkRdb}>
@@ -54,7 +54,7 @@ export const DataSourceEdit = (props) => (
                 <TextInput type="password" source="password" validate={required}/>
             </DependentInput>
             <DependentInput dependsOn="type" resolve={checkEs}>
-                <TextInput source="nodes" validate={required}/>
+                <TextInput source="jdbcUrl" validate={required}/>
                 <TextInput source="clusterName" validate={required}/>
                 <TextInput source="indexName" validate={required}/>
             </DependentInput>

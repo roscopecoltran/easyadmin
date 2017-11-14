@@ -1,12 +1,10 @@
 package com.easyadmin.data;
 
 import com.easyadmin.consts.Constants;
-import com.easyadmin.schema.SchemaService;
 import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.service.MongoService;
 import com.easyadmin.service.SequenceService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
@@ -20,11 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Sorts.ascending;
 import static com.mongodb.client.model.Sorts.descending;
@@ -51,16 +47,11 @@ public class DataMongoDbServiceImpl implements IDataService {
      * @return
      */
     @Override
-    public List<Map<String, Object>> list(String entity, Map<String, Object> filters) {
+    public List<Map<String, Object>> list(String entity, Map<String, Object> filters, RequestScope requestScope) {
         MongoCollection collection = mongoService.getCustomerCollection(entity);
         Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
         List<Map<String, Object>> dataList = new LinkedList<>();
         DBObject query = getQuery(filters, fieldMap);
-        Map<String, Object> collect = filters.entrySet()
-                .stream()
-                .filter(map -> map.getKey().startsWith("_"))
-                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
-        RequestScope requestScope = new ObjectMapper().convertValue(collect, RequestScope.class);
         FindIterable<Document> findIterable = collection.find((Bson) query).sort(sort(requestScope)).skip(requestScope.get_start()).limit(requestScope.getLimit());
 
         MongoCursor<Document> mongoCursor = findIterable.iterator();
@@ -129,7 +120,7 @@ public class DataMongoDbServiceImpl implements IDataService {
         filters.entrySet()
                 .stream()
                 .filter(map ->
-                        (!map.getKey().equals(Constants.Q) && !map.getKey().startsWith("_"))
+                        !map.getKey().equals(Constants.Q)
                 )
                 .forEach(entry -> {
                     Filter filter = dataServiceHelper.getFilter(entry, fieldMap);

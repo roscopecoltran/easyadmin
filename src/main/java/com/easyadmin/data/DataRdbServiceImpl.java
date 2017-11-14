@@ -6,7 +6,6 @@ import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.schema.enums.Component;
 import com.easyadmin.schema.enums.DbColumnType;
 import com.easyadmin.service.RdbService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthmarketscience.sqlbuilder.*;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbColumn;
 import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
@@ -38,16 +37,7 @@ public class DataRdbServiceImpl implements IDataService {
     Map<Component, DbColumnType> componentStringMap;
 
     @Override
-    public List<Map<String, Object>> list(String entity, Map<String, Object> filters) {
-        /**
-         * 过滤出系统字段
-         */
-        Map<String, Object> pageAndSortFieldMap = filters.entrySet()
-                .stream()
-                .filter(map -> map.getKey().startsWith("_"))
-                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
-        RequestScope requestScope = new ObjectMapper().convertValue(pageAndSortFieldMap, RequestScope.class);
-
+    public List<Map<String, Object>> list(String entity, Map<String, Object> filters, RequestScope requestScope) {
         /**
          * 构建rdb select query
          */
@@ -96,7 +86,7 @@ public class DataRdbServiceImpl implements IDataService {
         filters.entrySet()
                 .stream()
                 .filter(filter ->
-                        (!filter.getKey().equals(Constants.Q) && !filter.getKey().startsWith("_"))
+                        !filter.getKey().equals(Constants.Q)
                 )
                 .forEach(entry -> {
                     Filter filter = dataServiceHelper.getFilter(entry, fieldMap);
@@ -133,15 +123,15 @@ public class DataRdbServiceImpl implements IDataService {
     }
 
     @Override
-    public long count(String entity, Map<String, Object> allRequestParams) {
+    public long count(String entity, Map<String, Object> filters) {
         Map<String, Field> fieldMap = dataServiceHelper.getFieldIdMap(entity);
         DbTable table = rdbService.getDbTable(entity);
         SelectQuery selectQuery = new SelectQuery()
                 .addCustomColumns(FunctionCall.countAll())
                 .addFromTable(table);
 
-        buildSelectQuery(selectQuery, entity, allRequestParams, fieldMap);
-        log.info("count record ,entity:{},data:{},sql:{}", entity, allRequestParams, selectQuery);
+        buildSelectQuery(selectQuery, entity, filters, fieldMap);
+        log.info("count record ,entity:{},data:{},sql:{}", entity, filters, selectQuery);
         return rdbService.getJdbcTemplate().queryForObject(selectQuery.toString(), Long.class);
     }
 

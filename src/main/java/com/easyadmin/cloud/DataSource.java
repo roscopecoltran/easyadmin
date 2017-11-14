@@ -25,7 +25,6 @@ public class DataSource {
     /**
      * for es
      */
-    private String nodes;
     private String clusterName;
     private String indexName;
 

@@ -15,18 +15,19 @@ public interface IDataService {
     /**
      * query for an entity's data
      *
-     * @param entity           entity name, e1、e2、e3...
-     * @param allRequestParams all the query params, include filter、page、sort
+     * @param entity       entity name, e1、e2、e3...
+     * @param filterParams all the filter params
+     * @param requestScope page and sort
      * @return
      */
-    List<Map<String, Object>> list(String entity, Map<String, Object> allRequestParams);
+    List<Map<String, Object>> list(String entity, Map<String, Object> filterParams, RequestScope requestScope);
 
     /**
      * @param entity
-     * @param allRequestParams
+     * @param filterParams
      * @return
      */
-    long count(String entity, Map<String, Object> allRequestParams);
+    long count(String entity, Map<String, Object> filterParams);
 
     /**
      * find by pk

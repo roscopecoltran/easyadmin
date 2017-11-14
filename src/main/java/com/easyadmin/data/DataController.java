@@ -2,6 +2,7 @@ package com.easyadmin.data;
 
 import com.easyadmin.consts.Constants;
 import com.easyadmin.service.ServiceProxy;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 数据查询endpoints，spring mvc的实现
@@ -42,8 +45,19 @@ public class DataController {
     @PreAuthorize("@securityService.hasProtectedAccess(#entity,'r')")
     public ResponseEntity<List<Map<String, Object>>> dataQuery(@PathVariable(Constants.ENTITY) String entity, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
-        List data = serviceProxy.getDataService().list(entity, allRequestParams);
-        long count = serviceProxy.getDataService().count(entity, allRequestParams);
+        Map<String, Object> pageAndSortFieldMap = allRequestParams.entrySet()
+                .stream()
+                .filter(map -> map.getKey().startsWith("_"))
+                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+
+        Map<String, Object> filterParams = allRequestParams.entrySet()
+                .stream()
+                .filter(map -> !map.getKey().startsWith("_"))
+                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+
+        RequestScope requestScope = new ObjectMapper().convertValue(pageAndSortFieldMap, RequestScope.class);
+        List data = serviceProxy.getDataService().list(entity, filterParams, requestScope);
+        long count = serviceProxy.getDataService().count(entity, filterParams);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", count + "")
@@ -81,8 +95,10 @@ public class DataController {
 
     @DeleteMapping(value = "/api/{entity}/{id}")
     @PreAuthorize("@securityService.hasProtectedAccess(#entity,'d')")
-    public ResponseEntity<String> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
+    public ResponseEntity<Map<String,Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
         serviceProxy.getDataService().delete(entity, id);
-        return ResponseEntity.ok(id);
+        Map<String,Object> dataMap=new HashMap<>();
+        dataMap.put("id",id);
+        return ResponseEntity.ok(dataMap);
     }
 }
