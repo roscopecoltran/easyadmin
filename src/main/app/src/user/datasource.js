@@ -36,7 +36,7 @@ export const DataSourceCreate = (props) => (
                 <TextInput type="password" source="password" validate={required}/>
             </DependentInput>
             <DependentInput dependsOn="type" resolve={checkEs}>
-                <TextInput source="nodes" validate={required}/>
+                <TextInput source="jdbcUrl" validate={required}/>
                 <TextInput source="clusterName" validate={required}/>
                 <TextInput source="indexName" validate={required}/>
             </DependentInput>

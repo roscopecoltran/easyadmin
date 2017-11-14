@@ -35,7 +35,10 @@ public class EsService {
     }
 
     private TransportClient dataSource2TransportClient(DataSource dataSource) {
-        TransportClient client = new PreBuiltTransportClient(Settings.EMPTY);
+        Settings settings = Settings.builder()
+                .put("cluster.name", dataSource.getClusterName())
+                .build();
+        TransportClient client = new PreBuiltTransportClient(settings);
         if (StringUtils.isBlank(dataSource.getJdbcUrl())) {
             throw new IllegalArgumentException("elasticsearch nodes can not be empty");
         }
