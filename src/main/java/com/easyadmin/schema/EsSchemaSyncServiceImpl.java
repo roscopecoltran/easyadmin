@@ -79,11 +79,6 @@ public class EsSchemaSyncServiceImpl implements ISchemaSyncService {
             field.setLabel(k);
             field.setDataSourceId(dataSourceId);
             field.setEid(entity.getId());
-            field.setShowInList(true);
-            field.setShowInFilter(true);
-            field.setShowInCreate(true);
-            field.setShowInEdit(true);
-            field.setShowInShow(true);
             field.setId(Constants.FIELD_NAME_PREFIX + sequenceService.getNextSequence(Constants.SYS_COL_Field + Constants._id).toString());
             fields.add(field);
         });

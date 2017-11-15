@@ -144,7 +144,6 @@ public class RdbSchemaSyncServiceImpl implements ISchemaSyncService {
         field.setDefaultValue(column.getDefaultValue());
         field.setComponent(getComponent(column));
         field.setInputType(InputType.text);
-        field.setShowInList(true);
         field.setShowInFilter(true);
         field.setShowInCreate(!Component.Date.equals(field.getComponent()) && field.getRequired());
         field.setShowInEdit(!Component.Date.equals(field.getComponent()));
