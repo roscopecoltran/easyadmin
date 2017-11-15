@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,13 +57,19 @@ public class DataController {
                 .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 
         RequestScope requestScope = new ObjectMapper().convertValue(pageAndSortFieldMap, RequestScope.class);
-        List data = serviceProxy.getDataService().list(entity, filterParams, requestScope);
+        List<Map<String, Object>> data = serviceProxy.getDataService().list(entity, filterParams, requestScope);
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (Map<String, Object> record : data) {
+            Map<String, Object> resultMap = record.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
+                    e -> wrapValue(e.getValue())));
+            resultList.add(resultMap);
+        }
         long count = serviceProxy.getDataService().count(entity, filterParams);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", count + "")
                 .header("Access-Control-Expose-Headers", "X-Total-Count")
-                .body(data);
+                .body(resultList);
     }
 
     @GetMapping(value = "/api/{entity}/{id}")
@@ -70,9 +77,18 @@ public class DataController {
     public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.id) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         Map<String, Object> object = serviceProxy.getDataService().findOne(entity, id);
+        Map<String, Object> resultMap = object.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
+                e -> wrapValue(e.getValue())));
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(object);
+                .body(resultMap);
+    }
+
+    private Object wrapValue(Object e) {
+        if (e != null && e instanceof Long && String.valueOf(e).length() > 15) {
+            return String.valueOf(e);
+        }
+        return e;
     }
 
     @PostMapping(value = "/api/{entity}")
@@ -95,10 +111,10 @@ public class DataController {
 
     @DeleteMapping(value = "/api/{entity}/{id}")
     @PreAuthorize("@securityService.hasProtectedAccess(#entity,'d')")
-    public ResponseEntity<Map<String,Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
+    public ResponseEntity<Map<String, Object>> dataMutation(@PathVariable(Constants.ENTITY) String entity, @PathVariable("id") String id) {
         serviceProxy.getDataService().delete(entity, id);
-        Map<String,Object> dataMap=new HashMap<>();
-        dataMap.put("id",id);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("id", id);
         return ResponseEntity.ok(dataMap);
     }
 }
