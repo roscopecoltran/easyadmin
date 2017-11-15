@@ -5,7 +5,6 @@ import com.easyadmin.schema.domain.Field;
 import com.easyadmin.schema.domain.Filter;
 import com.easyadmin.service.EsService;
 import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -98,8 +97,13 @@ public class DataEsServiceImpl implements IDataService {
 
     @Override
     public Map<String, Object> findOne(String entity, String id) {
-        GetResponse getResponse = esService.getEsClient().prepareGet(Tenant.get().getCurrentDataSource().getIndexName(), entity, id).get();
-        return getResponse.getSourceAsMap();
+        SearchResponse searchResponse = esService.getEsClient()
+                .prepareSearch(Tenant.get().getCurrentDataSource().getIndexName())
+                .setTypes(entity)
+                .setQuery(QueryBuilders.termQuery("_id", id))
+                .execute()
+                .actionGet();
+        return searchResponse.getHits().getAt(0).sourceAsMap();
     }
 
     @Override
