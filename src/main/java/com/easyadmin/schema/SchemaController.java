@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 /**
@@ -58,6 +59,19 @@ public class SchemaController {
     @GetMapping("/schemas/_fields")
     public ResponseEntity<List<Field>> findAllFields(@RequestParam("eid") String eid) {
         List<Field> fields = schemaService.findEntities().stream().filter(entity -> entity.getId().equals(eid)).findFirst().get().getFields();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("X-Total-Count", fields.size() + "")
+                .header("Access-Control-Expose-Headers", "X-Total-Count")
+                .body(fields);
+    }
+
+    @GetMapping("/schemas/fields")
+    public ResponseEntity<List<Field>> findEntityFields(@RequestParam("entityName") String entityName) {
+        List<Field> fields = schemaService.findEntities().stream()
+                .filter(entity -> entity.getName().equals(entityName))
+                .findFirst().get()
+                .getFields();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", fields.size() + "")

@@ -12,7 +12,7 @@ class ReferenceDependentInput extends Component {
     }
 
     getFields(entity) {
-        httpClient(url + `/schemas/_fields?eid=` + entity)
+        httpClient(url + `/schemas/fields?entityName=` + entity)
             .then((response) => {
                 return response.json
             })

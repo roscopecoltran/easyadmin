@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,18 +57,15 @@ public class DataController {
 
         RequestScope requestScope = new ObjectMapper().convertValue(pageAndSortFieldMap, RequestScope.class);
         List<Map<String, Object>> data = serviceProxy.getDataService().list(entity, filterParams, requestScope);
-        List<Map<String, Object>> resultList = new ArrayList<>();
         for (Map<String, Object> record : data) {
-            Map<String, Object> resultMap = record.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
-                    e -> wrapValue(e.getValue())));
-            resultList.add(resultMap);
+            record.replaceAll((k, v) -> wrapValue(v));
         }
         long count = serviceProxy.getDataService().count(entity, filterParams);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("X-Total-Count", count + "")
                 .header("Access-Control-Expose-Headers", "X-Total-Count")
-                .body(resultList);
+                .body(data);
     }
 
     @GetMapping(value = "/api/{entity}/{id}")
@@ -77,16 +73,23 @@ public class DataController {
     public ResponseEntity<Map<String, Object>> findOne(@PathVariable(Constants.ENTITY) String entity, @PathVariable(Constants.id) String id, @RequestParam final Map<String, Object> allRequestParams) {
         log.info("params:{}", JSON.serialize(allRequestParams));
         Map<String, Object> object = serviceProxy.getDataService().findOne(entity, id);
-        Map<String, Object> resultMap = object.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
-                e -> wrapValue(e.getValue())));
+        object.replaceAll((k, v) -> wrapValue(v));
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(resultMap);
+                .body(object);
     }
 
+    /**
+     * javascript 精度问题，特殊处理一下
+     * @param e
+     * @return
+     */
     private Object wrapValue(Object e) {
-        if (e != null && e instanceof Long && String.valueOf(e).length() > 15) {
-            return String.valueOf(e);
+        if (e != null && e instanceof Long) {
+            long l = ((Long) e);
+            if (l < -1L << 53 || l > 1L << 53) {
+                return String.valueOf(e);
+            }
         }
         return e;
     }
