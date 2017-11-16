@@ -99,7 +99,7 @@ export const FieldCreate = (props) => {
             </DependentInput>
             <DependentInput dependsOn="component" resolve={checkReference}>
                 <ReferenceInput source="reference" reference="_entitys" allowEmpty validate={required}>
-                    <SelectInput optionText="label"/>
+                    <SelectInput optionText="label" optionValue="name"/>
                 </ReferenceInput>
             </DependentInput>
 
@@ -149,7 +149,7 @@ export const FieldEdit = (props) => {
             </DependentInput>
             <DependentInput dependsOn="component" resolve={checkReference}>
                 <ReferenceInput source="reference" reference="_entitys" allowEmpty validate={required}>
-                    <SelectInput optionText="label"/>
+                    <SelectInput optionText="label" optionValue="name"/>
                 </ReferenceInput>
             </DependentInput>
             <DependentInput dependsOn="reference" resolve={checkReferenceEntity}>

@@ -229,7 +229,9 @@ const CRUDDeleteTitle = ({record, translate}) => <span>
  * @param props
  * @constructor
  */
-export const CRUDDelete = (props) => <Delete {...props} title={<CRUDDeleteTitle/>}/>;
+export const CRUDDelete = (props) => (
+    <Delete {...props} title={<CRUDDeleteTitle/>}/>
+);
 
 /**
  * render the list and show page of all kinds of fields

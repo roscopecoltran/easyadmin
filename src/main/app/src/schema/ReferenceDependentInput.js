@@ -32,7 +32,7 @@ class ReferenceDependentInput extends Component {
         let props = {...this.props};
         if (null === this.state.fields || this.state.fields === undefined) return null;
         return (
-            <SelectInput {...props} choices={this.state.fields} optionText="label" optionValue="id"/>
+            <SelectInput {...props} choices={this.state.fields} optionText="label" optionValue="name"/>
         )
     }
 }
