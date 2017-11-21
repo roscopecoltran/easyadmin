@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+APP_TARGET=${APP_TARGET:-"spring-app"}
+echo "---> Starting Spring Boot application"
+echo "--> # APP_TARGET = $APP_TARGET"
+echo "--> # JAVA_OPTS = $JAVA_OPTS"
+echo "---> Running application from jar ($(find $APP_TARGET -name *.jar)) ..."
+java $JAVA_OPTS -jar `find $APP_TARGET -name *.jar`

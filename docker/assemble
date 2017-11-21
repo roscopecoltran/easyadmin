@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+# mvn clean install -DskipTests -Ddocs.generate=true
+# -Ddocs.generate=true -DskipTests mvn clean install -DskipTests
+echo "---> Building Spring Boot application from source"
+echo "--> # MVN_ARGS = $MVN_ARGS"
+if [ -f "mvnw" ]; then
+  ./mvnw clean install $MVN_ARGS
+else
+  mvn clean install $MVN_ARGS
+fi

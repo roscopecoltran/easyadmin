@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cat <<EOF
+This is a springboot maven3 alpine base image:
+
+You can then run the resulting image via:
+docker run -p 8080:8080 -v `pwd`/dist:/app/build image-name
+EOF
