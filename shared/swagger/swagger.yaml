@@ -1,0 +1,1381 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: DataHive RESTful APIs
+host: 'localhost:8080'
+basePath: /
+tags:
+  - name: data-controller
+    description: Data Controller
+  - name: authentication-rest-controller
+    description: Authentication Rest Controller
+  - name: user-controller
+    description: User Controller
+  - name: apply-controller
+    description: Apply Controller
+  - name: role-controller
+    description: Role Controller
+  - name: schema-controller
+    description: Schema Controller
+  - name: data-source-controller
+    description: Data Source Controller
+  - name: permission-controller
+    description: Permission Controller
+paths:
+  '/api/{entity}':
+    get:
+      tags:
+        - data-controller
+      summary: dataQuery
+      operationId: dataQueryUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: entity
+          in: path
+          description: entity
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - data-controller
+      summary: dataMutation
+      operationId: dataMutationUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: entity
+          in: path
+          description: entity
+          required: true
+          type: string
+        - in: body
+          name: allRequestParams
+          description: allRequestParams
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/api/{entity}/{id}':
+    get:
+      tags:
+        - data-controller
+      summary: findOne
+      operationId: findOneUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: entity
+          in: path
+          description: entity
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - data-controller
+      summary: dataMutation
+      operationId: dataMutationUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: entity
+          in: path
+          description: entity
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: allRequestParams
+          description: allRequestParams
+          required: true
+          schema:
+            type: object
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    delete:
+      tags:
+        - data-controller
+      summary: dataMutation
+      operationId: dataMutationUsingDELETE
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: entity
+          in: path
+          description: entity
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            additionalProperties:
+              type: object
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+  /apply:
+    post:
+      tags:
+        - apply-controller
+      summary: apply
+      operationId: applyUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: apply
+          description: apply
+          required: true
+          schema:
+            $ref: '#/definitions/Apply'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /auth:
+    post:
+      tags:
+        - authentication-rest-controller
+      summary: createAuthenticationToken
+      operationId: createAuthenticationTokenUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: authenticationRequest
+          description: authenticationRequest
+          required: true
+          schema:
+            $ref: '#/definitions/JwtAuthenticationRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /datasource/_datasource:
+    get:
+      tags:
+        - data-source-controller
+      summary: list
+      operationId: listUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DataSource'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - data-source-controller
+      summary: addDataSource
+      operationId: addDataSourceUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: dataSource
+          description: dataSource
+          required: true
+          schema:
+            $ref: '#/definitions/DataSource'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSource'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/datasource/_datasource/{datasourceId}':
+    get:
+      tags:
+        - data-source-controller
+      summary: findRole
+      operationId: findRoleUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: datasourceId
+          in: path
+          description: datasourceId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSource'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/datasource/_datasource/put/{id}':
+    put:
+      tags:
+        - data-source-controller
+      summary: editDataSource
+      operationId: editDataSourceUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: dataSource
+          description: dataSource
+          required: true
+          schema:
+            $ref: '#/definitions/DataSource'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSource'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /permission/_permission:
+    get:
+      tags:
+        - permission-controller
+      summary: list
+      operationId: listUsingGET_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: roleId
+          in: query
+          description: roleId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Permission'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - permission-controller
+      summary: addPermission
+      operationId: addPermissionUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: permission
+          description: permission
+          required: true
+          schema:
+            $ref: '#/definitions/Permission'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Permission'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/permission/_permission/{id}':
+    get:
+      tags:
+        - permission-controller
+      summary: findUser
+      operationId: findUserUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Permission'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - permission-controller
+      summary: editPermission
+      operationId: editPermissionUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: permission
+          description: permission
+          required: true
+          schema:
+            $ref: '#/definitions/Permission'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Permission'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /refresh:
+    get:
+      tags:
+        - authentication-rest-controller
+      summary: refreshAndGetAuthenticationToken
+      operationId: refreshAndGetAuthenticationTokenUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /role/_roles:
+    get:
+      tags:
+        - role-controller
+      summary: list
+      operationId: listUsingGET_2
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Role'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - role-controller
+      summary: addRole
+      operationId: addRoleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: role
+          description: role
+          required: true
+          schema:
+            $ref: '#/definitions/Role'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/role/_roles/put/{id}':
+    put:
+      tags:
+        - role-controller
+      summary: editRole
+      operationId: editRoleUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: role
+          description: role
+          required: true
+          schema:
+            $ref: '#/definitions/Role'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/role/_roles/{roleId}':
+    get:
+      tags:
+        - role-controller
+      summary: findRole
+      operationId: findRoleUsingGET_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: roleId
+          in: path
+          description: roleId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /schemas/_entitys:
+    get:
+      tags:
+        - schema-controller
+      summary: getSchemas
+      operationId: getSchemasUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Entity'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - schema-controller
+      summary: addEntity
+      operationId: addEntityUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: entity
+          description: entity
+          required: true
+          schema:
+            $ref: '#/definitions/Entity'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Entity'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/schemas/_entitys/{eid}':
+    get:
+      tags:
+        - schema-controller
+      summary: findOne
+      operationId: findOneUsingGET_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: eid
+          in: path
+          description: eid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Entity'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/schemas/_entitys/put/{id}':
+    put:
+      tags:
+        - schema-controller
+      summary: editEntity
+      operationId: editEntityUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: entity
+          description: entity
+          required: true
+          schema:
+            $ref: '#/definitions/Entity'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Entity'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /schemas/_fields:
+    get:
+      tags:
+        - schema-controller
+      summary: findAllFields
+      operationId: findAllFieldsUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: eid
+          in: query
+          description: eid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Field'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - schema-controller
+      summary: addField
+      operationId: addFieldUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: field
+          description: field
+          required: true
+          schema:
+            $ref: '#/definitions/Field'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Field'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/schemas/_fields/{fid}':
+    get:
+      tags:
+        - schema-controller
+      summary: findOneField
+      operationId: findOneFieldUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: fid
+          in: path
+          description: fid
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Field'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/schemas/_fields/put/{id}':
+    put:
+      tags:
+        - schema-controller
+      summary: editField
+      operationId: editFieldUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: field
+          description: field
+          required: true
+          schema:
+            $ref: '#/definitions/Field'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Field'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /schemas/fields:
+    get:
+      tags:
+        - schema-controller
+      summary: findEntityFields
+      operationId: findEntityFieldsUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: entityName
+          in: query
+          description: entityName
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Field'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/schemas/resetCurrentDs/{dataSourceId}':
+    put:
+      tags:
+        - schema-controller
+      summary: resetCurrentDs
+      operationId: resetCurrentDsUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: dataSourceId
+          in: path
+          description: dataSourceId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/schemas/sync/{dataSourceId}':
+    put:
+      tags:
+        - schema-controller
+      summary: syncSchemas
+      operationId: syncSchemasUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: dataSourceId
+          in: path
+          description: dataSourceId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ResponseEntity'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /user/_users:
+    get:
+      tags:
+        - user-controller
+      summary: list
+      operationId: listUsingGET_3
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    post:
+      tags:
+        - user-controller
+      summary: addUser
+      operationId: addUserUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - in: body
+          name: user
+          description: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/user/_users/put/{id}':
+    put:
+      tags:
+        - user-controller
+      summary: editField
+      operationId: editFieldUsingPUT_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: string
+        - in: body
+          name: user
+          description: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  '/user/_users/{userId}':
+    get:
+      tags:
+        - user-controller
+      summary: findUser
+      operationId: findUserUsingGET_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: userId
+          in: path
+          description: userId
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /user/me:
+    get:
+      tags:
+        - user-controller
+      summary: getAuthenticatedUser
+      operationId: getAuthenticatedUserUsingGET
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/JwtUser'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+definitions:
+  Apply:
+    type: object
+    properties:
+      email:
+        type: string
+      mobile:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+  ChoiceItem:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  DataSource:
+    type: object
+    properties:
+      clusterName:
+        type: string
+      current:
+        type: boolean
+      dbName:
+        type: string
+      id:
+        type: string
+      indexName:
+        type: string
+      jdbcUrl:
+        type: string
+      mySqlDbName:
+        type: string
+      password:
+        type: string
+      type:
+        type: string
+        enum:
+          - mongo
+          - mysql
+          - cds
+          - es
+      username:
+        type: string
+  Entity:
+    type: object
+    properties:
+      crud:
+        type: array
+        items:
+          type: string
+          enum:
+            - c
+            - r
+            - u
+            - d
+      fields:
+        type: array
+        items:
+          $ref: '#/definitions/Field'
+      id:
+        type: string
+      label:
+        type: string
+      name:
+        type: string
+      redirect:
+        type: string
+        enum:
+          - edit
+          - show
+          - list
+      showInMenu:
+        type: boolean
+  Field:
+    type: object
+    properties:
+      choices:
+        type: array
+        items:
+          $ref: '#/definitions/IChoiceItem'
+      component:
+        type: string
+        enum:
+          - Autocomplete
+          - Boolean
+          - NullableBoolean
+          - CheckboxGroup
+          - Date
+          - Disabled
+          - File
+          - Image
+          - LongText
+          - Number
+          - RadioButtonGroup
+          - ReferenceArray
+          - Reference
+          - RichText
+          - SelectArray
+          - Select
+          - Text
+      dataSourceId:
+        type: string
+      defaultValue:
+        type: string
+      eid:
+        type: string
+      id:
+        type: string
+      inputType:
+        type: string
+        enum:
+          - text
+          - email
+          - password
+          - url
+      isAutoIncremented:
+        type: boolean
+      isPartOfPrimaryKey:
+        type: boolean
+      label:
+        type: string
+      maxLength:
+        type: integer
+        format: int32
+      maxValue:
+        type: string
+      minValue:
+        type: string
+      name:
+        type: string
+      reference:
+        type: string
+      referenceOptionText:
+        type: string
+      required:
+        type: boolean
+      showInCreate:
+        type: boolean
+      showInEdit:
+        type: boolean
+      showInFilter:
+        type: boolean
+      showInList:
+        type: boolean
+      showInShow:
+        type: boolean
+  GrantedAuthority:
+    type: object
+    properties:
+      authority:
+        type: string
+  IChoiceItem:
+    type: object
+  JwtAuthenticationRequest:
+    type: object
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+  JwtUser:
+    type: object
+    properties:
+      authorities:
+        type: array
+        items:
+          $ref: '#/definitions/GrantedAuthority'
+      email:
+        type: string
+      enabled:
+        type: boolean
+      username:
+        type: string
+  Permission:
+    type: object
+    properties:
+      c:
+        type: boolean
+      d:
+        type: boolean
+      eid:
+        type: string
+      id:
+        type: string
+      r:
+        type: boolean
+      roleId:
+        type: string
+      u:
+        type: boolean
+  ResponseEntity:
+    type: object
+    properties:
+      body:
+        type: object
+      statusCode:
+        type: string
+        enum:
+          - '100'
+          - '101'
+          - '102'
+          - '103'
+          - '200'
+          - '201'
+          - '202'
+          - '203'
+          - '204'
+          - '205'
+          - '206'
+          - '207'
+          - '208'
+          - '226'
+          - '300'
+          - '301'
+          - '302'
+          - '303'
+          - '304'
+          - '305'
+          - '307'
+          - '308'
+          - '400'
+          - '401'
+          - '402'
+          - '403'
+          - '404'
+          - '405'
+          - '406'
+          - '407'
+          - '408'
+          - '409'
+          - '410'
+          - '411'
+          - '412'
+          - '413'
+          - '414'
+          - '415'
+          - '416'
+          - '417'
+          - '418'
+          - '419'
+          - '420'
+          - '421'
+          - '422'
+          - '423'
+          - '424'
+          - '426'
+          - '428'
+          - '429'
+          - '431'
+          - '451'
+          - '500'
+          - '501'
+          - '502'
+          - '503'
+          - '504'
+          - '505'
+          - '506'
+          - '507'
+          - '508'
+          - '509'
+          - '510'
+          - '511'
+      statusCodeValue:
+        type: integer
+        format: int32
+  Role:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      users:
+        type: array
+        items:
+          $ref: '#/definitions/User'
+  User:
+    type: object
+    properties:
+      email:
+        type: string
+      enabled:
+        type: boolean
+      id:
+        type: string
+      lastPasswordResetDate:
+        type: string
+        format: date-time
+      password:
+        type: string
+      roles:
+        type: array
+        items:
+          $ref: '#/definitions/Role'
+      username:
+        type: string
